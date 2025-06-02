@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const hono_1 = require("hono");
+const auth_controller_1 = require("./auth.controller");
+const authRouter = new hono_1.Hono();
+authRouter.post('/login', auth_controller_1.AuthController.login);
+authRouter.post('/register', auth_controller_1.AuthController.register);
+authRouter.get('/me', auth_controller_1.AuthController.getCurrentUser);
+authRouter.post('/refresh', auth_controller_1.AuthController.refreshToken);
+authRouter.post('/logout', auth_controller_1.AuthController.logout);
+exports.default = authRouter;
