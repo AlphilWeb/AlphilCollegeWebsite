@@ -1,0 +1,45 @@
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter/Inter-Regular.ttf') format('ttf');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter/Inter-Bold.ttf') format('ttf');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@import "tailwindcss";
+@plugin "daisyui";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply text-white min-h-screen;
+  background: linear-gradient(11deg, #005f19, #118b3b, #21b95f, #30ea85);
+}
+
+section {
+  background: #1E4D2B;
+}
+
+Image {
+  object-fit: cover;
+}
+
+.carousel-image {
+    height: 18rem;
+    width: 100vw;
+    object-fit: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: 0;
+    padding: 0;
+  }
