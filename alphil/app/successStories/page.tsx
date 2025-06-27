@@ -174,7 +174,7 @@ const SuccessStoriesPage = () => {
         </div>
 
         {/* Call to Action */}
-        <div className="bg-[#013220] rounded-xl p-12 text-center text-white relative overflow-hidden">
+        <div className="bg-[#013220] rounded-xl p-12 text-center text-white relative overflow-hidden mt-[1rem]">
           <div className="absolute inset-0 opacity-10">
             <div className="absolute inset-0 bg-[url('/path/to/subtle-pattern.png')]"></div>
           </div>

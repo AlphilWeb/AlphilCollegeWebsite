@@ -173,7 +173,7 @@ export default function BlogPage() {
           </div>
 
         {/* Newsletter Signup */}
-        <div className="bg-[#013220] rounded-xl p-8 md:p-12 text-center text-white">
+        <div className="bg-[#013220] rounded-xl p-8 md:p-12 text-center text-white mt-[1rem]">
           <h2 className="text-2xl md:text-3xl font-['Playfair_Display'] font-bold mb-4">
             Stay Updated With Alphil
           </h2>

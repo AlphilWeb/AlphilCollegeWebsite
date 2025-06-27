@@ -72,7 +72,7 @@ const ContactPage = () => {
       `}</style>
 
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-[#013220] to-[#013220]/90 text-white py-20 px-4 sm:px-6 lg:px-8">
+      <div className="bg-gradient-to-r from-[#013220] to-[#013220]/90 text-white py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-['Playfair_Display'] font-bold mb-6 leading-tight">
             Get In Touch
