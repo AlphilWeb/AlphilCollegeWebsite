@@ -34,7 +34,7 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv/config");
-const schema = __importStar(require("../src/schema"));
+const schema = __importStar(require("./schema"));
 const serverless_1 = require("@neondatabase/serverless");
 const neon_http_1 = require("drizzle-orm/neon-http");
 const client = (0, serverless_1.neon)(process.env.DB_URL);

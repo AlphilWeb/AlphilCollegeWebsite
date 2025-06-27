@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
-    "target": "ES2022",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-    "module": "CommonJS",                                /* Specify what module code is generated. */
-    "moduleResolution": "Node",                     /* Specify how TypeScript looks up a file from a given module specifier. */
+    "target": "ES2022",                                  
+    "module": "CommonJS",                                
+    "moduleResolution": "Node",                    
     "rootDir": "./src",                                  
     "outDir": "./dist",                                   
     "esModuleInterop": true,                            
     "forceConsistentCasingInFileNames": true,            
-    "strict": true,                                      /* Enable all strict type-checking options. */
+    "strict": true, 
+    "types": ["node", "express"],
     "skipLibCheck": true,
     "baseUrl": "./src",
     "paths": {

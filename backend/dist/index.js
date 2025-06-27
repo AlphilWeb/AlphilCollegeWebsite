@@ -18,8 +18,9 @@ const SuccessStories_router_1 = __importDefault(require("./SuccessStories/Succes
 const users_router_1 = __importDefault(require("./Users/users.router"));
 const courses_router_1 = __importDefault(require("./Courses/courses.router"));
 const gallery_router_1 = __importDefault(require("./Gallery/gallery.router"));
-const heroImages_router_1 = __importDefault(require("./HeroImages/heroImages.router")); // New import
-const pillars_router_1 = __importDefault(require("./Pillars/pillars.router")); // New import
+const heroImages_router_1 = __importDefault(require("./HeroImages/heroImages.router"));
+const pillars_router_1 = __importDefault(require("./Pillars/pillars.router"));
+const analutics_router_1 = __importDefault(require("./Analytics/analutics.router"));
 const app = new hono_1.Hono();
 // Basic middleware
 app.use("*", (0, logger_1.logger)());
@@ -34,6 +35,7 @@ app.route('/success-stories', SuccessStories_router_1.default);
 app.route('/hero-images', heroImages_router_1.default);
 app.route('/pillars', pillars_router_1.default);
 app.get('/health', (c) => c.json({ status: 'OK' }));
+app.route('/analytics', analutics_router_1.default);
 // Application submission (public)
 const applications_controller_1 = require("./Applications/applications.controller");
 app.post('/applications', applications_controller_1.ApplicationController.createApplication);

@@ -15,8 +15,9 @@ import successStoriesRouter from "./SuccessStories/SuccessStories.router";
 import usersRouter from "./Users/users.router";
 import coursesRouter from "./Courses/courses.router";
 import galleryRouter from "./Gallery/gallery.router";
-import heroImagesRouter from "./HeroImages/heroImages.router"; // New import
-import pillarsRouter from "./Pillars/pillars.router"; // New import
+import heroImagesRouter from "./HeroImages/heroImages.router";
+import pillarsRouter from "./Pillars/pillars.router";
+import analyticsRouter from "./Analytics/analutics.router"
 
 const app = new Hono();
 
@@ -34,6 +35,8 @@ app.route('/success-stories', successStoriesRouter);
 app.route('/hero-images', heroImagesRouter);
 app.route('/pillars', pillarsRouter);
 app.get('/health', (c) => c.json({ status: 'OK' }));
+app.route('/analytics', analyticsRouter);
+
 
 // Application submission (public)
 import { ApplicationController } from "./Applications/applications.controller";
