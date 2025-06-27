@@ -37,12 +37,7 @@ const AboutPage = () => {
 
   return (
     <>
-      <div className="max-w-7xl mx-auto px-4 py-16">
-        <style jsx global>{`
-          @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&family=Poppins:wght@500;700&display=swap');
-        `}</style>
-
-        {/* Hero Section */}
+      {/* Hero Section */}
         <div className="bg-gradient-to-r from-[#013220] to-[#013220]/90 text-white py-24 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-['Playfair_Display'] font-bold mb-6 leading-tight">
@@ -53,6 +48,11 @@ const AboutPage = () => {
             </p>
           </div>
         </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        <style jsx global>{`
+          @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&family=Poppins:wght@500;700&display=swap');
+        `}</style>
 
         {/* Mission, Vision, History Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
