@@ -133,7 +133,7 @@ const Footer = () => {
               <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.770131681689!2d36.12427267580669!3d-0.28160083535501335!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1829933342f6b183%3A0x540bdc83f3c7cc45!2sALPHIL%20TRAINING%20COLLEGE!5e0!3m2!1sen!2ske!4v1751032236900!5m2!1sen!2ske"
                   width="100%"
-                  height="450"
+                  height="350"
                   style={{ border: 0 }}
                   allowFullScreen
                   loading="lazy"
