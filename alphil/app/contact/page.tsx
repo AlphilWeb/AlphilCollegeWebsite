@@ -219,7 +219,7 @@ const ContactPage = () => {
               Contact us today to learn more about our programs and how we can help you achieve your goals
             </p>
             <button className="bg-[#FF338B] hover:bg-[#FF338B]/90 text-white px-8 py-4 rounded-lg font-['Poppins'] font-bold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-[#FF338B]/30">
-              Apply Now
+              <a href="/admissions/forms">Apply Now</a> 
             </button>
           </div>
         </div>

@@ -131,15 +131,16 @@ const Footer = () => {
             
             <div className="rounded-lg overflow-hidden border-2 border-[#FF338B]">
               <iframe
-                title="Alphil College Location"
-                src="https://www.google.com/maps/place/ALPHIL+TRAINING+COLLEGE/@-0.2816008,36.1242727,17z/data=!4m14!1m7!3m6!1s0x1829933342f6b183:0x540bdc83f3c7cc45!2sALPHIL+TRAINING+COLLEGE!8m2!3d-0.2816062!4d36.1268476!16s%2Fg%2F11w9fgsg0l!3m5!1s0x1829933342f6b183:0x540bdc83f3c7cc45!8m2!3d-0.2816062!4d36.1268476!16s%2Fg%2F11w9fgsg0l?entry=ttu&g_ep=EgoyMDI1MDYyMy4yIKXMDSoASAFQAw%3D%3D"
-                width="100%"
-                height="200"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                className=""
-              ></iframe>
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.770131681689!2d36.12427267580669!3d-0.28160083535501335!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1829933342f6b183%3A0x540bdc83f3c7cc45!2sALPHIL%20TRAINING%20COLLEGE!5e0!3m2!1sen!2ske!4v1751032236900!5m2!1sen!2ske"
+                  width="100%"
+                  height="450"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="w-full h-[400px] md:h-[450px] rounded-lg"
+                  title="Alphil Training College Location"
+              />
             </div>
           </div>
         </div>
