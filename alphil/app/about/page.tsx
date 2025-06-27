@@ -40,7 +40,7 @@ const AboutPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#013220]/5">
+    <div className="min-h-screen">
       {/* Global Fonts */}
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&family=Poppins:wght@500;700&display=swap');
