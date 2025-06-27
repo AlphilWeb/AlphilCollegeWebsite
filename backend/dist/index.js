@@ -57,3 +57,4 @@ app.route('/admin/users', users_router_1.default); // Already protected in route
 const port = process.env.PORT || 3000;
 console.log(`🚀 Server running on http://localhost:${port}`);
 (0, node_server_1.serve)({ fetch: app.fetch, port: Number(port) });
+exports.default = app;
