@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { fetchAPI } from '@/lib/api';
 import { FiArrowRight, FiCalendar, FiUser } from 'react-icons/fi';
+import Footer from '@/components/Footer';
 
 type BlogPost = {
   id: number;
@@ -116,15 +117,13 @@ export default function BlogPage() {
         )}
 
         {/* All Posts Grid */}
-        <div className="mb-20">
-          <h2 className="text-3xl font-['Playfair_Display'] font-bold text-[#013220] mb-8 pb-2 border-b-2 border-[#FF338B]">
-            Latest Updates
-          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {posts.slice(1).map((post) => (
               <div
                 key={post.id}
-                className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 h-full flex flex-col border border-[#A9A9A9]/20"
+                className={`bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 h-full flex flex-col border border-[#A9A9A9]/20 ${
+                  expandedPost === post.id ? 'md:col-span-2 lg:col-span-1' : ''
+                }`}
               >
                 {post.imageUrl && (
                   <div className="relative h-48 w-full">
@@ -150,13 +149,13 @@ export default function BlogPage() {
                   <p className="text-[#013220]/80 text-sm mb-2 flex items-center font-['Inter']">
                     <FiUser className="mr-1 text-[#FF338B]" size={14} /> By {post.author}
                   </p>
-                  <p
-                    className={`text-[#013220] font-['Inter'] mt-2 ${
-                      expandedPost === post.id ? '' : 'line-clamp-3'
-                    }`}
-                  >
-                    {post.content}
-                  </p>
+                  <div className={`transition-all duration-300 ${
+                    expandedPost === post.id ? 'w-full' : 'w-full line-clamp-3'
+                  }`}>
+                    <p className="text-[#013220] font-['Inter'] mt-2">
+                      {post.content}
+                    </p>
+                  </div>
                   <button
                     onClick={() => toggleExpand(post.id)}
                     className="mt-4 text-[#FF338B] hover:text-[#FF338B]/80 font-['Inter'] font-medium flex items-center self-start group"
@@ -172,7 +171,6 @@ export default function BlogPage() {
               </div>
             ))}
           </div>
-        </div>
 
         {/* Newsletter Signup */}
         <div className="bg-[#013220] rounded-xl p-8 md:p-12 text-center text-white">
@@ -189,11 +187,12 @@ export default function BlogPage() {
               className="flex-grow px-4 py-3 rounded-lg text-[#013220] font-['Inter'] focus:outline-none focus:ring-2 focus:ring-[#FF338B]"
             />
             <button className="bg-[#FF338B] text-white px-6 py-3 rounded-lg font-['Poppins'] font-bold hover:bg-[#FF338B]/90 transition-all duration-300 shadow-sm hover:shadow-[#FF338B]/40">
-              Subscribe
+              <a href="/contact" className="block hover:text-[#FF338B] transition">Contact</a>
             </button>
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

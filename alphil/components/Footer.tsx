@@ -132,7 +132,7 @@ const Footer = () => {
             <div className="rounded-lg overflow-hidden border-2 border-[#FF338B]">
               <iframe
                 title="Alphil College Location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15955.464018063852!2d36.05248871205564!3d-0.2671617252143091!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1829397d9cc56b6d%3A0xf17a6cd0f49c7adf!2sKiratina%2C%20Nakuru%2C%20Kenya!5e0!3m2!1sen!2ske!4v1717485123423!5m2!1sen!2ske"
+                src="https://www.google.com/maps/place/ALPHIL+TRAINING+COLLEGE/@-0.2816008,36.1242727,17z/data=!4m14!1m7!3m6!1s0x1829933342f6b183:0x540bdc83f3c7cc45!2sALPHIL+TRAINING+COLLEGE!8m2!3d-0.2816062!4d36.1268476!16s%2Fg%2F11w9fgsg0l!3m5!1s0x1829933342f6b183:0x540bdc83f3c7cc45!8m2!3d-0.2816062!4d36.1268476!16s%2Fg%2F11w9fgsg0l?entry=ttu&g_ep=EgoyMDI1MDYyMy4yIKXMDSoASAFQAw%3D%3D"
                 width="100%"
                 height="200"
                 style={{ border: 0 }}
@@ -145,9 +145,10 @@ const Footer = () => {
         </div>
 
         {/* Copyright */}
-        <div className="border-t border-[#FF338B]/30 mt-8 pt-6 text-center text-white/70">
-          <p>&copy; {new Date().getFullYear()} Alphil Training College. All rights reserved.</p>
-        </div>
+          <div className="border-t border-[#FF338B]/30 mt-8 pt-6 text-center text-white/70">
+            <p>&copy; {new Date().getFullYear()} Alphil Training College. All rights reserved.</p>
+            <p className="mt-2">Developed by <a href="https://iwebx.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#FF338B] transition-colors">iWebX</a></p>
+          </div>
       </div>
     </footer>
   );

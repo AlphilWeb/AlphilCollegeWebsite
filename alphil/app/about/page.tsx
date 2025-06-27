@@ -43,13 +43,15 @@ const AboutPage = () => {
         `}</style>
 
         {/* Hero Section */}
-        <div className="text-center mb-20">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-['Playfair_Display'] font-bold text-[#013220] mb-6">
-            About Alphil Training College
-          </h1>
-          <p className="text-xl md:text-2xl font-['Inter'] text-[#013220]/80 max-w-4xl mx-auto">
-            Empowering futures through exceptional vocational training in healthcare and technology since 2010.
-          </p>
+        <div className="relative bg-gradient-to-r from-[#013220] to-[#013220]/90 text-white py-24 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto text-center">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-['Playfair_Display'] font-bold mb-6 leading-tight">
+              About Alphil Training College
+            </h1>
+            <p className="text-xl md:text-2xl font-['Inter'] max-w-3xl mx-auto opacity-90">
+              Empowering futures through exceptional vocational training in healthcare and technology since 2010.
+            </p>
+          </div>
         </div>
 
         {/* Mission, Vision, History Section */}

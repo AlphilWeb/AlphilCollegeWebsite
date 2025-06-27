@@ -90,7 +90,6 @@ function Navbar() {
                   <a href="/admissions" className="block px-4 py-2 text-sm text-[#013220] hover:bg-[#FF338B]/10 hover:text-[#FF338B] font-['Inter']">Admissions Overview</a>
                   <a href="/admissions/requirements" className="block px-4 py-2 text-sm text-[#013220] hover:bg-[#FF338B]/10 hover:text-[#FF338B] font-['Inter']">Requirements</a>
                   <a href="/admissions/forms" className="block px-4 py-2 text-sm text-[#013220] hover:bg-[#FF338B]/10 hover:text-[#FF338B] font-['Inter']">Application Form</a>
-                  <a href="/admissions/fee-structure" className="block px-4 py-2 text-sm text-[#013220] hover:bg-[#FF338B]/10 hover:text-[#FF338B] font-['Inter']">Fee Structure</a>
                   <a href="/admissions/payment-options" className="block px-4 py-2 text-sm text-[#013220] hover:bg-[#FF338B]/10 hover:text-[#FF338B] font-['Inter']">Payment Options</a>
                 </div>
               </div>

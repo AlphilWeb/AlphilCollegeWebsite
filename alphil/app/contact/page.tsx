@@ -72,13 +72,15 @@ const ContactPage = () => {
       `}</style>
 
       {/* Hero Section */}
-      <div className="text-center mb-16">
-        <h1 className="text-4xl md:text-5xl font-['Playfair_Display'] font-bold text-[#013220] mb-4">
-          Get In Touch
-        </h1>
-        <p className="text-xl font-['Inter'] text-[#013220]/80 max-w-2xl mx-auto">
-          We'd love to hear from you. Reach out for inquiries, partnerships, or just to say hello.
-        </p>
+      <div className="relative bg-gradient-to-r from-[#013220] to-[#013220]/90 text-white py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto text-center">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-['Playfair_Display'] font-bold mb-6 leading-tight">
+            Get In Touch
+          </h1>
+          <p className="text-xl md:text-2xl font-['Inter'] max-w-3xl mx-auto opacity-90">
+            We'd love to hear from you. Reach out for inquiries, partnerships, or just to say hello.
+          </p>
+        </div>
       </div>
 
       {/* Contact Cards */}
@@ -90,8 +92,7 @@ const ContactPage = () => {
           </div>
           <h3 className="text-xl font-['Inter'] font-bold text-[#013220] mb-3 text-center">Email Us</h3>
           <div className="text-center space-y-1">
-            <p className="text-[#013220]/80 font-['Inter']">info@alphil.edu</p>
-            <p className="text-[#013220]/80 font-['Inter']">support@alphil.edu</p>
+            <p className="text-[#013220]/80 font-['Inter']">alphilcollege@gmail.com</p>
           </div>
         </div>
 

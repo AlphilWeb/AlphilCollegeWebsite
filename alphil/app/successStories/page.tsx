@@ -5,6 +5,7 @@ import Director from '@/components/Director'
 import Footer from '@/components/Footer'
 import { FiArrowRight } from 'react-icons/fi'
 import { fetchAPI } from '@/lib/api'
+import Link from 'next/link'
 
 type SuccessStory = {
   id: number
@@ -120,59 +121,56 @@ const SuccessStoriesPage = () => {
         )}
 
         {/* All Stories Grid */}
-        <div className="mb-20">
-          <div className="flex items-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-['Playfair_Display'] font-bold text-[#013220]">
-              More Inspiring Stories
-            </h2>
-            <div className="ml-6 h-0.5 flex-1 bg-[#FF338B]"></div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {stories.slice(1).map((story) => (
-              <div
-                key={story.id}
-                className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 h-full flex flex-col border border-[#A9A9A9]/20 group"
-              >
-                {story.imageUrl && (
-                  <div className="relative h-56 w-full">
-                    <Image
-                      src={story.imageUrl}
-                      alt={story.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-[#013220]/20 group-hover:bg-[#013220]/10 transition-all duration-500"></div>
-                  </div>
-                )}
-                <div className="p-6 flex flex-col flex-grow">
-                  <div className="flex flex-col md:flex-row justify-between items-start mb-3 gap-2">
-                    <h3 className="text-xl font-['Inter'] font-bold text-[#013220] line-clamp-2">
-                      {story.title}
-                    </h3>
-                    <span className="text-xs font-['Inter'] text-[#013220]/80 whitespace-nowrap">
-                      {formatDate(story.publishedAt)}
-                    </span>
-                  </div>
-                  <p className="text-[#013220]/80 font-['Inter'] text-sm mb-4">By {story.author}</p>
-                  <div className={`font-['Inter'] text-[#013220] ${expandedStory === story.id ? '' : 'line-clamp-3'}`}>
-                    {story.content}
-                  </div>
-                  <button
-                    onClick={() => toggleExpand(story.id)}
-                    className="mt-6 text-[#FF338B] hover:text-[#FF338B]/80 font-['Inter'] font-medium flex items-center self-start group"
-                  >
-                    {expandedStory === story.id ? 'Show less' : 'Read more'}
-                    <FiArrowRight
-                      className={`ml-2 transition-transform ${
-                        expandedStory === story.id ? 'rotate-90' : ''
-                      } group-hover:translate-x-1`}
-                    />
-                  </button>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {stories.slice(1).map((story) => (
+            <div
+              key={story.id}
+              className={`bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 h-full flex flex-col border border-[#A9A9A9]/20 group ${
+                expandedStory === story.id ? 'md:col-span-2 lg:col-span-1' : ''
+              }`}
+            >
+              {story.imageUrl && (
+                <div className="relative h-56 w-full">
+                  <Image
+                    src={story.imageUrl}
+                    alt={story.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-[#013220]/20 group-hover:bg-[#013220]/10 transition-all duration-500"></div>
                 </div>
+              )}
+              <div className="p-6 flex flex-col flex-grow">
+                <div className="flex flex-col md:flex-row justify-between items-start mb-3 gap-2">
+                  <h3 className="text-xl font-['Inter'] font-bold text-[#013220] line-clamp-2">
+                    {story.title}
+                  </h3>
+                  <span className="text-xs font-['Inter'] text-[#013220]/80 whitespace-nowrap">
+                    {formatDate(story.publishedAt)}
+                  </span>
+                </div>
+                <p className="text-[#013220]/80 font-['Inter'] text-sm mb-4">By {story.author}</p>
+                <div className={`transition-all duration-300 ${
+                  expandedStory === story.id ? 'w-full' : 'w-full line-clamp-3'
+                }`}>
+                  <p className="font-['Inter'] text-[#013220]">
+                    {story.content}
+                  </p>
+                </div>
+                <button
+                  onClick={() => toggleExpand(story.id)}
+                  className="mt-6 text-[#FF338B] hover:text-[#FF338B]/80 font-['Inter'] font-medium flex items-center self-start group"
+                >
+                  {expandedStory === story.id ? 'Show less' : 'Read more'}
+                  <FiArrowRight
+                    className={`ml-2 transition-transform ${
+                      expandedStory === story.id ? 'rotate-90' : ''
+                    } group-hover:translate-x-1`}
+                  />
+                </button>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
 
         {/* Call to Action */}
@@ -187,9 +185,12 @@ const SuccessStoriesPage = () => {
             <p className="text-lg font-['Inter'] mb-8 max-w-2xl mx-auto">
               Join Alphil today and take the first step toward your brighter future
             </p>
-            <button className="bg-[#FF338B] hover:bg-[#FF338B]/90 text-white px-8 py-4 rounded-lg font-['Poppins'] font-bold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-[#FF338B]/30">
-              Apply Now
-            </button>
+                  <Link 
+                        href="/admissions/forms" 
+                        className="flex items-center px-6 py-3 bg-[#FF338B] text-white rounded-md hover:bg-[#FF338B]/90 transition-all duration-300 font-['Poppins'] font-medium shadow-sm hover:shadow-[#FF338B]/40"
+                      >
+                        Apply Now <FiArrowRight className="ml-2 transition-transform group-hover:translate-x-1" />
+                  </Link>
           </div>
         </div>
       </div>
