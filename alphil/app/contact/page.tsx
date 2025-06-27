@@ -70,10 +70,10 @@ const ContactPage = () => {
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&family=Poppins:wght@500;700&display=swap');
       `}</style>
 
-      {/* Hero Section - Updated to match blog page */}
-      <div className="relative bg-gradient-to-r from-[#013220] to-[#013220]/90 text-white py-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-['Playfair_Display'] font-bold mb-6 leading-tight">
+      {/* Hero Section - Fixed margins and spacing */}
+      <div className="relative bg-gradient-to-r from-[#013220] to-[#013220]/90 text-white py-12 px-0">
+        <div className="max-w-7xl mx-auto text-center px-4">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-['Playfair_Display'] font-bold mb-4 leading-tight">
             Get In Touch
           </h1>
           <p className="text-xl md:text-2xl font-['Inter'] max-w-3xl mx-auto opacity-90">
@@ -81,6 +81,10 @@ const ContactPage = () => {
           </p>
         </div>
       </div>
+
+      {/* Spacer between Hero and Content */}
+      <div className="h-12"></div>
+
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
