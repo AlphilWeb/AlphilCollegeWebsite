@@ -26,9 +26,6 @@ body {
   background: linear-gradient(11deg, #005f19, #118b3b, #21b95f, #30ea85);
 }
 
-section {
-  background: #1E4D2B;
-}
 
 Image {
   object-fit: cover;
