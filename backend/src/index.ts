@@ -46,7 +46,7 @@ app.post('/applications', ApplicationController.createApplication);
 // Protected Routes
 // ======================
 // Messages (authenticated only)
-app.use('/messages/*', authMiddleware);
+// app.use('/messages/*', authMiddleware);
 app.route('/messages', messagesRouter);
 
 // Gallery (public GET, protected POST/DELETE handled in its router)
