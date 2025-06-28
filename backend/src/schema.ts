@@ -66,11 +66,12 @@ export const BlogPostsTable = pgTable("blog_posts", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
   content: text("content").notNull(),
-  author_id: integer("author_id").references(() => UsersTable.id),
+  author: text("author"), // No foreign key, just store as plain text
   imageUrl: text("image_url"),
   publicId: text("public_id"),
   createdAt: timestamp("created_at").defaultNow(),
 });
+
 export type InsertBlogPost = typeof BlogPostsTable.$inferInsert;
 export type SelectBlogPost = typeof BlogPostsTable.$inferSelect;
 

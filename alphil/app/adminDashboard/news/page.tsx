@@ -7,6 +7,7 @@ type BlogPost = {
   id: number;
   title: string;
   content: string;
+  author?: string;
   imageUrl?: string;
   createdAt: string;
 };
@@ -20,7 +21,8 @@ export default function BlogPostsPage() {
   const [formData, setFormData] = useState({
     title: '',
     content: '',
-    image: null as File | null
+    author: '',
+    image: null as File | null,
   });
 
   const loadPosts = async () => {
@@ -48,6 +50,7 @@ export default function BlogPostsPage() {
           body: JSON.stringify({
             title: formData.title,
             content: formData.content,
+            author: formData.author,
           }),
         });
         setPosts(posts.map(p => (p.id === editingId ? res : p)));
@@ -60,6 +63,7 @@ export default function BlogPostsPage() {
       const form = new FormData();
       form.append('title', formData.title);
       form.append('content', formData.content);
+      form.append('author', formData.author);
       if (formData.image) form.append('image', formData.image);
 
       try {
@@ -86,13 +90,18 @@ export default function BlogPostsPage() {
   };
 
   const handleEditClick = (post: BlogPost) => {
-    setFormData({ title: post.title, content: post.content, image: null });
+    setFormData({
+      title: post.title,
+      content: post.content,
+      author: post.author || '',
+      image: null,
+    });
     setEditingId(post.id);
     setShowCreateForm(true);
   };
 
   const resetForm = () => {
-    setFormData({ title: '', content: '', image: null });
+    setFormData({ title: '', content: '', author: '', image: null });
     setShowCreateForm(false);
     setEditingId(null);
   };
@@ -143,7 +152,18 @@ export default function BlogPostsPage() {
                 value={formData.title}
                 onChange={(e) => setFormData({...formData, title: e.target.value})}
                 placeholder="Post title"
-                className="w-full border border-[#A9A9A9]/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#FF338B] focus:border-transparent text-[#013220]"
+                className="w-full border border-[#A9A9A9]/50 rounded-lg px-4 py-3"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[#013220] mb-2">Author *</label>
+              <input
+                type="text"
+                value={formData.author}
+                onChange={(e) => setFormData({...formData, author: e.target.value})}
+                placeholder="Author name"
+                className="w-full border border-[#A9A9A9]/50 rounded-lg px-4 py-3"
                 required
               />
             </div>
@@ -154,7 +174,7 @@ export default function BlogPostsPage() {
                 onChange={(e) => setFormData({...formData, content: e.target.value})}
                 placeholder="Post content"
                 rows={6}
-                className="w-full border border-[#A9A9A9]/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#FF338B] focus:border-transparent text-[#013220]"
+                className="w-full border border-[#A9A9A9]/50 rounded-lg px-4 py-3"
                 required
               />
             </div>
@@ -165,20 +185,20 @@ export default function BlogPostsPage() {
                   type="file"
                   accept="image/*"
                   onChange={(e) => setFormData({...formData, image: e.target.files?.[0] || null})}
-                  className="w-full border border-[#A9A9A9]/50 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#FF338B] focus:border-transparent file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#013220]/10 file:text-[#013220] hover:file:bg-[#013220]/20"
+                  className="w-full border border-[#A9A9A9]/50 rounded-lg px-4 py-2 file:bg-[#013220]/10 file:text-[#013220] hover:file:bg-[#013220]/20"
                 />
               </div>
             )}
             <div className="flex justify-end gap-4 pt-2">
               <button
                 onClick={resetForm}
-                className="px-6 py-2 border border-[#A9A9A9]/50 rounded-lg text-[#013220] hover:bg-[#013220]/5 transition-colors"
+                className="px-6 py-2 border border-[#A9A9A9]/50 rounded-lg text-[#013220] hover:bg-[#013220]/5"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSubmit}
-                className="px-6 py-2 bg-[#FF338B] text-white rounded-lg hover:bg-[#FF338B]/90 transition-colors"
+                className="px-6 py-2 bg-[#FF338B] text-white rounded-lg hover:bg-[#FF338B]/90"
               >
                 {editingId ? 'Save Changes' : 'Publish Post'}
               </button>
@@ -194,19 +214,11 @@ export default function BlogPostsPage() {
       ) : posts.length === 0 ? (
         <div className="bg-[#013220]/5 rounded-xl py-16 text-center border border-[#A9A9A9]/20">
           <p className="text-xl text-[#013220]">No blog posts available</p>
-          {!showCreateForm && (
-            <button
-              onClick={() => setShowCreateForm(true)}
-              className="mt-6 bg-[#013220] text-white px-6 py-3 rounded-lg hover:bg-[#013220]/90 transition-colors"
-            >
-              Create Your First Post
-            </button>
-          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-8">
           {posts.map(post => (
-            <div key={post.id} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-[#A9A9A9]/20 overflow-hidden">
+            <div key={post.id} className="bg-white rounded-xl shadow-md border border-[#A9A9A9]/20 overflow-hidden">
               {post.imageUrl && (
                 <div className="relative h-64 w-full">
                   <Image
@@ -216,11 +228,13 @@ export default function BlogPostsPage() {
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
-                  <div className="absolute inset-0 bg-[#013220]/20 group-hover:bg-[#013220]/10 transition-colors"></div>
                 </div>
               )}
               <div className="p-6">
                 <h2 className="text-2xl font-bold text-[#013220]">{post.title}</h2>
+                {post.author && (
+                  <p className="text-[#013220]/80 text-sm mt-1">By {post.author}</p>
+                )}
                 <p className="text-[#013220]/80 text-sm mt-2 mb-4">
                   {new Date(post.createdAt).toLocaleDateString(undefined, {
                     year: 'numeric',
@@ -232,20 +246,14 @@ export default function BlogPostsPage() {
                 <div className="flex justify-end mt-6 gap-4">
                   <button
                     onClick={() => handleEditClick(post)}
-                    className="text-[#013220] hover:text-[#013220]/80 font-medium flex items-center gap-2 transition-colors"
+                    className="text-[#013220] hover:text-[#013220]/80 flex items-center gap-2"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                    </svg>
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(post.id)}
-                    className="text-[#FF338B] hover:text-[#FF338B]/80 font-medium flex items-center gap-2 transition-colors"
+                    className="text-[#FF338B] hover:text-[#FF338B]/80 flex items-center gap-2"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
                     Delete
                   </button>
                 </div>

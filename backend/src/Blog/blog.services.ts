@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import db from "../db";
 import { BlogPostsTable, InsertBlogPost, SelectBlogPost } from "../schema";
-import { v2 as cloudinary } from 'cloudinary';
+import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -36,9 +36,10 @@ export class BlogPostsService {
     });
   }
 
-
   async getBlogPostById(id: number): Promise<SelectBlogPost | undefined> {
-    return await db.query.BlogPostsTable.findFirst({ where: eq(BlogPostsTable.id, id) });
+    return await db.query.BlogPostsTable.findFirst({
+      where: eq(BlogPostsTable.id, id),
+    });
   }
 
   async createBlogPost(post: InsertBlogPost): Promise<SelectBlogPost> {
