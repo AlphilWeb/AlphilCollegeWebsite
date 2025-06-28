@@ -1,8 +1,8 @@
 "use client";
-import axios from "axios";
 import React, { useState } from 'react';
 import { FiMail, FiPhone, FiTwitter, FiLinkedin, FiInstagram, FiX } from 'react-icons/fi';
 import Footer from '../../components/Footer';
+import { fetchAPI } from '@/lib/api';
 
 type ContactForm = {
   name: string;
@@ -36,11 +36,14 @@ const ContactPage = () => {
     setShowModal(false);
 
     try {
-      const res = await axios.post('http://localhost:3000/messages', formData, {
+      await fetchAPI('/messages', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify(formData) // Properly stringify the form data
       });
+      
       setSubmissionStatus('success');
       setStatusMessage('Your message has been sent successfully!');
       setFormData({
@@ -51,7 +54,7 @@ const ContactPage = () => {
       });
     } catch (err) {
       setSubmissionStatus('error');
-      setStatusMessage('Failed to send your message. Please try again later.');
+      setStatusMessage(err instanceof Error ? err.message : 'Failed to send your message. Please try again later.');
     } finally {
       setLoading(false);
       setShowModal(true);
@@ -70,7 +73,7 @@ const ContactPage = () => {
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&family=Poppins:wght@500;700&display=swap');
       `}</style>
 
-      {/* Hero Section - Fixed margins and spacing */}
+      {/* Hero Section */}
       <div className="relative bg-gradient-to-r from-[#013220] to-[#013220]/90 text-white py-12 px-0">
         <div className="max-w-7xl mx-auto text-center px-4">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-['Playfair_Display'] font-bold mb-4 leading-tight">
@@ -146,7 +149,7 @@ const ContactPage = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full border border-[#A9A9A9]/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#FF338B] focus:border-transparent font-['Inter']"
+                  className="text-black w-full border border-[#A9A9A9]/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#FF338B] focus:border-transparent font-['Inter']"
                   placeholder="Your Name"
                   required
                 />
@@ -160,7 +163,7 @@ const ContactPage = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full border border-[#A9A9A9]/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#FF338B] focus:border-transparent font-['Inter']"
+                  className="text-black w-full border border-[#A9A9A9]/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#FF338B] focus:border-transparent font-['Inter']"
                   placeholder="Your Email"
                   required
                 />
@@ -174,7 +177,7 @@ const ContactPage = () => {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full border border-[#A9A9A9]/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#FF338B] focus:border-transparent font-['Inter']"
+                  className="text-black w-full border border-[#A9A9A9]/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#FF338B] focus:border-transparent font-['Inter']"
                   placeholder="Your Phone"
                 />
               </div>
@@ -187,7 +190,7 @@ const ContactPage = () => {
                   value={formData.message}
                   onChange={handleChange}
                   rows={5}
-                  className="w-full border border-[#A9A9A9]/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#FF338B] focus:border-transparent font-['Inter']"
+                  className="text-black w-full border border-[#A9A9A9]/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#FF338B] focus:border-transparent font-['Inter']"
                   placeholder="Your Message"
                   required
                 ></textarea>
