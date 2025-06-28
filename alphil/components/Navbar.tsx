@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import { FiUser, FiChevronDown, FiX, FiMenu } from 'react-icons/fi';
 import Image from 'next/image';
@@ -25,35 +25,45 @@ function Navbar() {
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50 font-sans">
-      {/* Custom font-family applied to the entire nav */}
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&family=Poppins:wght@500;700&display=swap');
       `}</style>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20"> {/* Increased height for better presence */}
-          {/* Logo and College Name - Branding Section */}
+        <div className="flex items-center justify-between h-20">
+          {/* Logo and College Name - Now always visible */}
           <div className="flex-shrink-0 flex items-center">
-            <div className="h-14 w-14 relative"> {/* Increased logo size */}
-                <Image 
-                  src={logo} 
-                  alt="Alphil Training College Logo" 
-                  fill
-                  className="object-contain"
-                  priority
-                />
-              </div>
-              <a href="/" className="ml-3 hidden sm:block hover:text-[#013220]/90">
-                <div className="flex flex-col leading-none"> {/* Stacked text */}
-                  <span className="text-xl font-bold text-[#013220] font-['Playfair_Display']">Alphil</span>
-                  <span className="text-lg font-medium text-[#013220] mt-0.5 font-['Playfair_Display']">College</span>
-                </div>
-              </a>
+            <div className="h-14 w-14 relative">
+              <Image 
+                src={logo} 
+                alt="Alphil Training College Logo" 
+                fill
+                className="object-contain"
+                priority
+              />
             </div>
+            <a href="/" className="ml-3 hover:text-[#013220]/90">
+              <div className="flex flex-col leading-none">
+                <span className="text-xl font-bold text-[#013220] font-['Playfair_Display']">Alphil</span>
+                <span className="text-lg font-medium text-[#013220] mt-0.5 font-['Playfair_Display']">College</span>
+              </div>
+            </a>
+          </div>
+
+          {/* Mobile menu button - Moved to the right */}
+          <div className="md:hidden flex items-center">
+            <button 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="inline-flex items-center justify-center p-2 rounded-md text-[#013220] hover:text-[#FF338B] focus:outline-none"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+            </button>
+          </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:block">
-            <div className="ml-10 flex items-center space-x-1"> {/* Reduced space between items */}
+            <div className="ml-10 flex items-center space-x-1">
               <a 
                 href="/" 
                 className="text-[#013220] hover:text-[#FF338B] px-4 py-3 text-sm font-medium transition-colors duration-200 font-['Inter']"
@@ -61,6 +71,7 @@ function Navbar() {
                 Home
               </a>
               
+              {/* ... rest of your desktop navigation items ... */}
               <a 
                 href="/about" 
                 className="text-[#013220] hover:text-[#FF338B] px-4 py-3 text-sm font-medium transition-colors duration-200 font-['Inter']"
@@ -132,23 +143,13 @@ function Navbar() {
               <FiUser className="mr-2" /> Log in
             </a>
           </div>
-
-          {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
-            <button 
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-[#013220] hover:text-[#FF338B] focus:outline-none"
-              aria-label="Toggle menu"
-            >
-              {mobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
-            </button>
-          </div>
         </div>
       </div>
 
-      {/* Mobile menu - Full brand treatment */}
+      {/* Mobile menu */}
       <div className={`md:hidden ${mobileMenuOpen ? 'block' : 'hidden'}`}>
         <div className="px-2 pt-2 pb-4 space-y-1 sm:px-3 bg-white shadow-xl">
+          {/* ... rest of your mobile menu items ... */}
           <a href="/" className="block px-4 py-3 text-base font-medium text-[#013220] hover:text-[#FF338B] hover:bg-[#FF338B]/10 rounded-md font-['Inter']">Home</a>
           <a href="/about" className="block px-4 py-3 text-base font-medium text-[#013220] hover:text-[#FF338B] hover:bg-[#FF338B]/10 rounded-md font-['Inter']">About Us</a>
           <a href="/courses" className="block px-4 py-3 text-base font-medium text-[#013220] hover:text-[#FF338B] hover:bg-[#FF338B]/10 rounded-md font-['Inter']">Our Courses</a>
