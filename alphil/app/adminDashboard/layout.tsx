@@ -86,7 +86,7 @@ const AdminDashboardLayout = ({ children }: { children: React.ReactNode }) => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-[#E8F5E9]">
+    <div className="min-h-screen flex flex-col md:flex-row bg-white">
       {/* Mobile menu button */}
       <button 
         onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -139,7 +139,7 @@ const AdminDashboardLayout = ({ children }: { children: React.ReactNode }) => {
       )}
 
       {/* Main content */}
-      <main className="flex-1 p-4 md:p-6 mt-16 md:mt-0 bg-[#E8F5E9] md:rounded-tl-lg shadow-inner min-h-screen">
+      <main className="flex-1 p-4 md:p-6 mt-16 md:mt-0 bg-gradient-to-r from-[#013220] to-[#013220]/90 md:rounded-tl-lg shadow-inner min-h-screen">
         <div className="max-w-7xl mx-auto">
           {children}
         </div>
