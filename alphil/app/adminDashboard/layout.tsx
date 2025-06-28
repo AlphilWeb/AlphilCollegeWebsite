@@ -86,7 +86,7 @@ const AdminDashboardLayout = ({ children }: { children: React.ReactNode }) => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-gray-50">
+    <div className="min-h-screen flex flex-col md:flex-row bg-[#E8F5E9]">
       {/* Mobile menu button */}
       <button 
         onClick={() => setIsMenuOpen(!isMenuOpen)}
