@@ -1,6 +1,7 @@
 'use client';
-import React, { useState } from 'react';
-import { fetchAPI } from '@/lib/api'; // ✅ Adjust path if needed
+import React, { useState, useEffect } from 'react';
+import { fetchAPI } from '@/lib/api';
+import { FiCheckCircle, FiXCircle } from 'react-icons/fi';
 
 type ApplicationForm = {
   firstName: string;
@@ -26,7 +27,7 @@ const AdmissionsPage = () => {
   const [loading, setLoading] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState<'success' | 'error' | null>(null);
   const [statusMessage, setStatusMessage] = useState('');
-  const [showModal, setShowModal] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -39,7 +40,7 @@ const AdmissionsPage = () => {
     setLoading(true);
     setSubmissionStatus(null);
     setStatusMessage('');
-    setShowModal(false);
+    setShowToast(false);
 
     try {
       await fetchAPI('/applications', {
@@ -58,36 +59,80 @@ const AdmissionsPage = () => {
       setStatusMessage('Failed to submit your application. Please try again later.');
     } finally {
       setLoading(false);
-      setShowModal(true);
+      setShowToast(true);
     }
   };
 
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => {
+        setShowToast(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showToast]);
+
   const handleDownload = () => {
-    // This will download the form from the public/forms directory
     const link = document.createElement('a');
-    link.href = '/forms/application_form.pdf'; // Make sure this file exists in your public/forms folder
+    link.href = '/forms/application_form.pdf';
     link.download = 'application-form.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-  const closeModal = () => {
-    setShowModal(false);
-    setSubmissionStatus(null);
-    setStatusMessage('');
-  };
-
   return (
-    <div className="max-w-5xl mx-auto px-6 py-10">
+    <div className="max-w-5xl mx-auto px-6 py-10 relative">
+      {/* Toast */}
+      {showToast && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
+          <div
+            className={`relative z-50 max-w-sm w-full mx-auto rounded-2xl p-6 shadow-2xl border-2 flex items-center space-x-4 animate-fade-in ${
+              submissionStatus === 'success' ? 'border-green-600 bg-white' : 'border-red-600 bg-white'
+            }`}
+          >
+            {submissionStatus === 'success' ? (
+              <FiCheckCircle className="text-3xl text-green-600" />
+            ) : (
+              <FiXCircle className="text-3xl text-red-600" />
+            )}
+            <div
+              className={`font-semibold ${
+                submissionStatus === 'success' ? 'text-green-600' : 'text-red-600'
+              }`}
+            >
+              {statusMessage}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style jsx global>{`
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-out;
+        }
+      `}</style>
+
       <h1 className="text-4xl font-bold mb-8 text-pink-800">Admissions Application</h1>
 
       <div className="bg-white rounded-xl p-8 shadow-lg">
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Form fields remain the same */}
           {/* First Name */}
           <div>
-            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+              First Name
+            </label>
             <input
               type="text"
               name="firstName"
@@ -101,7 +146,9 @@ const AdmissionsPage = () => {
 
           {/* Last Name */}
           <div>
-            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+              Last Name
+            </label>
             <input
               type="text"
               name="lastName"
@@ -115,7 +162,9 @@ const AdmissionsPage = () => {
 
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
             <input
               type="email"
               name="email"
@@ -129,7 +178,9 @@ const AdmissionsPage = () => {
 
           {/* Phone */}
           <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+              Phone
+            </label>
             <input
               type="tel"
               name="phone"
@@ -143,7 +194,9 @@ const AdmissionsPage = () => {
 
           {/* Course */}
           <div>
-            <label htmlFor="course" className="block text-sm font-medium text-gray-700 mb-1">Course</label>
+            <label htmlFor="course" className="block text-sm font-medium text-gray-700 mb-1">
+              Course
+            </label>
             <select
               name="course"
               id="course"
@@ -154,14 +207,16 @@ const AdmissionsPage = () => {
             >
               <option value="">Select a course</option>
               <option value="certified-medical-assistant">Certified Medical Assistant</option>
-              <option value="care-giving">Care Giving </option>
+              <option value="care-giving">Care Giving</option>
               <option value="information-technology">Information Technology</option>
             </select>
           </div>
 
           {/* Education */}
           <div>
-            <label htmlFor="education" className="block text-sm font-medium text-gray-700 mb-1">Highest Education</label>
+            <label htmlFor="education" className="block text-sm font-medium text-gray-700 mb-1">
+              Highest Education
+            </label>
             <select
               name="education"
               id="education"
@@ -181,7 +236,9 @@ const AdmissionsPage = () => {
 
           {/* Additional Info */}
           <div className="md:col-span-2">
-            <label htmlFor="other" className="block text-sm font-medium text-gray-700 mb-1">Any Other Relevant Information</label>
+            <label htmlFor="other" className="block text-sm font-medium text-gray-700 mb-1">
+              Any Other Relevant Information
+            </label>
             <textarea
               name="other"
               id="other"
@@ -212,32 +269,15 @@ const AdmissionsPage = () => {
             </button>
           </div>
 
-          {/* Added message about returning the form */}
+          {/* Info about returning the form */}
           <div className="md:col-span-2 mt-4 text-sm text-gray-600 italic">
-            <p>Duly filled application forms should be returned to the college for registration. Application fee of Kshs. 1500 is payable at the reception on submission of the form.</p>
+            <p>
+              Duly filled application forms should be returned to the college for registration.
+              Application fee of Kshs. 1500 is payable at the reception on submission of the form.
+            </p>
           </div>
         </form>
       </div>
-
-      {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className={`rounded-lg p-6 min-w-[300px] text-white shadow-xl transition-all ${
-            submissionStatus === 'success' ? 'bg-green-600' : 'bg-red-600'
-          }`}>
-            <h3 className="text-xl font-bold mb-3">
-              {submissionStatus === 'success' ? 'Success!' : 'Error'}
-            </h3>
-            <p className="mb-4">{statusMessage}</p>
-            <button
-              onClick={closeModal}
-              className="px-4 py-2 bg-white text-gray-800 rounded-md hover:bg-gray-100"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
