@@ -152,7 +152,7 @@ export default function BlogPostsPage() {
                 value={formData.title}
                 onChange={(e) => setFormData({...formData, title: e.target.value})}
                 placeholder="Post title"
-                className="w-full border border-[#A9A9A9]/50 rounded-lg px-4 py-3"
+                className="w-full border border-[#A9A9A9]/50 rounded-lg px-4 py-3 text-black"
                 required
               />
             </div>
@@ -163,7 +163,7 @@ export default function BlogPostsPage() {
                 value={formData.author}
                 onChange={(e) => setFormData({...formData, author: e.target.value})}
                 placeholder="Author name"
-                className="w-full border border-[#A9A9A9]/50 rounded-lg px-4 py-3"
+                className="w-full border border-[#A9A9A9]/50 rounded-lg px-4 py-3 text-black"
                 required
               />
             </div>
@@ -174,7 +174,7 @@ export default function BlogPostsPage() {
                 onChange={(e) => setFormData({...formData, content: e.target.value})}
                 placeholder="Post content"
                 rows={6}
-                className="w-full border border-[#A9A9A9]/50 rounded-lg px-4 py-3"
+                className="w-full border border-[#A9A9A9]/50 rounded-lg px-4 py-3 text-black"
                 required
               />
             </div>
