@@ -83,7 +83,7 @@ export default function AdminGalleryPage() {
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;700&display=swap');
       `}</style>
 
-      <h1 className="text-3xl font-bold text-[#013220] mb-8">Gallery Management</h1>
+      <h1 className="text-3xl font-bold text-white mb-8">Gallery Management</h1>
 
       <form onSubmit={handleUpload} className="bg-white rounded-xl shadow-lg p-8 mb-12 border border-[#A9A9A9]/20">
         <h2 className="text-xl font-bold text-[#013220] mb-6">Upload New Image</h2>
@@ -123,7 +123,7 @@ export default function AdminGalleryPage() {
       </form>
 
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-[#013220]">Gallery Images</h2>
+        <h2 className="text-2xl font-bold text-white">Gallery Images</h2>
         <div className="h-1 w-20 bg-[#FF338B] rounded-full mt-2"></div>
       </div>
 

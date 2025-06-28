@@ -113,7 +113,7 @@ export default function BlogPostsPage() {
       `}</style>
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-        <h1 className="text-3xl font-bold text-[#013220] mb-4 md:mb-0">Blog Posts</h1>
+        <h1 className="text-3xl font-bold text-white mb-4 md:mb-0">Blog Posts</h1>
         <button
           onClick={() => {
             resetForm();

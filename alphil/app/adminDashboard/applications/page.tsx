@@ -143,7 +143,7 @@ export default function ApplicationsPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6 border-b border-[#A9A9A9]/20 pb-4">
-        <h1 className="text-3xl font-bold text-[#013220]">Applications</h1>
+        <h1 className="text-3xl font-bold text-white">Applications</h1>
         <div className="text-sm text-[#013220]/80">
           Total: {applications.length} | Showing: {filteredApplications.length}
         </div>

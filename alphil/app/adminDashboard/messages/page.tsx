@@ -48,7 +48,7 @@ export default function MessagesPage() {
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;700&display=swap');
       `}</style>
 
-      <h1 className="text-3xl font-bold text-[#013220] mb-8">Messages</h1>
+      <h1 className="text-3xl font-bold text-white mb-8">Messages</h1>
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
