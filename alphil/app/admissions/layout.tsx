@@ -92,7 +92,7 @@ const AdmissionsLayout = ({ children }: { children: React.ReactNode }) => {
       )}
 
       {/* Main content */}
-      <main className="flex-1 p-6 mt-16 md:mt-0 bg-white md:rounded-tl-lg shadow-inner">
+      <main className="flex-1 p-6 mt-16 md:mt-0 bg-white md:rounded-tl-lg shadow-inner bg-gradient-to-r from-[#013220] to-[#013220]/90 text-white">
         <div className="max-w-4xl mx-auto">
           {children}
         </div>
