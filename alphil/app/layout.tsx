@@ -17,11 +17,6 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.png',
   },
   manifest: '/site.webmanifest',
-  // Global OpenGraph (shared across pages)
-  openGraph: {
-    siteName: "Alphil College",
-    images: [{ url: '/images/global-og.jpg' }], // Default OG image
-  },
 };
 
 export default function RootLayout({

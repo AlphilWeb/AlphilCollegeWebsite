@@ -126,12 +126,12 @@ export default function AdmissionsOverview() {
               <h4 className="text-lg font-semibold mb-4 flex items-center text-[#013220]">
                 <FiAward className="mr-2" /> Academic Documents
               </h4>
-              <ul className="space-y-3">
-                <li className="flex items-start">
+              <ul className="space-y-3 text-gray-800">
+                <li className="flex items-start text-[#013220]">
                   <FiCheckCircle className="text-[#013220] mt-1 mr-2" />
                   <span>Original KCSE certificate + 2 copies</span>
                 </li>
-                <li className="flex items-start">
+                <li className="flex items-start text-[#013220]">
                   <FiCheckCircle className="text-[#013220] mt-1 mr-2" />
                   <span>Form 4 leaving certificate</span>
                 </li>
@@ -142,11 +142,11 @@ export default function AdmissionsOverview() {
                 <FiUser className="mr-2" /> Personal Documents
               </h4>
               <ul className="space-y-3">
-                <li className="flex items-start">
+                <li className="flex items-start text-[#FF338B]">
                   <FiCheckCircle className="text-[#FF338B] mt-1 mr-2" />
                   <span>National ID/Passport + copies</span>
                 </li>
-                <li className="flex items-start">
+                <li className="flex items-start text-[#FF338B]">
                   <FiCheckCircle className="text-[#FF338B] mt-1 mr-2" />
                   <span>Good Conduct Certificate</span>
                 </li>
