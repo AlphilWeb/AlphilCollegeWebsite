@@ -7,17 +7,6 @@ import { FaHandsHelping, FaChalkboardTeacher } from 'react-icons/fa';
 import PillarsSection from "@/components/PillarCards"
 import HeroSection from "@/components/Hero";
 import BlogPreview from "@/components/BlogComponent";
-import type { Metadata } from "next";
-
-
-export const metadata: Metadata = {
-  title: "Home", // "Home | Alphil College" (auto-suffixed via layout)
-  description: "Alphil College offers accredited programs in [fields]. Start your journey with expert-led courses and hands-on training.",
-  openGraph: {
-    title: "Home | Alphil College",
-    description: "Transform your future with career-focused education.",
-  }
-};
 
 export default function Home() {
 

@@ -6,7 +6,6 @@ import Footer from '@/components/Footer'
 import { FiArrowRight } from 'react-icons/fi'
 import { fetchAPI } from '@/lib/api'
 import Link from 'next/link'
-import Head from 'next/head'
 
 
 type SuccessStory = {
@@ -63,15 +62,6 @@ const SuccessStoriesPage = () => {
 
   return (
     <div className="min-h-screen bg-[#013220]/5">
-      <Head>
-  <title>Success Stories | Alphil College</title>
-  <meta name="description" content="Inspiring stories of Alphil College alumni and their career achievements in healthcare, IT, and business fields." />
-  <meta property="og:title" content="Success Stories | Alphil College" />
-  <meta property="og:description" content="See how our graduates are making an impact in Kenya's workforce." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://alphilcollege.co.ke/success-stories" />
-  <meta name="keywords" content="Alphil College success stories, graduate testimonials, alumni achievements, vocational training success Kenya" />
-</Head>
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&family=Poppins:wght@500;700&display=swap');
       `}</style>

@@ -5,7 +5,7 @@ import { AuthProvider } from "@/app/context/AuthContext";
 
 export const metadata: Metadata = {
   title: "Alphil | Home",
-  description: "Landing Page for Alphil College",
+  description: "Alphil College",
   icons: {
     icon: [
       { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
