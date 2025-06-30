@@ -1,7 +1,6 @@
 import React from 'react';
 import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaYoutube } from 'react-icons/fa';
 import logo from '@/public/Images/Logo.jpg';
-import Image from 'next/image';
 
 const Footer = () => {
   return (
@@ -11,12 +10,10 @@ const Footer = () => {
           {/* School Info and Location */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <Image 
-                src={logo} 
-                alt="Alphil Training College Logo" 
-                fill
-                className="object-contain"
-                priority
+              <img 
+                src="/logo.png" 
+                alt="Alphil College Logo" 
+                className="w-16 h-auto"
               />
               <h3 className="text-xl font-bold font-['Playfair_Display']">
                 Alphil <br /> Training College
