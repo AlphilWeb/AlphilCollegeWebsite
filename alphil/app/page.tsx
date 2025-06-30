@@ -16,12 +16,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Home | Alphil College",
     description: "Transform your future with career-focused education.",
-    url: "/", // Full URL in production
-    images: [{ url: '/images/home-og.jpg' }], // Overrides global OG image
-  },
-  alternates: {
-    canonical: "/", // Full URL in production
-  },
+  }
 };
 
 export default function Home() {
