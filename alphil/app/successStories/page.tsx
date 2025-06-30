@@ -6,6 +6,17 @@ import Footer from '@/components/Footer'
 import { FiArrowRight } from 'react-icons/fi'
 import { fetchAPI } from '@/lib/api'
 import Link from 'next/link'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: "Success Stories",
+  description: "Inspiring stories of Alphil College alumni and their career achievements.",
+  openGraph: {
+    title: "Success Stories | Alphil College",
+    description: "See how our graduates are making an impact.",
+    images: [{ url: '/images/success-og.jpg' }],
+  },
+};
 
 type SuccessStory = {
   id: number
