@@ -83,7 +83,12 @@ export default function PaymentOptions() {
                 <span className="text-4xl mb-4">{plan.icon}</span>
                 <h3 className="text-2xl font-bold text-[#013220] mb-4">{plan.title}</h3>
                 <p className="text-gray-700 mb-6 flex-grow">{plan.description}</p>
-                <p className="text-pink-700">For more information, Contact us </p>
+                <p className="text-pink-700">
+                  For more information,{" "}
+                  <a href="/contact" className="hover:underline hover:text-pink-800 transition-colors">
+                    Contact us
+                  </a>
+                </p>
               </div>
             </div>
           ))}

@@ -3,6 +3,17 @@ import React, { useState } from 'react';
 import { FiMail, FiPhone, FiTwitter, FiLinkedin, FiInstagram, FiX } from 'react-icons/fi';
 import Footer from '../../components/Footer';
 import { fetchAPI } from '@/lib/api';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Contact",
+  description: "Reach Alphil College for admissions, counseling, or campus visits. Call, email, or visit us today.",
+  openGraph: {
+    title: "Contact | Alphil College",
+    description: "Get in touch with our team.",
+    images: [{ url: '/images/contact-og.jpg' }],
+  },
+};
 
 type ContactForm = {
   name: string;
@@ -10,6 +21,7 @@ type ContactForm = {
   email: string;
   message: string;
 };
+
 
 const ContactPage = () => {
   const [formData, setFormData] = useState<ContactForm>({
