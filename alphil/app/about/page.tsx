@@ -6,17 +6,7 @@ import Footer from '@/components/Footer';
 import HistoryCard from '@/components/HistoryCard';
 import GallerySlider from '@/components/GallerySlider';
 import FeaturedSuccessStory from '@/components/FeaturedSuccessStory';
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: "About Us",
-  description: "Discover Alphil College’s mission, history, and commitment to excellence in education since [year].",
-  openGraph: {
-    title: "About Us | Alphil College",
-    description: "Learn about our values and academic leadership.",
-    images: [{ url: '/images/about-og.jpg' }],
-  },
-};
+import Head from 'next/head'; 
 
 const AboutPage = () => {
   const coreValues = [
@@ -51,6 +41,15 @@ const AboutPage = () => {
   ];
 
   return (
+    <>
+    <Head>
+      <title>About Us | Alphil College</title>
+      <meta name="description" content="Discover Alphil College's mission, history, and commitment to excellence in education since [year]." />
+      <meta property="og:title" content="About Us | Alphil College" />
+      <meta property="og:description" content="Learn about our values and academic leadership." />
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content="https://alphilcollege.co.ke/about" />
+    </Head>
     <div className="min-h-screen bg-[#013220]/5">
       {/* Global Fonts */}
       <style jsx global>{`
@@ -182,6 +181,7 @@ const AboutPage = () => {
 
       <Footer />
     </div>
+    </>
   );
 };
 

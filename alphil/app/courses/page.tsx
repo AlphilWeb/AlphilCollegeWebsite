@@ -4,18 +4,8 @@ import ProgramsCards from '@/components/ProgramsCards'
 import React from 'react'
 import Link from 'next/link'
 import { FiArrowRight } from 'react-icons/fi'
-import { Metadata } from 'next'
+import Head from 'next/head'
 
-export const metadata: Metadata = {
-  title: "Courses",
-  description: "Explore Alphil College’s industry-aligned programs in [fields]. Gain certifications for high-demand careers.",
-  keywords: ["courses", "diplomas", "certifications"], // Add specific fields
-  openGraph: {
-    title: "Courses | Alphil College",
-    description: "Enroll in programs designed for career success.",
-    images: [{ url: '/images/courses-og.jpg' }],
-  },
-};
 
 const page = () => {
   return (

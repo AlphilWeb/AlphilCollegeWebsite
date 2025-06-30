@@ -3,17 +3,7 @@ import React, { useState } from 'react';
 import { FiMail, FiPhone, FiTwitter, FiLinkedin, FiInstagram, FiX } from 'react-icons/fi';
 import Footer from '../../components/Footer';
 import { fetchAPI } from '@/lib/api';
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: "Contact",
-  description: "Reach Alphil College for admissions, counseling, or campus visits. Call, email, or visit us today.",
-  openGraph: {
-    title: "Contact | Alphil College",
-    description: "Get in touch with our team.",
-    images: [{ url: '/images/contact-og.jpg' }],
-  },
-};
+import Head from 'next/head'
 
 type ContactForm = {
   name: string;
@@ -81,6 +71,14 @@ const ContactPage = () => {
 
   return (
     <div className="min-h-screen bg-[#013220]/5">
+      <Head>
+  <title>Contact | Alphil College</title>
+  <meta name="description" content="Reach Alphil College for admissions, counseling, or campus visits. Call, email, or visit us today." />
+  <meta property="og:title" content="Contact | Alphil College" />
+  <meta property="og:description" content="Get in touch with our team." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://alphilcollege.co.ke/contact" />
+</Head>
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&family=Poppins:wght@500;700&display=swap');
       `}</style>

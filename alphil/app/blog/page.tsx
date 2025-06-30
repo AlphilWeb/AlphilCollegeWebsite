@@ -5,17 +5,7 @@ import Image from 'next/image';
 import { fetchAPI } from '@/lib/api';
 import { FiArrowRight, FiCalendar, FiUser } from 'react-icons/fi';
 import Footer from '@/components/Footer';
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: "News",
-  description: "Latest updates, events, and announcements from Alphil College.",
-  openGraph: {
-    title: "News | Alphil College",
-    description: "Stay informed with our educational insights.",
-    images: [{ url: '/images/news-og.jpg' }],
-  },
-};
+import Head from 'next/head';
 
 type BlogPost = {
   id: number;
@@ -72,6 +62,14 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen bg-[#013220]/5">
+      <Head>
+  <title>News | Alphil College</title>
+  <meta name="description" content="Latest updates, events, and announcements from Alphil College." />
+  <meta property="og:title" content="News | Alphil College" />
+  <meta property="og:description" content="Stay informed with our educational insights." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://alphilcollege.co.ke/news" />
+</Head>
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&family=Poppins:wght@500;700&display=swap');
       `}</style>
