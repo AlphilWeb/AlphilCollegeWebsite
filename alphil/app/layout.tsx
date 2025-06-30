@@ -4,11 +4,8 @@ import Navbar from "@/components/Navbar";
 import { AuthProvider } from "@/app/context/AuthContext";
 
 export const metadata: Metadata = {
-  title: {
-    default: "Alphil College", // Fallback title
-    template: "%s | Alphil College", // Auto-adds suffix to child pages
-  },
-  description: "Default description (update per page)",
+  title: "Alphil | Home",
+  description: "Landing Page for Alphil College",
   icons: {
     icon: [
       { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
@@ -16,7 +13,7 @@ export const metadata: Metadata = {
     ],
     apple: '/apple-touch-icon.png',
   },
-  manifest: '/site.webmanifest',
+  manifest: '/site.webmanifest'
 };
 
 export default function RootLayout({
