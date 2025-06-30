@@ -1,5 +1,7 @@
 import React from 'react';
 import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaYoutube } from 'react-icons/fa';
+import logo from '@/public/Images/Logo.jpg';
+import Image from 'next/image';
 
 const Footer = () => {
   return (
@@ -9,10 +11,12 @@ const Footer = () => {
           {/* School Info and Location */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <img 
-                src="/logo.png" 
-                alt="Alphil College Logo" 
-                className="w-16 h-auto"
+              <Image 
+                src={logo} 
+                alt="Alphil Training College Logo" 
+                fill
+                className="object-contain"
+                priority
               />
               <h3 className="text-xl font-bold font-['Playfair_Display']">
                 Alphil <br /> Training College
@@ -100,7 +104,7 @@ const Footer = () => {
               <a href="/about" className="block hover:text-[#FF338B] transition">About Us</a>
               <a href="/courses" className="block hover:text-[#FF338B] transition">Our Courses</a>
               <a href="/admissions" className="block hover:text-[#FF338B] transition">Admissions</a>
-              <a href="/success-stories" className="block hover:text-[#FF338B] transition">Success Stories</a>
+              <a href="/successStories" className="block hover:text-[#FF338B] transition">Success Stories</a>
               <a href="/contact" className="block hover:text-[#FF338B] transition">Contact</a>
             </nav>
           </div>
@@ -129,7 +133,7 @@ const Footer = () => {
               </a>
             </div>
             
-            <div className="relative pb-[100%]"> {/* Creates square container */}
+            <div className="relative pb-[100%]">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.770131681689!2d36.12427267580669!3d-0.28160083535501335!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1829933342f6b183%3A0x540bdc83f3c7cc45!2sALPHIL%20TRAINING%20COLLEGE!5e0!3m2!1sen!2ske!4v1751032236900!5m2!1sen!2ske"
                 className="absolute top-0 left-0 w-full h-full rounded-lg shadow-md border border-[#A9A9A9]/20"

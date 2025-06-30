@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link'
 import { FiArrowRight } from 'react-icons/fi';
 import directorImage from '@/public/Images/1749027761240.jpg';
 
@@ -17,9 +18,11 @@ const Director = () => {
           <h2 className="text-3xl md:text-4xl font-['Playfair_Display'] font-bold mb-6 md:mb-0 md:w-[70%] border-l-4 border-[#FF338B] pl-6">
             Ready to join the revolution? Invest in your future today
           </h2>
-          <button className="flex items-center justify-center gap-2 bg-[#FF338B] text-white px-8 py-3 rounded-lg hover:bg-[#FF338B]/90 transition-colors font-['Poppins'] font-medium whitespace-nowrap">
-            Enroll Now <FiArrowRight className="ml-2" />
-          </button>
+            <Link href="/admissions">
+              <button className="flex items-center justify-center gap-2 bg-[#FF338B] text-white px-8 py-3 rounded-lg hover:bg-[#FF338B]/90 transition-colors font-['Poppins'] font-medium whitespace-nowrap">
+                Enroll Now <FiArrowRight className="ml-2" />
+              </button>
+            </Link>
         </div>
       </div>
 
