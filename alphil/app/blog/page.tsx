@@ -5,6 +5,17 @@ import Image from 'next/image';
 import { fetchAPI } from '@/lib/api';
 import { FiArrowRight, FiCalendar, FiUser } from 'react-icons/fi';
 import Footer from '@/components/Footer';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "News",
+  description: "Latest updates, events, and announcements from Alphil College.",
+  openGraph: {
+    title: "News | Alphil College",
+    description: "Stay informed with our educational insights.",
+    images: [{ url: '/images/news-og.jpg' }],
+  },
+};
 
 type BlogPost = {
   id: number;
