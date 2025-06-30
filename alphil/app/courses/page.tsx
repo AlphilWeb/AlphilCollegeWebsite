@@ -10,6 +10,14 @@ import Head from 'next/head'
 const page = () => {
   return (
     <div>
+      <Head>
+        <title>Our Courses</title>
+        <meta name="description" content="Industry-relevant diploma and certificate programs in healthcare, IT, and business at Alphil College" />
+        <meta property="og:title" content="Courses at Alphil College" />
+        <meta property="og:description" content="Get certified for high-demand careers in Kenya" />
+        <meta property="og:url" content="https://alphilcollege.co.ke/courses" />
+        <meta name="keywords" content="diploma courses Kenya, healthcare training, IT certification Nairobi, business courses" />
+      </Head>
       <div className="relative bg-gradient-to-r from-[#013220] to-[#013220]/90 text-white py-16 px-0">
         <div className="max-w-7xl mx-auto text-center px-4">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-['Playfair_Display'] font-bold mb-6 leading-tight">

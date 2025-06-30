@@ -43,9 +43,13 @@ const AboutPage = () => {
   return (
     <>
     <Head>
-      <title>About Us | Alphil College</title>
-      <meta name="description" content="Discover Alphil College's mission, history, and commitment to excellence in education since [year]." />
-    </Head>
+        <title>About Us</title>
+        <meta name="description" content="Discover Alphil College's mission and 10+ years of excellence in vocational education in Kenya" />
+        <meta property="og:title" content="About Alphil College" />
+        <meta property="og:description" content="Our history, values, and commitment to practical skills training" />
+        <meta property="og:url" content="https://alphilcollege.co.ke/about" />
+        <meta name="keywords" content="about Alphil College, vocational training history, Kenya technical institute" />
+      </Head>
     <div className="min-h-screen bg-[#013220]/5">
       {/* Global Fonts */}
       <style jsx global>{`

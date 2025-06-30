@@ -1,6 +1,5 @@
 import React from 'react';
 import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaYoutube } from 'react-icons/fa';
-import logo from '@/public/Images/Logo.jpg';
 
 const Footer = () => {
   return (

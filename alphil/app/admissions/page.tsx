@@ -1,6 +1,7 @@
 'use client';
 import { FiCheckCircle, FiFileText, FiAward, FiUser, FiShield, FiArrowRight, FiDollarSign, FiCalendar, FiCreditCard } from 'react-icons/fi';
 import Link from 'next/link';
+import Head from 'next/head';
 
 export default function AdmissionsOverview() {
   // Requirements Data
@@ -71,6 +72,14 @@ export default function AdmissionsOverview() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Head>
+        <title>Admissions</title>
+        <meta name="description" content="How to apply for diploma and certificate programs at Alphil College - Requirements, deadlines, and fees" />
+        <meta property="og:title" content="Admissions Process" />
+        <meta property="og:description" content="Start your vocational training journey at Alphil College" />
+        <meta property="og:url" content="https://alphilcollege.co.ke/admissions" />
+        <meta name="keywords" content="apply to Alphil College, admission requirements, vocational training application Kenya" />
+      </Head>
       {/* Hero Section */}
       <section className="bg-[#013220] text-white py-16 px-4">
         <div className="max-w-6xl mx-auto">
