@@ -4,8 +4,11 @@ import Navbar from "@/components/Navbar";
 import { AuthProvider } from "@/app/context/AuthContext";
 
 export const metadata: Metadata = {
-  title: "Alphil | Home",
-  description: "Landing Page for Alphil College",
+  title: {
+    default: "Alphil College", // Fallback title
+    template: "%s | Alphil College", // Auto-adds suffix to child pages
+  },
+  description: "Default description (update per page)",
   icons: {
     icon: [
       { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
@@ -13,8 +16,12 @@ export const metadata: Metadata = {
     ],
     apple: '/apple-touch-icon.png',
   },
-  // Optional PWA manifest
-  manifest: '/site.webmanifest'
+  manifest: '/site.webmanifest',
+  // Global OpenGraph (shared across pages)
+  openGraph: {
+    siteName: "Alphil College",
+    images: [{ url: '/images/global-og.jpg' }], // Default OG image
+  },
 };
 
 export default function RootLayout({
