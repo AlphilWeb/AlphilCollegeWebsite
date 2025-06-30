@@ -6,6 +6,17 @@ import Footer from '@/components/Footer';
 import HistoryCard from '@/components/HistoryCard';
 import GallerySlider from '@/components/GallerySlider';
 import FeaturedSuccessStory from '@/components/FeaturedSuccessStory';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "About Us",
+  description: "Discover Alphil College’s mission, history, and commitment to excellence in education since [year].",
+  openGraph: {
+    title: "About Us | Alphil College",
+    description: "Learn about our values and academic leadership.",
+    images: [{ url: '/images/about-og.jpg' }],
+  },
+};
 
 const AboutPage = () => {
   const coreValues = [
