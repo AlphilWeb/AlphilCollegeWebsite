@@ -35,21 +35,21 @@ const Director = () => {
               <div className="absolute inset-0 bg-gradient-to-b from-[#013220]/20 to-[#013220]/10"></div>
               <Image
                 src={directorImage}
-                alt="Director Philip Koech"
+                alt="Principal Ezekiel Musungu"
                 fill
                 className="object-cover"
                 placeholder="blur" // Optional blur-up loading effect
               />
               <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
-                <p className="text-white text-xl font-['Inter'] font-medium">PHILIP KOECH</p>
-                <p className="text-[#FF338B] font-['Poppins']">DIRECTOR</p>
+                <p className="text-white text-xl font-['Inter'] font-medium">EZEKIEL MUSUNGU</p>
+                <p className="text-[#FF338B] font-['Poppins']">PRINCIPAL</p>
               </div>
             </div>
 
             {/* Message Content */}
             <div className="w-full lg:w-3/5 p-8 md:p-12">
               <h1 className="text-3xl md:text-4xl font-['Playfair_Display'] font-bold text-[#013220] pb-6 mb-6 border-b-2 border-[#FF338B]/50">
-                A Message From The Director's Desk
+                A Message From The principal's Desk
               </h1>
               <div className="space-y-6 text-[#013220] font-['Inter'] text-lg leading-relaxed">
                 <p>
@@ -60,8 +60,8 @@ const Director = () => {
                 </p>
               </div>
               <div className="mt-10 pt-6 border-t border-[#A9A9A9]/30">
-                <p className="text-2xl font-['Playfair_Display'] font-bold text-[#013220]">Philip Koech</p>
-                <p className="text-[#FF338B] font-['Poppins'] font-medium">DIRECTOR</p>
+                <p className="text-2xl font-['Playfair_Display'] font-bold text-[#013220]">EZEKIEL MUSUNGU</p>
+                <p className="text-[#FF338B] font-['Poppins'] font-medium">PRINCIPAL</p>
               </div>
 
               {/* Mobile Image - Shown only on smaller screens */}
@@ -69,14 +69,14 @@ const Director = () => {
                 <div className="absolute inset-0 bg-gradient-to-b from-[#013220]/20 to-[#013220]/10"></div>
                 <Image
                   src={directorImage}
-                  alt="Director Philip Koech"
+                  alt="Principal Ezekiel Musungu"
                   fill
                   className="object-cover"
                   placeholder="blur"
                 />
                 <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-                  <p className="text-white font-['Inter'] font-medium">PHILIP KOECH</p>
-                  <p className="text-[#FF338B] text-sm font-['Poppins']">DIRECTOR</p>
+                  <p className="text-white font-['Inter'] font-medium">EZEKIEL MUSUNGU</p>
+                  <p className="text-[#FF338B] text-sm font-['Poppins']">PRINCIPAL</p>
                 </div>
               </div>
             </div>
