@@ -114,7 +114,7 @@ const ProgramsCards = () => {
                           <FiDollarSign className="text-[#FF338B] mt-1 mr-3 flex-shrink-0" />
                           <div>
                             <h4 className="font-['Inter'] font-semibold text-[#013220]">Tuition Fee</h4>
-                            <p className="text-[#013220]/80 font-['Inter']">${course.fee.toLocaleString()}</p>
+                            <p className="text-[#013220]/80 font-['Inter']">KSH{course.fee.toLocaleString()}</p>
                           </div>
                         </div>
                         
