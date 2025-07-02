@@ -33,10 +33,11 @@ export default function Home() {
       {/* Left content - will determine the height */}
       <div className="w-full lg:w-1/2 flex flex-col">
         <p className="text-lg text-gray-700 mb-6">
-          Founded in 2010, Alphil Training College has grown from a small caregiving institute to a premier vocational training center offering accredited programs in healthcare and technology. Our founder's vision was simple: create an institution where practical skills meet compassionate service.
+          Founded in 2024, Alphil Training College has grown from a small caregiving institute to a premier vocational training center offering accredited programs in healthcare and technology. 
+          Our founder's vision was simple: create an institution where practical skills meet compassionate service.
         </p>
         <p className="text-lg text-gray-700 mb-8">
-          Today, we serve over 500 students annually across our three flagship programs, with a 92% graduate employment rate. Our campuses feature modern labs, experienced instructors, and a culture that celebrates both academic achievement and personal growth.
+          Today, we serve over 50 students annually across our three flagship programs, with a 92% graduate employment rate. Our campuses feature modern labs, experienced instructors, and a culture that celebrates both academic achievement and personal growth.
         </p>
         <div className="mt-auto"> {/* Pushes button to bottom */}
           <button className="px-6 py-3 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition flex items-center gap-2">
