@@ -37,7 +37,9 @@ class BlogPostsService {
         });
     }
     async getBlogPostById(id) {
-        return await db_1.default.query.BlogPostsTable.findFirst({ where: (0, drizzle_orm_1.eq)(schema_1.BlogPostsTable.id, id) });
+        return await db_1.default.query.BlogPostsTable.findFirst({
+            where: (0, drizzle_orm_1.eq)(schema_1.BlogPostsTable.id, id),
+        });
     }
     async createBlogPost(post) {
         const [newPost] = await db_1.default.insert(schema_1.BlogPostsTable).values(post).returning();

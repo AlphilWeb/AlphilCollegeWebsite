@@ -19,15 +19,39 @@ exports.UsersTable = (0, pg_core_1.pgTable)("users", {
 // Applications
 exports.ApplicationsTable = (0, pg_core_1.pgTable)("applications", {
     id: (0, pg_core_1.serial)("id").primaryKey(),
-    firstName: (0, pg_core_1.text)("firstName").notNull(),
-    lastName: (0, pg_core_1.text)("lastName").notNull(),
+    // Applicant's Details
+    full_name: (0, pg_core_1.text)("full_name").notNull(),
+    title: (0, pg_core_1.text)("title").notNull(),
+    date_of_birth: (0, pg_core_1.text)("date_of_birth").notNull(),
+    nationality: (0, pg_core_1.text)("nationality").notNull(),
+    id_number: (0, pg_core_1.text)("id_number").notNull(),
+    county: (0, pg_core_1.text)("county").notNull(),
+    sub_county: (0, pg_core_1.text)("sub_county").notNull(),
+    phone_number: (0, pg_core_1.text)("phone_number").notNull(),
+    po_box: (0, pg_core_1.text)("po_box").notNull(),
+    postal_code: (0, pg_core_1.text)("postal_code").notNull(),
+    town: (0, pg_core_1.text)("town").notNull(),
     email: (0, pg_core_1.text)("email").notNull(),
-    phone: (0, pg_core_1.text)("phone").notNull(),
-    course: (0, pg_core_1.text)("course").notNull(),
-    education: (0, pg_core_1.text)("education").notNull(),
-    other: (0, pg_core_1.text)("other"),
+    // Next of Kin Details
+    next_of_kin: (0, pg_core_1.text)("next_of_kin").notNull(),
+    next_of_kin_phone: (0, pg_core_1.text)("next_of_kin_phone").notNull(),
+    next_next_of_kin: (0, pg_core_1.text)("next_next_of_kin"),
+    next_next_of_kin_phone: (0, pg_core_1.text)("next_next_of_kin_phone"),
+    // Education Plan
+    course_name: (0, pg_core_1.text)("course_name").notNull(),
+    mode_of_study: (0, pg_core_1.text)("mode_of_study").notNull(),
+    intake: (0, pg_core_1.text)("intake").notNull(),
+    // Other Details
+    financier: (0, pg_core_1.text)("financier").notNull(),
+    religion: (0, pg_core_1.text)("religion").notNull(),
+    // System Fields
     status: (0, pg_core_1.text)("status").default("Pending"),
+    student_signature: (0, pg_core_1.text)("student_signature"),
+    signature_date: (0, pg_core_1.text)("signature_date"),
+    parent_signature: (0, pg_core_1.text)("parent_signature"),
+    parent_signature_date: (0, pg_core_1.text)("parent_signature_date"),
     created_at: (0, pg_core_1.timestamp)("created_at").defaultNow(),
+    updated_at: (0, pg_core_1.timestamp)("updated_at").defaultNow(),
 });
 // Courses (Modified)
 exports.CoursesTable = (0, pg_core_1.pgTable)("courses", {
@@ -55,7 +79,7 @@ exports.BlogPostsTable = (0, pg_core_1.pgTable)("blog_posts", {
     id: (0, pg_core_1.serial)("id").primaryKey(),
     title: (0, pg_core_1.text)("title").notNull(),
     content: (0, pg_core_1.text)("content").notNull(),
-    author_id: (0, pg_core_1.integer)("author_id").references(() => exports.UsersTable.id),
+    author: (0, pg_core_1.text)("author"), // No foreign key, just store as plain text
     imageUrl: (0, pg_core_1.text)("image_url"),
     publicId: (0, pg_core_1.text)("public_id"),
     createdAt: (0, pg_core_1.timestamp)("created_at").defaultNow(),

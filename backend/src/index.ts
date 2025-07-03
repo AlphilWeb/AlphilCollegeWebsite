@@ -55,7 +55,8 @@ app.route('/gallery', galleryRouter);
 // ======================
 // Admin Routes
 // ======================
-app.route('/admin/applications', applicationsRouter); // Already protected in router
+app.route('/applications', applicationsRouter); // Already protected in router
+app.route('/admin/applications', applicationsRouter); // Admin access for management
 app.route('/admin/users', usersRouter); // Already protected in router
 // Hero Images and Pillars admin routes are protected in their own routers
 

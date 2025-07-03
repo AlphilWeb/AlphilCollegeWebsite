@@ -18,6 +18,7 @@ class BlogPostsController {
         const imageFile = formData.get("image");
         const title = formData.get("title")?.toString() || "";
         const content = formData.get("content")?.toString() || "";
+        const author = formData.get("author")?.toString() || "Unknown"; // No user relation, just a text field
         if (!title || !content) {
             return c.json({ error: "Title and content are required" }, 400);
         }
@@ -27,7 +28,7 @@ class BlogPostsController {
             const arrayBuffer = await imageFile.arrayBuffer();
             const buffer = Buffer.from(arrayBuffer);
             const uploadResult = await (0, blog_services_1.uploadToCloudinary)(buffer, {
-                public_id: title.toLowerCase().replace(/\s+/g, "-")
+                public_id: title.toLowerCase().replace(/\s+/g, "-"),
             });
             imageUrl = uploadResult.secure_url;
             publicId = uploadResult.public_id;
@@ -35,9 +36,9 @@ class BlogPostsController {
         const postData = {
             title,
             content,
-            author_id: c.get('jwtPayload').userId, // From auth middleware
+            author,
             imageUrl,
-            publicId
+            publicId,
         };
         const newPost = await blogPostsService.createBlogPost(postData);
         return c.json(newPost, 201);
@@ -55,3 +56,4 @@ class BlogPostsController {
     }
 }
 exports.BlogPostsController = BlogPostsController;
+exports.default = BlogPostsController;

@@ -22,6 +22,7 @@
 		"bcryptjs": "^3.0.2",
 		"busboy": "^1.6.0",
 		"cloudinary": "^2.7.0",
+		"docx-templates": "^4.14.1",
 		"dotenv": "^16.5.0",
 		"drizzle-kit": "^0.31.1",
 		"drizzle-orm": "^0.44.2",
@@ -29,6 +30,7 @@
 		"formidable": "^3.5.4",
 		"hono": "^4.8.0",
 		"jsonwebtoken": "^9.0.2",
+		"pdf-lib": "^1.17.1",
 		"pg": "^8.16.0"
 	}
 }

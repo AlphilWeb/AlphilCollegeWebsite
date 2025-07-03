@@ -12,8 +12,9 @@ class ApplicationsService {
         return await db_1.default.query.ApplicationsTable.findMany();
     }
     async getApplicationById(id) {
-        const application = await db_1.default.query.ApplicationsTable.findFirst({ where: (0, drizzle_orm_1.eq)(schema_1.ApplicationsTable.id, id) });
-        return application;
+        return await db_1.default.query.ApplicationsTable.findFirst({
+            where: (0, drizzle_orm_1.eq)(schema_1.ApplicationsTable.id, id)
+        });
     }
     async createApplication(application) {
         const [newApplication] = await db_1.default.insert(schema_1.ApplicationsTable).values(application).returning();
@@ -28,7 +29,7 @@ class ApplicationsService {
     }
     async deleteApplication(id) {
         await db_1.default.delete(schema_1.ApplicationsTable).where((0, drizzle_orm_1.eq)(schema_1.ApplicationsTable.id, id));
-        return "Item Deleted Suuccessfully";
+        return "Item Deleted Successfully";
     }
 }
 exports.ApplicationsService = ApplicationsService;

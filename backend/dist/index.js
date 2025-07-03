@@ -9,7 +9,6 @@ const logger_1 = require("hono/logger");
 const cors_1 = require("hono/cors");
 const node_server_1 = require("@hono/node-server");
 const auth_router_1 = __importDefault(require("./middleware/auth.router"));
-const auth_middleware_1 = require("./middleware/auth.middleware");
 // Route imports
 const applications_route_1 = __importDefault(require("./Applications/applications.route"));
 const blog_router_1 = __importDefault(require("./Blog/blog.router"));
@@ -43,14 +42,15 @@ app.post('/applications', applications_controller_1.ApplicationController.create
 // Protected Routes
 // ======================
 // Messages (authenticated only)
-app.use('/messages/*', auth_middleware_1.authMiddleware);
+// app.use('/messages/*', authMiddleware);
 app.route('/messages', messages_router_1.default);
 // Gallery (public GET, protected POST/DELETE handled in its router)
 app.route('/gallery', gallery_router_1.default);
 // ======================
 // Admin Routes
 // ======================
-app.route('/admin/applications', applications_route_1.default); // Already protected in router
+app.route('/applications', applications_route_1.default); // Already protected in router
+app.route('/admin/applications', applications_route_1.default); // Admin access for management
 app.route('/admin/users', users_router_1.default); // Already protected in router
 // Hero Images and Pillars admin routes are protected in their own routers
 // ======================

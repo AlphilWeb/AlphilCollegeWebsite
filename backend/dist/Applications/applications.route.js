@@ -6,6 +6,8 @@ const auth_middleware_1 = require("../middleware/auth.middleware");
 const applicationsRouter = new hono_1.Hono();
 // Public POST route (no auth required)
 applicationsRouter.post("/", applications_controller_1.ApplicationController.createApplication);
+// Public GET route for downloading filled DOCX
+applicationsRouter.get("/:id/download-docx", applications_controller_1.ApplicationController.generateApplicationDocx);
 // Protected admin routes (require auth + admin)
 applicationsRouter.use('*', auth_middleware_1.authMiddleware, auth_middleware_1.adminMiddleware);
 applicationsRouter.get("/", applications_controller_1.ApplicationController.getAllApplications);
