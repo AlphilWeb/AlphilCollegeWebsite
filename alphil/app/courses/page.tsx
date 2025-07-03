@@ -16,7 +16,7 @@ const page = () => {
         <meta property="og:title" content="Courses at Alphil College" />
         <meta property="og:description" content="Get certified for high-demand careers in Kenya" />
         <meta property="og:url" content="https://alphilcollege.co.ke/courses" />
-        <meta name="keywords" content="diploma courses Kenya, healthcare training, IT certification Nairobi, business courses" />
+        <meta name="keywords" content="diploma courses Kenya, healthcare training, IT certification Nakuru, Caregiving Course Nakuru" />
       </Head>
       <div className="relative bg-gradient-to-r from-[#013220] to-[#013220]/90 text-white py-16 px-0">
         <div className="max-w-7xl mx-auto text-center px-4">

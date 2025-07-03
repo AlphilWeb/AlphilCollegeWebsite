@@ -1,8 +1,6 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import { FiUser, FiChevronDown, FiX, FiMenu } from 'react-icons/fi';
-import Image from 'next/image';
-import logo from '@/public/Images/Logo.jpg';
 
 function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -31,15 +29,13 @@ function Navbar() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          {/* Logo and College Name - Now always visible */}
+          {/* Logo and College Name - Now using favicon */}
           <div className="flex-shrink-0 flex items-center">
             <div className="h-14 w-14 relative">
-              <Image 
-                src={logo} 
+              <img 
+                src="/favicon-32x32.png" 
                 alt="Alphil Training College Logo" 
-                fill
-                className="object-contain"
-                priority
+                className="object-contain h-full w-full"
               />
             </div>
             <a href="/" className="ml-3 hover:text-[#013220]/90">
@@ -71,7 +67,6 @@ function Navbar() {
                 Home
               </a>
               
-              {/* ... rest of your desktop navigation items ... */}
               <a 
                 href="/about" 
                 className="text-[#013220] hover:text-[#FF338B] px-4 py-3 text-sm font-medium transition-colors duration-200 font-['Inter']"
@@ -149,7 +144,6 @@ function Navbar() {
       {/* Mobile menu */}
       <div className={`md:hidden ${mobileMenuOpen ? 'block' : 'hidden'}`}>
         <div className="px-2 pt-2 pb-4 space-y-1 sm:px-3 bg-white shadow-xl">
-          {/* ... rest of your mobile menu items ... */}
           <a href="/" className="block px-4 py-3 text-base font-medium text-[#013220] hover:text-[#FF338B] hover:bg-[#FF338B]/10 rounded-md font-['Inter']">Home</a>
           <a href="/about" className="block px-4 py-3 text-base font-medium text-[#013220] hover:text-[#FF338B] hover:bg-[#FF338B]/10 rounded-md font-['Inter']">About Us</a>
           <a href="/courses" className="block px-4 py-3 text-base font-medium text-[#013220] hover:text-[#FF338B] hover:bg-[#FF338B]/10 rounded-md font-['Inter']">Our Courses</a>
