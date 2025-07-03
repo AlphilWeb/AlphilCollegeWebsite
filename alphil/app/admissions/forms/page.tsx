@@ -4,33 +4,62 @@ import { fetchAPI } from '@/lib/api';
 import { FiCheckCircle, FiXCircle } from 'react-icons/fi';
 
 type ApplicationForm = {
-  firstName: string;
-  lastName: string;
+  full_name: string;
+  title: string;
+  date_of_birth: string;
+  nationality: string;
+  id_number: string;
+  county: string;
+  sub_county: string;
+  phone_number: string;
+  po_box: string;
+  postal_code: string;
+  town: string;
   email: string;
-  phone: string;
-  course: string;
-  education: string;
-  other: string;
+  next_of_kin: string;
+  next_of_kin_phone: string;
+  next_next_of_kin: string;
+  next_next_of_kin_phone: string;
+  course_name: string;
+  mode_of_study: string;
+  intake: string;
+  financier: string;
+  religion: string;
 };
 
 const AdmissionsPage = () => {
   const [formData, setFormData] = useState<ApplicationForm>({
-    firstName: '',
-    lastName: '',
+    full_name: '',
+    title: '',
+    date_of_birth: '',
+    nationality: '',
+    id_number: '',
+    county: '',
+    sub_county: '',
+    phone_number: '',
+    po_box: '',
+    postal_code: '',
+    town: '',
     email: '',
-    phone: '',
-    course: '',
-    education: '',
-    other: '',
+    next_of_kin: '',
+    next_of_kin_phone: '',
+    next_next_of_kin: '',
+    next_next_of_kin_phone: '',
+    course_name: '',
+    mode_of_study: '',
+    intake: '',
+    financier: '',
+    religion: '',
   });
 
   const [loading, setLoading] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState<'success' | 'error' | null>(null);
   const [statusMessage, setStatusMessage] = useState('');
   const [showToast, setShowToast] = useState(false);
+  const [applicationId, setApplicationId] = useState<number | null>(null);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -43,7 +72,7 @@ const AdmissionsPage = () => {
     setShowToast(false);
 
     try {
-      await fetchAPI('/applications', {
+      const response = await fetchAPI('/applications', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,8 +80,13 @@ const AdmissionsPage = () => {
         body: JSON.stringify(formData),
       });
 
-      setSubmissionStatus('success');
-      setStatusMessage('Your application has been submitted successfully!');
+      if (response.success && response.data?.id) {
+        setSubmissionStatus('success');
+        setStatusMessage('Your application has been submitted successfully!');
+        setApplicationId(response.data.id); // Access ID from response.data
+      } else {
+        throw new Error('Unexpected response format');
+      }
     } catch (err) {
       console.error(err);
       setSubmissionStatus('error');
@@ -72,14 +106,45 @@ const AdmissionsPage = () => {
     }
   }, [showToast]);
 
-  const handleDownload = () => {
-    const link = document.createElement('a');
-    link.href = '/forms/application_form.pdf';
-    link.download = 'application-form.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+const handleDownload = async () => {
+  if (!applicationId) {
+    setSubmissionStatus('error');
+    setStatusMessage('Please submit the form first before downloading');
+    setShowToast(true);
+    return;
+  }
+
+  try {
+    setLoading(true);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/applications/${applicationId}/download-docx`
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `application_${applicationId}.docx`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Download failed:', error);
+    setSubmissionStatus('error');
+    setStatusMessage('Failed to download document. Please try again.');
+    setShowToast(true);
+  } finally {
+    setLoading(false);
+  }
+};
+
+  const inputClass =
+    'w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-400 text-gray-900';
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-10 relative">
@@ -126,158 +191,45 @@ const AdmissionsPage = () => {
 
       <h1 className="text-4xl font-bold mb-8 text-pink-800">Admissions Application</h1>
 
-      <div className="bg-white rounded-xl p-8 shadow-lg">
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* First Name */}
-          <div>
-            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
-              First Name
+      <form onSubmit={handleSubmit} className="bg-white rounded-xl p-8 shadow-lg grid grid-cols-1 md:grid-cols-2 gap-6">
+        {Object.entries(formData).map(([key, value]) => (
+          <div key={key} className={key.includes('next_next') ? 'md:col-span-2' : ''}>
+            <label htmlFor={key} className="block text-sm font-medium text-gray-700 mb-1">
+              {key.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
             </label>
             <input
-              type="text"
-              name="firstName"
-              id="firstName"
-              value={formData.firstName}
+              type={key.includes('date') ? 'date' : 'text'}
+              name={key}
+              id={key}
+              value={value}
               onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-400 text-gray-900"
+              required={!key.includes('next_next')}
+              className={inputClass}
             />
           </div>
+        ))}
 
-          {/* Last Name */}
-          <div>
-            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
-              Last Name
-            </label>
-            <input
-              type="text"
-              name="lastName"
-              id="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-400 text-gray-900"
-            />
-          </div>
+        {/* Download Button (now always visible) */}
+        <div className="md:col-span-2 flex justify-between mt-4">
+          <button
+            type="button"
+            onClick={handleDownload}
+            className="px-6 py-2 border border-green-600 text-green-600 rounded-md hover:bg-green-100 transition"
+          >
+            Download Filled Form
+          </button>
+        </div>
 
-          {/* Email */}
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              id="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-400 text-gray-900"
-            />
-          </div>
-
-          {/* Phone */}
-          <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-              Phone
-            </label>
-            <input
-              type="tel"
-              name="phone"
-              id="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-400 text-gray-900"
-            />
-          </div>
-
-          {/* Course */}
-          <div>
-            <label htmlFor="course" className="block text-sm font-medium text-gray-700 mb-1">
-              Course
-            </label>
-            <select
-              name="course"
-              id="course"
-              value={formData.course}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-400 text-gray-900"
-            >
-              <option value="">Select a course</option>
-              <option value="certified-medical-assistant">Certified Medical Assistant</option>
-              <option value="care-giving">Care Giving</option>
-              <option value="information-technology">Information Technology</option>
-            </select>
-          </div>
-
-          {/* Education */}
-          <div>
-            <label htmlFor="education" className="block text-sm font-medium text-gray-700 mb-1">
-              Highest Education
-            </label>
-            <select
-              name="education"
-              id="education"
-              value={formData.education}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-400 text-gray-900"
-            >
-              <option value="">Select your education level</option>
-              <option value="high-school">High School</option>
-              <option value="associate">Associate Degree</option>
-              <option value="bachelor">Bachelor's Degree</option>
-              <option value="master">Master's Degree</option>
-              <option value="phd">PhD</option>
-            </select>
-          </div>
-
-          {/* Additional Info */}
-          <div className="md:col-span-2">
-            <label htmlFor="other" className="block text-sm font-medium text-gray-700 mb-1">
-              Any Other Relevant Information
-            </label>
-            <textarea
-              name="other"
-              id="other"
-              value={formData.other}
-              onChange={handleChange}
-              rows={4}
-              placeholder="Add anything else you'd like us to know..."
-              className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-400 text-gray-900"
-            />
-          </div>
-
-          {/* Action Buttons */}
-          <div className="md:col-span-2 flex justify-between mt-4">
-            <button
-              type="button"
-              onClick={handleDownload}
-              className="px-6 py-2 border border-green-600 text-green-600 rounded-md hover:bg-green-100 transition"
-            >
-              Download Form
-            </button>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-6 py-2 bg-pink-800 text-white rounded-md hover:bg-pink-900 transition disabled:opacity-50"
-            >
-              {loading ? 'Submitting...' : 'Submit Application'}
-            </button>
-          </div>
-
-          {/* Info about returning the form */}
-          <div className="md:col-span-2 mt-4 text-sm text-gray-600 italic">
-            <p>
-              Duly filled application forms should be returned to the college for registration.
-              Application fee of Kshs. 1500 is payable at the reception on submission of the form.
-            </p>
-          </div>
-        </form>
-      </div>
+        <div className="md:col-span-2 flex justify-end">
+          <button
+            type="submit"
+            disabled={loading}
+            className="px-6 py-2 bg-pink-800 text-white rounded-md hover:bg-pink-900 transition disabled:opacity-50"
+          >
+            {loading ? 'Submitting...' : 'Submit Application'}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
