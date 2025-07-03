@@ -21,16 +21,46 @@ export type SelectUser = typeof UsersTable.$inferSelect;
 // Applications
 export const ApplicationsTable = pgTable("applications", {
   id: serial("id").primaryKey(),
-  firstName: text("firstName").notNull(),
-  lastName: text("lastName").notNull(),
+  
+  // Applicant's Details
+  full_name: text("full_name").notNull(),
+  title: text("title").notNull(),
+  date_of_birth: text("date_of_birth").notNull(),
+  nationality: text("nationality").notNull(),
+  id_number: text("id_number").notNull(),
+  county: text("county").notNull(),
+  sub_county: text("sub_county").notNull(),
+  phone_number: text("phone_number").notNull(),
+  po_box: text("po_box").notNull(),
+  postal_code: text("postal_code").notNull(),
+  town: text("town").notNull(),
   email: text("email").notNull(),
-  phone: text("phone").notNull(),
-  course: text("course").notNull(),
-  education: text("education").notNull(),
-  other: text("other"),
+
+  // Next of Kin Details
+  next_of_kin: text("next_of_kin").notNull(),
+  next_of_kin_phone: text("next_of_kin_phone").notNull(),
+  next_next_of_kin: text("next_next_of_kin"),
+  next_next_of_kin_phone: text("next_next_of_kin_phone"),
+
+  // Education Plan
+  course_name: text("course_name").notNull(),
+  mode_of_study: text("mode_of_study").notNull(),
+  intake: text("intake").notNull(),
+
+  // Other Details
+  financier: text("financier").notNull(),
+  religion: text("religion").notNull(),
+
+  // System Fields
   status: text("status").default("Pending"),
+  student_signature: text("student_signature"),
+  signature_date: text("signature_date"),
+  parent_signature: text("parent_signature"),
+  parent_signature_date: text("parent_signature_date"),
   created_at: timestamp("created_at").defaultNow(),
+  updated_at: timestamp("updated_at").defaultNow(),
 });
+
 export type InsertApplication = typeof ApplicationsTable.$inferInsert;
 export type SelectApplication = typeof ApplicationsTable.$inferSelect;
 
