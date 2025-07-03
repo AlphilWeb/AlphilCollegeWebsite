@@ -2,18 +2,34 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { fetchAPI } from '@/lib/api';
+import { FiDownload } from 'react-icons/fi';
 
 type Application = {
-  id: string;
-  firstName: string;
-  lastName: string;
+  id: number;
+  full_name: string;
+  title: string;
+  date_of_birth: string;
+  nationality: string;
+  id_number: string;
+  county: string;
+  sub_county: string;
+  phone_number: string;
+  po_box: string;
+  postal_code: string;
+  town: string;
   email: string;
-  phone: string;
-  course: string;
-  education: string;
-  other?: string;
+  next_of_kin: string;
+  next_of_kin_phone: string;
+  next_next_of_kin: string;
+  next_next_of_kin_phone: string;
+  course_name: string;
+  mode_of_study: string;
+  intake: string;
+  financier: string;
+  religion: string;
   status: string;
   created_at: string;
+  updated_at: string;
 };
 
 const statusColors: Record<string, string> = {
@@ -72,6 +88,24 @@ export default function ApplicationsPage() {
     }
   };
 
+  const handleDownload = async (id: number) => {
+    try {
+      const response = await fetchWithAuth(`/applications/${id}/download-docx`);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Alphil College Application - ${id}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Download failed:', error);
+      alert('Failed to download application');
+    }
+  };
+
   useEffect(() => {
     fetchApplications();
   }, []);
@@ -81,13 +115,13 @@ export default function ApplicationsPage() {
     setStatus(app.status);
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => {
     if (!confirm('Are you sure you want to delete this application?')) return;
     try {
       await fetchWithAuth(`/admin/applications/${id}`, {
         method: 'DELETE',
       });
-      await fetchApplications(); // Refresh after delete
+      await fetchApplications();
     } catch (err) {
       console.error('Delete failed:', err);
     }
@@ -98,10 +132,10 @@ export default function ApplicationsPage() {
     try {
       await fetchWithAuth(`/admin/applications/${editingApp.id}`, {
         method: 'PUT',
-        body: JSON.stringify({ status }), // Only status is editable
+        body: JSON.stringify({ status }),
       });
       setEditingApp(null);
-      await fetchApplications(); // Refresh after save
+      await fetchApplications();
     } catch (err) {
       console.error('Update failed:', err);
     }
@@ -140,6 +174,7 @@ export default function ApplicationsPage() {
   const filteredApplications = applications.filter(app =>
     filter === 'all' ? true : isInRange(app.created_at, filter)
   );
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6 border-b border-[#A9A9A9]/20 pb-4">
@@ -179,20 +214,26 @@ export default function ApplicationsPage() {
           {filteredApplications.map((app) => (
             <div key={app.id} className="bg-white p-4 rounded-lg shadow-sm border border-[#A9A9A9]/20 hover:border-[#013220]/50 transition-colors">
               <div className="flex justify-between items-start">
-                <h2 className="font-semibold text-lg text-[#013220]">{app.firstName} {app.lastName}</h2>
+                <h2 className="font-semibold text-lg text-[#013220]">{app.full_name}</h2>
                 <span className={`px-2 py-1 text-xs rounded-full text-white ${statusColors[app.status] || 'bg-[#A9A9A9]'}`}>
                   {app.status}
                 </span>
               </div>
               <div className="text-sm mt-3 space-y-1 text-[#013220]/80">
                 <p><strong className="text-[#013220]">Email:</strong> {app.email}</p>
-                <p><strong className="text-[#013220]">Phone:</strong> {app.phone}</p>
-                <p><strong className="text-[#013220]">Course:</strong> {app.course}</p>
-                <p><strong className="text-[#013220]">Education:</strong> {app.education}</p>
-                {app.other && <p><strong className="text-[#013220]">Other:</strong> {app.other}</p>}
+                <p><strong className="text-[#013220]">Phone:</strong> {app.phone_number}</p>
+                <p><strong className="text-[#013220]">Course:</strong> {app.course_name}</p>
+                <p><strong className="text-[#013220]">ID Number:</strong> {app.id_number}</p>
+                <p><strong className="text-[#013220]">County:</strong> {app.county}</p>
                 <p><strong className="text-[#013220]">Date:</strong> {new Date(app.created_at).toLocaleDateString()}</p>
               </div>
               <div className="flex justify-end mt-4 gap-2 border-t border-[#A9A9A9]/20 pt-3">
+                <button
+                  onClick={() => handleDownload(app.id)}
+                  className="text-sm bg-[#013220]/10 text-[#013220] px-3 py-1 rounded hover:bg-[#013220]/20 border border-[#013220]/20 flex items-center gap-1"
+                >
+                  <FiDownload size={14} /> Download
+                </button>
                 <button
                   onClick={() => handleEdit(app)}
                   className="text-sm bg-[#013220]/10 text-[#013220] px-3 py-1 rounded hover:bg-[#013220]/20 border border-[#013220]/20"
