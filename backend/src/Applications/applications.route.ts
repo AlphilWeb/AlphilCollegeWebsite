@@ -7,6 +7,9 @@ const applicationsRouter = new Hono();
 // Public POST route (no auth required)
 applicationsRouter.post("/", ApplicationController.createApplication);
 
+// Public GET route for downloading filled DOCX
+applicationsRouter.get("/:id/download-docx", ApplicationController.generateApplicationDocx);
+
 // Protected admin routes (require auth + admin)
 applicationsRouter.use('*', authMiddleware, adminMiddleware);
 applicationsRouter.get("/", ApplicationController.getAllApplications);
