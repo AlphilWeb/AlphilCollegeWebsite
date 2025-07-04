@@ -79,12 +79,10 @@ export default function ApplicationsPage() {
   const fetchApplications = async () => {
     try {
       const response = await fetchWithAuth('/admin/applications');
-      if (response.success && Array.isArray(response.data)) {
-        setApplications(response.data);
-      } else {
-        console.error('Invalid response format:', response);
-        setApplications([]);
-      }
+      const sorted = [...response.data].sort((a, b) =>
+          new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+        );
+      setApplications(sorted);
     } catch (error) {
       console.error('Failed to fetch applications:', error);
     } finally {
@@ -144,7 +142,7 @@ export default function ApplicationsPage() {
   const handleSave = async () => {
     if (!editingApp) return;
     try {
-      await fetchWithAuth(`/admin/applications/${editingApp.id}`, {
+      await fetchWithAuth(`/applications/${editingApp.id}`, {
         method: 'PUT',
         body: JSON.stringify({ status }),
       });
