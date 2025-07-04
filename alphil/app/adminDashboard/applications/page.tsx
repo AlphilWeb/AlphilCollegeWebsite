@@ -95,7 +95,15 @@ export default function ApplicationsPage() {
 
   const handleDownload = async (id: number) => {
     try {
-      const response = await fetchWithAuth(`/applications/${id}/download-docx`);
+      const token = localStorage.getItem('authToken') || '';
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applications/${id}/download-docx`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -110,6 +118,7 @@ export default function ApplicationsPage() {
       alert('Failed to download application');
     }
   };
+
 
   useEffect(() => {
     fetchApplications();
