@@ -146,7 +146,7 @@ const Footer = () => {
         {/* Copyright */}
           <div className="border-t border-[#FF338B]/30 mt-8 pt-6 text-center text-white/70">
             <p>&copy; {new Date().getFullYear()} Alphil Training College. All rights reserved.</p>
-            <p className="mt-2">Developed by <a href="https://iwebx.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#FF338B] transition-colors">iWebX</a></p>
+            <p className="mt-2">Developed by <a href="https://iwebx.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#FF338B] transition-colors">iWebX</a> | +254111640040</p>
           </div>
       </div>
     </footer>
