@@ -44,7 +44,6 @@ export default function ApplicationsPage() {
   const [loading, setLoading] = useState(true);
   const [editingApp, setEditingApp] = useState<Application | null>(null);
   const [status, setStatus] = useState('');
-  const [filter, setFilter] = useState<'all' | 'today' | 'week' | 'month' | 'year'>('all');
 
   const getAuthHeaders = (): Record<string, string> => {
     const token = localStorage.getItem('authToken') || '';
@@ -80,7 +79,12 @@ export default function ApplicationsPage() {
   const fetchApplications = async () => {
     try {
       const data = await fetchWithAuth('/admin/applications');
-      setApplications(data);
+      if (Array.isArray(data)) {
+        setApplications(data);
+      } else {
+        console.error('Expected an array but got:', data);
+        setApplications([]);
+      }
     } catch (error) {
       console.error('Failed to fetch applications:', error);
     } finally {
@@ -143,75 +147,26 @@ export default function ApplicationsPage() {
 
   const handleCancel = () => setEditingApp(null);
 
-  const isInRange = (dateStr: string, range: typeof filter) => {
-    const date = new Date(dateStr);
-    const now = new Date();
-    if (range === 'today') {
-      return (
-        date.getDate() === now.getDate() &&
-        date.getMonth() === now.getMonth() &&
-        date.getFullYear() === now.getFullYear()
-      );
-    }
-    if (range === 'week') {
-      const startOfWeek = new Date(now);
-      startOfWeek.setDate(now.getDate() - now.getDay());
-      startOfWeek.setHours(0, 0, 0, 0);
-      const endOfWeek = new Date(startOfWeek);
-      endOfWeek.setDate(startOfWeek.getDate() + 6);
-      endOfWeek.setHours(23, 59, 59, 999);
-      return date >= startOfWeek && date <= endOfWeek;
-    }
-    if (range === 'month') {
-      return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
-    }
-    if (range === 'year') {
-      return date.getFullYear() === now.getFullYear();
-    }
-    return true;
-  };
-
-  const filteredApplications = applications.filter(app =>
-    filter === 'all' ? true : isInRange(app.created_at, filter)
-  );
-
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6 border-b border-[#A9A9A9]/20 pb-4">
         <h1 className="text-3xl font-bold text-white">Applications</h1>
         <div className="text-sm text-[#013220]/80">
-          Total: {applications.length} | Showing: {filteredApplications.length}
+          Total: {applications.length}
         </div>
-      </div>
-
-      <div className="flex flex-wrap gap-2 mb-6">
-        {(['all', 'today', 'week', 'month', 'year'] as const).map((range) => (
-          <button
-            key={range}
-            onClick={() => setFilter(range)}
-            className={`px-4 py-2 rounded-full text-sm ${
-              filter === range
-                ? 'bg-[#013220] text-white font-semibold shadow border border-[#013220]'
-                : 'bg-white text-[#013220] border border-[#A9A9A9]/50 hover:border-[#013220]'
-            }`}
-          >
-            {range === 'all' ? 'All Time' : `This ${range.charAt(0).toUpperCase() + range.slice(1)}`}
-          </button>
-        ))}
       </div>
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <div className="w-12 h-12 border-4 border-[#013220] border-t-transparent rounded-full animate-spin"></div>
         </div>
-      ) : filteredApplications.length === 0 ? (
+      ) : applications.length === 0 ? (
         <div className="text-center text-[#013220]/80 bg-[#013220]/5 rounded-lg py-10 border border-[#A9A9A9]/20">
           <p className="text-lg">No applications found.</p>
-          <p className="text-sm">Try a different filter range.</p>
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filteredApplications.map((app) => (
+          {applications.map((app) => (
             <div key={app.id} className="bg-white p-4 rounded-lg shadow-sm border border-[#A9A9A9]/20 hover:border-[#013220]/50 transition-colors">
               <div className="flex justify-between items-start">
                 <h2 className="font-semibold text-lg text-[#013220]">{app.full_name}</h2>
@@ -252,7 +207,6 @@ export default function ApplicationsPage() {
         </div>
       )}
 
-      {/* Modal for editing status */}
       {editingApp && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center backdrop-blur-sm">
           <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm border border-[#A9A9A9]/30">
