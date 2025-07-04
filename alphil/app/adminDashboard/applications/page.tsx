@@ -93,14 +93,13 @@ export default function ApplicationsPage() {
 
   const handleDownload = async (id: number) => {
     try {
-      const token = localStorage.getItem('authToken') || '';
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applications/${id}/download-docx`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000'}/applications/${id}/download-docx`
+      );
 
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
@@ -116,6 +115,7 @@ export default function ApplicationsPage() {
       alert('Failed to download application');
     }
   };
+
 
 
   useEffect(() => {
@@ -142,7 +142,7 @@ export default function ApplicationsPage() {
   const handleSave = async () => {
     if (!editingApp) return;
     try {
-      await fetchWithAuth(`/applications/${editingApp.id}`, {
+      await fetchWithAuth(`/admin/applications/${editingApp.id}`, {
         method: 'PUT',
         body: JSON.stringify({ status }),
       });
