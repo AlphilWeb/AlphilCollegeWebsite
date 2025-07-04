@@ -78,11 +78,11 @@ export default function ApplicationsPage() {
 
   const fetchApplications = async () => {
     try {
-      const data = await fetchWithAuth('/admin/applications');
-      if (Array.isArray(data)) {
-        setApplications(data);
+      const response = await fetchWithAuth('/admin/applications');
+      if (response.success && Array.isArray(response.data)) {
+        setApplications(response.data);
       } else {
-        console.error('Expected an array but got:', data);
+        console.error('Invalid response format:', response);
         setApplications([]);
       }
     } catch (error) {
@@ -91,6 +91,7 @@ export default function ApplicationsPage() {
       setLoading(false);
     }
   };
+
 
   const handleDownload = async (id: number) => {
     try {
