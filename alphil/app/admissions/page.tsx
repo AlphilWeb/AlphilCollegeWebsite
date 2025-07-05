@@ -205,7 +205,7 @@ export default function AdmissionsOverview() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/admissions/apply"
+              href="/admissions/forms"
               className="px-8 py-3 bg-white text-[#013220] rounded-lg hover:bg-gray-100 transition-colors font-bold flex items-center justify-center"
             >
               Start Application <FiArrowRight className="ml-2" />

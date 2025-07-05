@@ -41,13 +41,13 @@ const AdmissionsLayout = ({ children }: { children: React.ReactNode }) => {
       {/* Top Navigation for mobile, Sidebar for desktop */}
       <div className="md:flex">
         {/* Mobile Top Nav */}
-        <nav className="md:hidden w-full bg-white shadow-sm">
-          <div className="container mx-auto px-4">
-            <ul className="flex overflow-x-auto py-3 space-x-4">
-              {navItems.map((item) => (
-                <li key={item.path} className="flex-shrink-0">
-                  <Link
-                    href={item.path}
+      <nav className="md:hidden w-full bg-white shadow-sm">
+        <div className="container mx-auto px-4">
+          <ul className="flex overflow-x-auto py-3 space-x-4">
+            {navItems.map((item) => (
+              <li key={item.path} className="flex-shrink-0">
+                <Link href={item.path} passHref>
+                  <a
                     className={`flex flex-col items-center px-3 py-2 rounded-lg text-sm ${
                       item.isActive
                         ? 'bg-[#013220]/10 text-[#013220] font-medium'
@@ -58,12 +58,14 @@ const AdmissionsLayout = ({ children }: { children: React.ReactNode }) => {
                       {item.icon}
                     </span>
                     <span className="mt-1">{item.name}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </nav>
+                  </a>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </nav>
+
 
         {/* Desktop Sidebar */}
         <aside className="hidden md:block w-64 p-6 border-r bg-white h-full shadow-md">
