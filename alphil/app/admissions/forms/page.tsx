@@ -117,7 +117,7 @@ const AdmissionsPage = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000'}/applications/${applicationId}/download-docx`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://alphilcollegewebsite.onrender.com'}/applications/${applicationId}/download-docx`
       );
 
       if (!response.ok) {

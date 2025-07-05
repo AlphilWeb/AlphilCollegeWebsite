@@ -94,7 +94,7 @@ export default function ApplicationsPage() {
   const handleDownload = async (id: number) => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000'}/applications/${id}/download-docx`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://alphilcollegewebsite.onrender.com'}/applications/${id}/download-docx`
       );
 
       if (!response.ok) {
