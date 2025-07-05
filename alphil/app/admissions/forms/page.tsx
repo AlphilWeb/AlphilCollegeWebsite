@@ -83,7 +83,7 @@ const AdmissionsPage = () => {
       if (response.success && response.data?.id) {
         setSubmissionStatus('success');
         setStatusMessage('Your application has been submitted successfully!');
-        setApplicationId(response.data.id); // Access ID from response.data
+        setApplicationId(response.data.id);
       } else {
         throw new Error('Unexpected response format');
       }
@@ -106,49 +106,48 @@ const AdmissionsPage = () => {
     }
   }, [showToast]);
 
-const handleDownload = async () => {
-  if (!applicationId) {
-    setSubmissionStatus('error');
-    setStatusMessage('Please submit the form first before downloading');
-    setShowToast(true);
-    return;
-  }
-
-  try {
-    setLoading(true);
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/applications/${applicationId}/download-docx`
-    );
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+  const handleDownload = async () => {
+    if (!applicationId) {
+      setSubmissionStatus('error');
+      setStatusMessage('Please submit the form first before downloading');
+      setShowToast(true);
+      return;
     }
 
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `application_${applicationId}.docx`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error('Download failed:', error);
-    setSubmissionStatus('error');
-    setStatusMessage('Failed to download document. Please try again.');
-    setShowToast(true);
-  } finally {
-    setLoading(false);
-  }
-};
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000'}/applications/${applicationId}/download-docx`
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Alphil_College_Application_${applicationId}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Download failed:', error);
+      setSubmissionStatus('error');
+      setStatusMessage('Failed to download document. Please try again.');
+      setShowToast(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const inputClass =
     'w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-400 text-gray-900';
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-10 relative">
-      {/* Toast */}
       {showToast && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
@@ -175,18 +174,10 @@ const handleDownload = async () => {
 
       <style jsx global>{`
         @keyframes fade-in {
-          from {
-            opacity: 0;
-            transform: translateY(20px) scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
+          from { opacity: 0; transform: translateY(20px) scale(0.95); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        .animate-fade-in {
-          animation: fade-in 0.3s ease-out;
-        }
+        .animate-fade-in { animation: fade-in 0.3s ease-out; }
       `}</style>
 
       <h1 className="text-4xl font-bold mb-8 text-pink-800">Admissions Application</h1>
@@ -209,7 +200,6 @@ const handleDownload = async () => {
           </div>
         ))}
 
-        {/* Download Button (now always visible) */}
         <div className="md:col-span-2 flex justify-between mt-4">
           <button
             type="button"
