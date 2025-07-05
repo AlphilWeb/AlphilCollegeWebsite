@@ -6,7 +6,6 @@ import { createReport } from "docx-templates";
 
 const applicationService = new ApplicationsService();
 
-// Helper function moved outside the class
 function formatDate(dateString: string | Date | null | undefined): string {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
@@ -20,64 +19,58 @@ function formatDate(dateString: string | Date | null | undefined): string {
 }
 
 export class ApplicationController {
-
-// Get all applications
-static async getAllApplications(c: Context) {
-    try {
-        const applications = await applicationService.getAllApplications();
-        return c.json({ success: true, data: applications });
-    } catch (error) {
-        console.error("Error fetching applications:", error);
-        return c.json({ success: false, error: "Internal server error" }, 500);
+    static async getAllApplications(c: Context) {
+        try {
+            const applications = await applicationService.getAllApplications();
+            return c.json({ success: true, data: applications });
+        } catch (error) {
+            console.error("Error fetching applications:", error);
+            return c.json({ success: false, error: "Internal server error" }, 500);
+        }
     }
-}
 
-// Get application by ID
-static async getApplicationById(c: Context) {
-    try {
-        const id = Number(c.req.param("id"));
-        if (isNaN(id)) return c.json({ error: "Invalid ID" }, 400);
+    static async getApplicationById(c: Context) {
+        try {
+            const id = Number(c.req.param("id"));
+            if (isNaN(id)) return c.json({ error: "Invalid ID" }, 400);
 
-        const application = await applicationService.getApplicationById(id);
-        if (!application) return c.json({ error: "Application not found" }, 404);
+            const application = await applicationService.getApplicationById(id);
+            if (!application) return c.json({ error: "Application not found" }, 404);
 
-        return c.json({ success: true, data: application });
-    } catch (error) {
-        console.error("Error fetching application:", error);
-        return c.json({ success: false, error: "Internal server error" }, 500);
+            return c.json({ success: true, data: application });
+        } catch (error) {
+            console.error("Error fetching application:", error);
+            return c.json({ success: false, error: "Internal server error" }, 500);
+        }
     }
-}
 
-// Update application
-static async updateApplication(c: Context) {
-    try {
-        const id = Number(c.req.param("id"));
-        if (isNaN(id)) return c.json({ error: "Invalid ID" }, 400);
+    static async updateApplication(c: Context) {
+        try {
+            const id = Number(c.req.param("id"));
+            if (isNaN(id)) return c.json({ error: "Invalid ID" }, 400);
 
-        const updates = await c.req.json();
-        const updated = await applicationService.updateApplication(id, updates);
+            const updates = await c.req.json();
+            const updated = await applicationService.updateApplication(id, updates);
 
-        return c.json({ success: true, data: updated });
-    } catch (error) {
-        console.error("Error updating application:", error);
-        return c.json({ success: false, error: "Internal server error" }, 500);
+            return c.json({ success: true, data: updated });
+        } catch (error) {
+            console.error("Error updating application:", error);
+            return c.json({ success: false, error: "Internal server error" }, 500);
+        }
     }
-}
 
-// Delete application
-static async deleteApplication(c: Context) {
-    try {
-        const id = Number(c.req.param("id"));
-        if (isNaN(id)) return c.json({ error: "Invalid ID" }, 400);
+    static async deleteApplication(c: Context) {
+        try {
+            const id = Number(c.req.param("id"));
+            if (isNaN(id)) return c.json({ error: "Invalid ID" }, 400);
 
-        await applicationService.deleteApplication(id);
-        return c.json({ success: true, message: "Application deleted" });
-    } catch (error) {
-        console.error("Error deleting application:", error);
-        return c.json({ success: false, error: "Internal server error" }, 500);
+            await applicationService.deleteApplication(id);
+            return c.json({ success: true, message: "Application deleted" });
+        } catch (error) {
+            console.error("Error deleting application:", error);
+            return c.json({ success: false, error: "Internal server error" }, 500);
+        }
     }
-}
-
 
     static async createApplication(c: Context) {
         try {
@@ -103,67 +96,51 @@ static async deleteApplication(c: Context) {
         }
     }
 
-    // ... (keep all other existing methods exactly the same)
+    static async generateApplicationDocx(c: Context) {
+        try {
+            const id = Number(c.req.param("id"));
+            if (isNaN(id)) return c.json({ error: "Invalid ID" }, 400);
 
-static async generateApplicationDocx(c: Context) {
-    try {
-        const id = Number(c.req.param("id"));
-        if (isNaN(id)) return c.json({ error: "Invalid ID" }, 400);
+            const application = await applicationService.getApplicationById(id);
+            if (!application) return c.json({ error: "Application not found" }, 404);
 
-        // 1. Get application data
-        const application = await applicationService.getApplicationById(id);
-        if (!application) return c.json({ error: "Application not found" }, 404);
+            const templateData = {
+                ...application,
+                date_of_birth: formatDate(application.date_of_birth),
+                signature_date: formatDate(application.signature_date),
+                parent_signature_date: formatDate(application.parent_signature_date),
+                created_at: formatDate(application.created_at),
+                updated_at: formatDate(application.updated_at),
+                marital_status: 'N/A',
+                code: application.id_number || 'N/A',
+                gender: application.title === 'Mr' ? 'Male' : 'Female'
+            };
 
-        // 2. Prepare complete template data with fallbacks
-        const templateData = {
-            ...application,
-            // Handle dates
-            date_of_birth: formatDate(application.date_of_birth),
-            signature_date: formatDate(application.signature_date),
-            parent_signature_date: formatDate(application.parent_signature_date),
-            created_at: formatDate(application.created_at),
-            updated_at: formatDate(application.updated_at),
-            // Add fallbacks for template-specific fields
-            marital_status: 'N/A', // Fallback for template
-            code: application.id_number || 'N/A', // Example mapping
-            gender: application.title === 'Mr' ? 'Male' : 'Female' // Example mapping
-        };
+            const templatePath = path.join(process.cwd(), 'templates', 'application_template.docx');
+            const templateBuffer = await fs.readFile(templatePath);
 
-        // 3. Load template
-        const templatePath = path.join(__dirname, "../templates/application_template.docx");
-        const templateBuffer = await fs.readFile(templatePath);
+            const docxBuffer = await createReport({
+                template: templateBuffer,
+                data: templateData,
+                cmdDelimiter: ['{{', '}}'],
+                rejectNullish: false,
+                failFast: false,
+                additionalJsContext: {
+                    formatDate: (date: string | Date) => formatDate(date)
+                }
+            });
 
-        // 4. Process template with error suppression
-        const docxBuffer = await createReport({
-            template: templateBuffer,
-            data: templateData,
-            cmdDelimiter: ['{{', '}}'],
-            rejectNullish: false,
-            failFast: false, // Continue even with errors
-            additionalJsContext: {
-                formatDate: (date: string | Date) => formatDate(date)
-            }
-        });
+            c.header('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+            c.header('Content-Disposition', `attachment; filename="Alphil_College_Application_${id}.docx"`);
+            return c.body(docxBuffer);
 
-        // 5. Send file
-        c.header('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-        c.header('Content-Disposition', `attachment; filename="Alphil College Application Form.docx"`);
-        return c.body(docxBuffer);
-
-    } catch (error) {
-        console.error("Error generating DOCX:", error);
-        return c.json({ 
-            error: "Failed to generate document",
-            details: "Please check your template contains only valid field names",
-            templateFields: [
-                'full_name', 'title', 'date_of_birth', 'nationality', 
-                'id_number', 'county', 'sub_county', 'phone_number',
-                'po_box', 'postal_code', 'town', 'email',
-                'next_of_kin', 'next_of_kin_phone', 'course_name',
-                'mode_of_study', 'intake', 'financier', 'religion'
-            ]
-        }, 500);
+        } catch (error) {
+            console.error("Error generating DOCX:", error);
+            return c.json({ 
+                success: false,
+                error: "Failed to generate document",
+                details: error instanceof Error ? error.message : "Unknown error"
+            }, 500);
+        }
     }
-}
-
 }
