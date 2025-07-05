@@ -158,11 +158,11 @@ function Navbar() {
             <div className={`pl-5 ${admissionsOpen ? 'block' : 'hidden'}`}>
               <a href="/admissions" className="block px-4 py-2 text-sm font-medium text-[#013220] hover:text-[#FF338B] hover:bg-[#FF338B]/10 rounded-md font-['Inter']">Overview</a>
               <a href="/admissions/requirements" className="block px-4 py-2 text-sm font-medium text-[#013220] hover:text-[#FF338B] hover:bg-[#FF338B]/10 rounded-md font-['Inter']">Requirements</a>
-              <a href="/admissions/forms" className="block px-4 py-2 text-sm font-medium text-[#013220] hover:text-[#FF338B] hover:bg-[#FF338B]/10 rounded-md font-['Inter']">Application</a>
-              <a href="/admissions/fee-structure" className="block px-4 py-2 text-sm font-medium text-[#013220] hover:text-[#FF338B] hover:bg-[#FF338B]/10 rounded-md font-['Inter']">Fees</a>
-              <a href="/admissions/payment-options" className="block px-4 py-2 text-sm font-medium text-[#013220] hover:text-[#FF338B] hover:bg-[#FF338B]/10 rounded-md font-['Inter']">Payments</a>
+              <a href="/admissions/forms" className="block px-4 py-2 text-sm font-medium text-[#013220] hover:text-[#FF338B] hover:bg-[#FF338B]/10 rounded-md font-['Inter']">Admission Form</a>
+              <a href="/admissions/payment-options" className="block px-4 py-2 text-sm font-medium text-[#013220] hover:text-[#FF338B] hover:bg-[#FF338B]/10 rounded-md font-['Inter']">Payment Options</a>
             </div>
           </div>
+
 
           <a href="/successStories" className="block px-4 py-3 text-base font-medium text-[#013220] hover:text-[#FF338B] hover:bg-[#FF338B]/10 rounded-md font-['Inter']">Success Stories</a>
           <a href="/blog" className="block px-4 py-3 text-base font-medium text-[#013220] hover:text-[#FF338B] hover:bg-[#FF338B]/10 rounded-md font-['Inter']">News & Events</a>
