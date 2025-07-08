@@ -2,6 +2,7 @@
 import { Context } from "hono";
 import { ApplicationsService } from "./applications.services";
 import fs from "fs/promises";
+import { existsSync } from "fs";
 import path from "path";
 import { createReport } from "docx-templates";
 
@@ -70,9 +71,14 @@ export class ApplicationController {
         gender: application.title === 'Mr' ? 'Male' : 'Female',
       };
 
-      const templatePath = path.join(__dirname, "../templates/application_template.docx");
+      const templatePath = path.resolve(process.cwd(), "backend/templates/application_template.docx");
       console.log("Resolved template path:", templatePath);
       console.log("Application Data Keys:", Object.keys(templateData));
+
+      if (!existsSync(templatePath)) {
+        console.error("Template file not found at:", templatePath);
+        return c.json({ error: "Template file missing on server." }, 500);
+      }
 
       const templateBuffer = await fs.readFile(templatePath);
 
