@@ -70,7 +70,7 @@ export class ApplicationController {
         gender: application.title === 'Mr' ? 'Male' : 'Female',
       };
 
-      const templatePath = path.join(__dirname, "../templates/application_template.docx");
+      const templatePath = path.resolve(process.cwd(), "src/templates/application_template.docx");
       console.log("Resolved template path:", templatePath);
       console.log("Application Data Keys:", Object.keys(templateData));
 
