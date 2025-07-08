@@ -52,71 +52,111 @@ export class ApplicationController {
   }
 
   static async generateApplicationDocx(c: Context) {
-    try {
-      const id = Number(c.req.param("id"));
-      if (isNaN(id)) return c.json({ error: "Invalid ID" }, 400);
+      try {
+          const id = Number(c.req.param("id"));
+          if (isNaN(id)) return c.json({ error: "Invalid ID" }, 400);
 
-      const application = await applicationService.getApplicationById(id);
-      if (!application) return c.json({ error: "Application not found" }, 404);
+          const application = await applicationService.getApplicationById(id);
+          if (!application) return c.json({ error: "Application not found" }, 404);
 
-      const templateData = {
-        ...application,
-        date_of_birth: formatDate(application.date_of_birth),
-        signature_date: formatDate(application.signature_date),
-        parent_signature_date: formatDate(application.parent_signature_date),
-        created_at: formatDate(application.created_at),
-        updated_at: formatDate(application.updated_at),
-        marital_status: 'N/A',
-        code: application.id_number || 'N/A',
-        gender: application.title === 'Mr' ? 'Male' : 'Female',
-      };
+          // Use absolute path based on process.cwd()
+          const templatePath = path.join(process.cwd(), 'templates', 'application_template.docx');
+          
+          // Check if template exists synchronously
+          if (!existsSync(templatePath)) {
+              return c.json({
+                  error: "Template file missing",
+                  details: `Template not found at: ${templatePath}`,
+                  suggestion: "Verify template file location in production environment"
+              }, 404);
+          }
 
-      const templatePath = path.resolve(process.cwd(), "backend/templates/application_template.docx");
-      console.log("Resolved template path:", templatePath);
-      console.log("Application Data Keys:", Object.keys(templateData));
+          type TemplateData = {
+              [key: string]: string | number | null | undefined;
+              full_name: string;
+              title: string;
+              date_of_birth: string;
+              nationality: string;
+              id_number: string;
+              county: string;
+              sub_county: string;
+              phone_number: string;
+              po_box: string;
+              postal_code: string;
+              town: string;
+              email: string;
+              next_of_kin: string;
+              next_of_kin_phone: string;
+              course_name: string;
+              mode_of_study: string;
+              intake: string;
+              financier: string;
+              religion: string;
+              signature_date: string;
+              parent_signature_date: string;
+              created_at: string;
+              updated_at: string;
+              marital_status: string;
+              code: string;
+              gender: string;
+              // add any other fields as needed
+          };
 
-      if (!existsSync(templatePath)) {
-        console.error("Template file not found at:", templatePath);
-        return c.json({ error: "Template file missing on server." }, 500);
+          const templateData: TemplateData = {
+              ...application,
+              date_of_birth: formatDate(application.date_of_birth),
+              signature_date: formatDate(application.signature_date),
+              parent_signature_date: formatDate(application.parent_signature_date),
+              created_at: formatDate(application.created_at),
+              updated_at: formatDate(application.updated_at),
+              marital_status: 'N/A',
+              code: application.id_number || 'N/A',
+              gender: application.title === 'Mr' ? 'Male' : 'Female',
+          };
+
+          // Validate template data
+          const requiredFields = [
+              'full_name', 'title', 'date_of_birth', 'nationality',
+              'id_number', 'county', 'sub_county', 'phone_number',
+              'po_box', 'postal_code', 'town', 'email',
+              'next_of_kin', 'next_of_kin_phone', 'course_name',
+              'mode_of_study', 'intake', 'financier', 'religion'
+          ] as (keyof TemplateData)[];
+
+          const missingFields = requiredFields.filter(field => !templateData[field]);
+          if (missingFields.length > 0) {
+              return c.json({
+                  error: "Incomplete application data",
+                  missingFields,
+                  suggestion: "Ensure all required fields are populated"
+              }, 400);
+          }
+
+          const templateBuffer = await fs.readFile(templatePath);
+          const docxBuffer = await createReport({
+              template: templateBuffer,
+              data: templateData,
+              cmdDelimiter: ['{{', '}}'],
+              rejectNullish: false,
+              failFast: false,
+              additionalJsContext: {
+                  formatDate: (date: string | Date) => formatDate(date),
+              },
+          });
+
+          c.header('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+          c.header('Content-Disposition', `attachment; filename="Alphil_College_Application_${id}.docx"`);
+          return c.body(docxBuffer);
+      } catch (error: any) {
+          console.error("Error generating DOCX:", error);
+          return c.json({
+              error: "Failed to generate document",
+              message: error.message,
+              stack: error.stack,
+              suggestion: "Check server logs for detailed error information"
+          }, 500);
       }
-
-      const templateBuffer = await fs.readFile(templatePath);
-
-      const docxBuffer = await createReport({
-        template: templateBuffer,
-        data: templateData,
-        cmdDelimiter: ['{{', '}}'],
-        rejectNullish: false,
-        failFast: false,
-        additionalJsContext: {
-          formatDate: (date: string | Date) => formatDate(date),
-        },
-      });
-
-      c.header('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-      c.header('Content-Disposition', `attachment; filename="Alphil_College_Application_${id}.docx"`);
-      return c.body(docxBuffer);
-    } catch (error: any) {
-      console.error("Error generating DOCX:", error);
-      return c.json(
-        {
-          error: "Failed to generate document",
-          message: error.message,
-          stack: error.stack,
-          templateFields: [
-            'full_name', 'title', 'date_of_birth', 'nationality',
-            'id_number', 'county', 'sub_county', 'phone_number',
-            'po_box', 'postal_code', 'town', 'email',
-            'next_of_kin', 'next_of_kin_phone', 'course_name',
-            'mode_of_study', 'intake', 'financier', 'religion'
-          ],
-        },
-        500
-      );
-    }
-  }
-
-  static async getAllApplications(c: Context) {
+  }  static async getAllApplications(c: Context) {
     try {
       const applications = await applicationService.getAllApplications();
       return c.json({ success: true, data: applications });
