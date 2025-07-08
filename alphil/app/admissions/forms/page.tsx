@@ -52,6 +52,30 @@ const AdmissionsPage = () => {
     religion: '',
   });
 
+  const placeholders: Record<string, string> = {
+    full_name: 'Jane Doe',
+    title: 'Ms',
+    date_of_birth: '1990-01-01',
+    nationality: 'Kenyan',
+    id_number: '12345678',
+    county: 'Nairobi',
+    sub_county: 'Westlands',
+    phone_number: '+254700000000',
+    po_box: '12345',
+    postal_code: '00100',
+    town: 'Nairobi',
+    email: 'jane.doe@example.com',
+    next_of_kin: 'John Doe',
+    next_of_kin_phone: '+254700000001',
+    next_next_of_kin: 'Mary Doe',
+    next_next_of_kin_phone: '+254700000002',
+    course_name: 'Computer Science',
+    mode_of_study: 'Full-time',
+    intake: 'September 2024',
+    financier: 'Self',
+    religion: 'Christian',
+  };
+
   const [loading, setLoading] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState<'success' | 'error' | null>(null);
   const [statusMessage, setStatusMessage] = useState('');
@@ -193,6 +217,7 @@ const AdmissionsPage = () => {
               name={key}
               id={key}
               value={value}
+              placeholder={placeholders[key]}
               onChange={handleChange}
               required={!key.includes('next_next')}
               className={inputClass}
@@ -200,7 +225,7 @@ const AdmissionsPage = () => {
           </div>
         ))}
 
-        <div className="md:col-span-2 flex justify-between mt-4">
+        <div className="md:col-span-2 flex justify-end gap-x-4 mt-4">
           <button
             type="button"
             onClick={handleDownload}
@@ -208,9 +233,7 @@ const AdmissionsPage = () => {
           >
             Download Filled Form
           </button>
-        </div>
 
-        <div className="md:col-span-2 flex justify-end">
           <button
             type="submit"
             disabled={loading}
