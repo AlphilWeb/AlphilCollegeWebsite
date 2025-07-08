@@ -1,227 +1,171 @@
-'use client';
-import React, { useState, useEffect } from 'react';
-import { fetchAPI } from '@/lib/api';
-import { FiCheckCircle, FiXCircle } from 'react-icons/fi';
+// src/Applications/applications.controller.ts
+import { Context } from "hono";
+import { ApplicationsService } from "./applications.services";
+import fs from "fs/promises";
+import { existsSync } from "fs";
+import path from "path";
+import { createReport } from "docx-templates";
 
-type ApplicationForm = {
-  full_name: string;
-  title: string;
-  date_of_birth: string;
-  nationality: string;
-  id_number: string;
-  county: string;
-  sub_county: string;
-  phone_number: string;
-  po_box: string;
-  postal_code: string;
-  town: string;
-  email: string;
-  next_of_kin: string;
-  next_of_kin_phone: string;
-  next_next_of_kin: string;
-  next_next_of_kin_phone: string;
-  course_name: string;
-  mode_of_study: string;
-  intake: string;
-  financier: string;
-  religion: string;
-};
+const applicationService = new ApplicationsService();
 
-const AdmissionsPage = () => {
-  const [formData, setFormData] = useState<ApplicationForm>({
-    full_name: '',
-    title: '',
-    date_of_birth: '',
-    nationality: '',
-    id_number: '',
-    county: '',
-    sub_county: '',
-    phone_number: '',
-    po_box: '',
-    postal_code: '',
-    town: '',
-    email: '',
-    next_of_kin: '',
-    next_of_kin_phone: '',
-    next_next_of_kin: '',
-    next_next_of_kin_phone: '',
-    course_name: '',
-    mode_of_study: '',
-    intake: '',
-    financier: '',
-    religion: '',
-  });
+function formatDate(dateString: string | Date | null | undefined): string {
+  if (!dateString) return 'N/A';
+  const date = new Date(dateString);
+  return isNaN(date.getTime())
+    ? 'Invalid Date'
+    : date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+}
 
-  const [loading, setLoading] = useState(false);
-  const [submissionStatus, setSubmissionStatus] = useState<'success' | 'error' | null>(null);
-  const [statusMessage, setStatusMessage] = useState('');
-  const [showToast, setShowToast] = useState(false);
-  const [applicationId, setApplicationId] = useState<number | null>(null);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setSubmissionStatus(null);
-    setStatusMessage('');
-    setShowToast(false);
-
+export class ApplicationController {
+  static async createApplication(c: Context) {
     try {
-      const response = await fetchAPI('/applications', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+      const application = await c.req.json();
+      const newApplication = await applicationService.createApplication({
+        ...application,
+        status: "Pending",
       });
 
-      if (response.success && response.data?.id) {
-        setSubmissionStatus('success');
-        setStatusMessage('Your application has been submitted successfully!');
-        setApplicationId(response.data.id);
-      } else {
-        throw new Error('Unexpected response format');
-      }
-    } catch (err) {
-      console.error(err);
-      setSubmissionStatus('error');
-      setStatusMessage('Failed to submit your application. Please try again later.');
-    } finally {
-      setLoading(false);
-      setShowToast(true);
-    }
-  };
-
-  useEffect(() => {
-    if (showToast) {
-      const timer = setTimeout(() => {
-        setShowToast(false);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [showToast]);
-
-  const handleDownload = async () => {
-    if (!applicationId) {
-      setSubmissionStatus('error');
-      setStatusMessage('Please submit the form first before downloading');
-      setShowToast(true);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://alphilcollegewebsite.onrender.com'}/applications/${applicationId}/download-docx`
+      return c.json(
+        {
+          success: true,
+          data: {
+            id: newApplication.id,
+            ...newApplication,
+          },
+        },
+        201
       );
+    } catch (error) {
+      console.error("Error creating application:", error);
+      return c.json(
+        {
+          success: false,
+          error: "Internal server error",
+        },
+        500
+      );
+    }
+  }
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+  static async generateApplicationDocx(c: Context) {
+    try {
+      const id = Number(c.req.param("id"));
+      if (isNaN(id)) return c.json({ error: "Invalid ID" }, 400);
+
+      const application = await applicationService.getApplicationById(id);
+      if (!application) return c.json({ error: "Application not found" }, 404);
+
+      const templateData = {
+        ...application,
+        date_of_birth: formatDate(application.date_of_birth),
+        signature_date: formatDate(application.signature_date),
+        parent_signature_date: formatDate(application.parent_signature_date),
+        created_at: formatDate(application.created_at),
+        updated_at: formatDate(application.updated_at),
+        marital_status: 'N/A',
+        code: application.id_number || 'N/A',
+        gender: application.title === 'Mr' ? 'Male' : 'Female',
+      };
+
+      const templatePath = path.resolve(process.cwd(), "backend/templates/application_template.docx");
+      console.log("Resolved template path:", templatePath);
+      console.log("Application Data Keys:", Object.keys(templateData));
+
+      if (!existsSync(templatePath)) {
+        console.error("Template file not found at:", templatePath);
+        return c.json({ error: "Template file missing on server." }, 500);
       }
 
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Alphil_College_Application_${applicationId}.docx`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Download failed:', error);
-      setSubmissionStatus('error');
-      setStatusMessage('Failed to download document. Please try again.');
-      setShowToast(true);
-    } finally {
-      setLoading(false);
+      const templateBuffer = await fs.readFile(templatePath);
+
+      const docxBuffer = await createReport({
+        template: templateBuffer,
+        data: templateData,
+        cmdDelimiter: ['{{', '}}'],
+        rejectNullish: false,
+        failFast: false,
+        additionalJsContext: {
+          formatDate: (date: string | Date) => formatDate(date),
+        },
+      });
+
+      c.header('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+      c.header('Content-Disposition', `attachment; filename="Alphil_College_Application_${id}.docx"`);
+      return c.body(docxBuffer);
+    } catch (error: any) {
+      console.error("Error generating DOCX:", error);
+      return c.json(
+        {
+          error: "Failed to generate document",
+          message: error.message,
+          stack: error.stack,
+          templateFields: [
+            'full_name', 'title', 'date_of_birth', 'nationality',
+            'id_number', 'county', 'sub_county', 'phone_number',
+            'po_box', 'postal_code', 'town', 'email',
+            'next_of_kin', 'next_of_kin_phone', 'course_name',
+            'mode_of_study', 'intake', 'financier', 'religion'
+          ],
+        },
+        500
+      );
     }
-  };
+  }
 
-  const inputClass =
-    'w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-400 text-gray-900';
+  static async getAllApplications(c: Context) {
+    try {
+      const applications = await applicationService.getAllApplications();
+      return c.json({ success: true, data: applications });
+    } catch (error) {
+      console.error("Error fetching applications:", error);
+      return c.json({ success: false, error: "Internal server error" }, 500);
+    }
+  }
 
-  return (
-    <div className="max-w-5xl mx-auto px-6 py-10 relative">
-      {showToast && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
-          <div
-            className={`relative z-50 max-w-sm w-full mx-auto rounded-2xl p-6 shadow-2xl border-2 flex items-center space-x-4 animate-fade-in ${
-              submissionStatus === 'success' ? 'border-green-600 bg-white' : 'border-red-600 bg-white'
-            }`}
-          >
-            {submissionStatus === 'success' ? (
-              <FiCheckCircle className="text-3xl text-green-600" />
-            ) : (
-              <FiXCircle className="text-3xl text-red-600" />
-            )}
-            <div
-              className={`font-semibold ${
-                submissionStatus === 'success' ? 'text-green-600' : 'text-red-600'
-              }`}
-            >
-              {statusMessage}
-            </div>
-          </div>
-        </div>
-      )}
+  static async getApplicationById(c: Context) {
+    try {
+      const id = Number(c.req.param("id"));
+      if (isNaN(id)) return c.json({ error: "Invalid ID" }, 400);
 
-      <style jsx global>{`
-        @keyframes fade-in {
-          from { opacity: 0; transform: translateY(20px) scale(0.95); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .animate-fade-in { animation: fade-in 0.3s ease-out; }
-      `}</style>
+      const application = await applicationService.getApplicationById(id);
+      if (!application) return c.json({ error: "Application not found" }, 404);
 
-      <h1 className="text-4xl font-bold mb-8 text-pink-800">Admissions Application</h1>
+      return c.json({ success: true, data: application });
+    } catch (error) {
+      console.error("Error fetching application:", error);
+      return c.json({ success: false, error: "Internal server error" }, 500);
+    }
+  }
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl p-8 shadow-lg grid grid-cols-1 md:grid-cols-2 gap-6">
-        {Object.entries(formData).map(([key, value]) => (
-          <div key={key} className={key.includes('next_next') ? 'md:col-span-2' : ''}>
-            <label htmlFor={key} className="block text-sm font-medium text-gray-700 mb-1">
-              {key.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
-            </label>
-            <input
-              type={key.includes('date') ? 'date' : 'text'}
-              name={key}
-              id={key}
-              value={value}
-              onChange={handleChange}
-              required={!key.includes('next_next')}
-              className={inputClass}
-            />
-          </div>
-        ))}
+  static async updateApplication(c: Context) {
+    try {
+      const id = Number(c.req.param("id"));
+      if (isNaN(id)) return c.json({ error: "Invalid ID" }, 400);
 
-        <div className="md:col-span-2 flex justify-between mt-4">
-          <button
-            type="button"
-            onClick={handleDownload}
-            className="px-6 py-2 border border-green-600 text-green-600 rounded-md hover:bg-green-100 transition"
-          >
-            Download Filled Form
-          </button>
-        </div>
+      const updates = await c.req.json();
+      const updated = await applicationService.updateApplication(id, updates);
 
-        <div className="md:col-span-2 flex justify-end">
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-6 py-2 bg-pink-800 text-white rounded-md hover:bg-pink-900 transition disabled:opacity-50"
-          >
-            {loading ? 'Submitting...' : 'Submit Application'}
-          </button>
-        </div>
-      </form>
-    </div>
-  );
-};
+      return c.json({ success: true, data: updated });
+    } catch (error) {
+      console.error("Error updating application:", error);
+      return c.json({ success: false, error: "Internal server error" }, 500);
+    }
+  }
 
-export default AdmissionsPage;
+  static async deleteApplication(c: Context) {
+    try {
+      const id = Number(c.req.param("id"));
+      if (isNaN(id)) return c.json({ error: "Invalid ID" }, 400);
+
+      await applicationService.deleteApplication(id);
+      return c.json({ success: true, message: "Application deleted" });
+    } catch (error) {
+      console.error("Error deleting application:", error);
+      return c.json({ success: false, error: "Internal server error" }, 500);
+    }
+  }
+}
