@@ -10,9 +10,10 @@ const Footer = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <img 
-                src="/logo.png" 
+                className="h-14 w-14 relative"
+                src="/android-chrome-512x512.png" 
                 alt="Alphil College Logo" 
-                className="w-16 h-auto"
+                
               />
               <h3 className="text-xl font-bold font-['Playfair_Display']">
                 Alphil <br /> Training College

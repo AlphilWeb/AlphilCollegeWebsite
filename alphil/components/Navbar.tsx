@@ -33,7 +33,7 @@ function Navbar() {
           <div className="flex-shrink-0 flex items-center">
             <div className="h-14 w-14 relative">
               <img 
-                src="/favicon-32x32.png" 
+                src="/android-chrome-512x512.png" 
                 alt="Alphil Training College Logo" 
                 className="object-contain h-full w-full"
               />
