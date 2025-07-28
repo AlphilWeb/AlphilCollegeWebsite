@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ApplicationController = void 0;
 const applications_services_1 = require("./applications.services");
 const promises_1 = __importDefault(require("fs/promises"));
+const fs_1 = require("fs");
 const path_1 = __importDefault(require("path"));
 const docx_templates_1 = require("docx-templates");
 const applicationService = new applications_services_1.ApplicationsService();
@@ -53,6 +54,16 @@ class ApplicationController {
             const application = await applicationService.getApplicationById(id);
             if (!application)
                 return c.json({ error: "Application not found" }, 404);
+            // Use absolute path based on process.cwd()
+            const templatePath = path_1.default.join(process.cwd(), 'templates', 'application_template.docx');
+            // Check if template exists synchronously
+            if (!(0, fs_1.existsSync)(templatePath)) {
+                return c.json({
+                    error: "Template file missing",
+                    details: `Template not found at: ${templatePath}`,
+                    suggestion: "Verify template file location in production environment"
+                }, 404);
+            }
             const templateData = {
                 ...application,
                 date_of_birth: formatDate(application.date_of_birth),
@@ -64,9 +75,22 @@ class ApplicationController {
                 code: application.id_number || 'N/A',
                 gender: application.title === 'Mr' ? 'Male' : 'Female',
             };
-            const templatePath = path_1.default.join(__dirname, "../templates/application_template.docx");
-            console.log("Resolved template path:", templatePath);
-            console.log("Application Data Keys:", Object.keys(templateData));
+            // Validate template data
+            const requiredFields = [
+                'full_name', 'title', 'date_of_birth', 'nationality',
+                'id_number', 'county', 'sub_county', 'phone_number',
+                'po_box', 'postal_code', 'town', 'email',
+                'next_of_kin', 'next_of_kin_phone', 'course_name',
+                'mode_of_study', 'intake', 'financier', 'religion'
+            ];
+            const missingFields = requiredFields.filter(field => !templateData[field]);
+            if (missingFields.length > 0) {
+                return c.json({
+                    error: "Incomplete application data",
+                    missingFields,
+                    suggestion: "Ensure all required fields are populated"
+                }, 400);
+            }
             const templateBuffer = await promises_1.default.readFile(templatePath);
             const docxBuffer = await (0, docx_templates_1.createReport)({
                 template: templateBuffer,
@@ -88,13 +112,7 @@ class ApplicationController {
                 error: "Failed to generate document",
                 message: error.message,
                 stack: error.stack,
-                templateFields: [
-                    'full_name', 'title', 'date_of_birth', 'nationality',
-                    'id_number', 'county', 'sub_county', 'phone_number',
-                    'po_box', 'postal_code', 'town', 'email',
-                    'next_of_kin', 'next_of_kin_phone', 'course_name',
-                    'mode_of_study', 'intake', 'financier', 'religion'
-                ],
+                suggestion: "Check server logs for detailed error information"
             }, 500);
         }
     }
