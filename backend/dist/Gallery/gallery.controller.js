@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteImage = exports.uploadImage = exports.getAllImages = void 0;
+exports.deleteImage = exports.uploadMultipleImages = exports.uploadImage = exports.getAllImages = void 0;
 const gallery_service_1 = require("./gallery.service");
+const gallery_service_2 = require("./gallery.service");
 const getAllImages = async (c) => {
     const items = await (0, gallery_service_1.getGalleryItems)();
     return c.json(items);
@@ -17,7 +18,7 @@ const uploadImage = async (c) => {
     try {
         const arrayBuffer = await imageFile.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
-        const uploadResult = await (0, gallery_service_1.uploadToCloudinary)(buffer, {
+        const uploadResult = await (0, gallery_service_2.uploadToCloudinary)(buffer, {
             folder: 'gallery',
             public_id: title.toLowerCase().replace(/\s+/g, '-')
         });
@@ -34,6 +35,49 @@ const uploadImage = async (c) => {
     }
 };
 exports.uploadImage = uploadImage;
+// Add this function for bulk uploads
+const uploadMultipleImages = async (c) => {
+    const formData = await c.req.formData();
+    const imageFiles = formData.getAll('images');
+    if (!imageFiles || imageFiles.length === 0) {
+        return c.json({ message: 'At least one image is required' }, 400);
+    }
+    try {
+        // Process all files
+        const uploadPromises = imageFiles.map(async (file, index) => {
+            const arrayBuffer = await file.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+            // Use original filename or generate one
+            const originalName = file.name.replace(/\.[^/.]+$/, ""); // Remove extension
+            const filename = originalName || `image_${Date.now()}_${index}`;
+            return {
+                buffer,
+                filename,
+                options: {
+                    folder: 'gallery',
+                    public_id: filename.toLowerCase().replace(/\s+/g, '-')
+                }
+            };
+        });
+        const filesToUpload = await Promise.all(uploadPromises);
+        // Upload all images to Cloudinary
+        const uploadResults = await (0, gallery_service_1.uploadMultipleToCloudinary)(filesToUpload);
+        // Prepare database entries
+        const galleryItems = uploadResults.map((result, index) => ({
+            title: filesToUpload[index].filename,
+            imageUrl: result.secure_url,
+            publicId: result.public_id
+        }));
+        // Insert all into database
+        const newItems = await (0, gallery_service_1.createMultipleGalleryItems)(galleryItems);
+        return c.json(newItems, 201);
+    }
+    catch (err) {
+        console.error('Bulk upload error:', err);
+        return c.json({ message: 'Bulk upload failed' }, 500);
+    }
+};
+exports.uploadMultipleImages = uploadMultipleImages;
 const deleteImage = async (c) => {
     const id = parseInt(c.req.param("id"));
     if (isNaN(id)) {

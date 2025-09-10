@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteMultipleFromCloudinary = exports.deleteGalleryItem = exports.getGalleryItems = exports.createGalleryItem = exports.uploadToCloudinary = void 0;
+exports.deleteMultipleFromCloudinary = exports.deleteGalleryItem = exports.getGalleryItems = exports.createMultipleGalleryItems = exports.createGalleryItem = exports.uploadMultipleToCloudinary = exports.uploadToCloudinary = void 0;
 // src/services/gallery.service.ts
 const cloudinary_1 = require("cloudinary");
 const db_1 = __importDefault(require("../db"));
@@ -42,6 +42,26 @@ const uploadToCloudinary = async (buffer, options = {}) => {
     });
 };
 exports.uploadToCloudinary = uploadToCloudinary;
+// Add this function for mass uploads
+const uploadMultipleToCloudinary = async (files, commonOptions = {}) => {
+    try {
+        const uploadPromises = files.map((file, index) => {
+            const individualOptions = {
+                ...commonOptions,
+                ...file.options,
+                public_id: file.filename ? undefined : `gallery_${Date.now()}_${index}`,
+            };
+            return (0, exports.uploadToCloudinary)(file.buffer, individualOptions);
+        });
+        const results = await Promise.all(uploadPromises);
+        return results;
+    }
+    catch (error) {
+        console.error('Mass upload error:', error);
+        throw new Error('Failed to upload multiple images to Cloudinary');
+    }
+};
+exports.uploadMultipleToCloudinary = uploadMultipleToCloudinary;
 const createGalleryItem = async (item) => {
     try {
         const [newItem] = await db_1.default
@@ -59,6 +79,24 @@ const createGalleryItem = async (item) => {
     }
 };
 exports.createGalleryItem = createGalleryItem;
+// Add this function for bulk database insertion
+const createMultipleGalleryItems = async (items) => {
+    try {
+        const newItems = await db_1.default
+            .insert(schema_1.GalleryTable)
+            .values(items)
+            .returning();
+        if (!newItems || newItems.length === 0) {
+            throw new Error('Failed to create gallery items');
+        }
+        return newItems;
+    }
+    catch (error) {
+        console.error('Error creating multiple gallery items:', error);
+        throw new Error('Failed to create gallery items in database');
+    }
+};
+exports.createMultipleGalleryItems = createMultipleGalleryItems;
 const getGalleryItems = async () => {
     try {
         return await db_1.default
