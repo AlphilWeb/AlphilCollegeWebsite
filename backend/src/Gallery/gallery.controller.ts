@@ -4,9 +4,11 @@ import {
   createGalleryItem, 
   getGalleryItems, 
   deleteGalleryItem, 
-  uploadToCloudinary 
+  uploadMultipleToCloudinary,
+  createMultipleGalleryItems
 } from "./gallery.service";
-import { GalleryItem, CloudinaryUploadResult } from "../types"; // Import the types
+import { GalleryItem, CloudinaryUploadResult } from "../types";
+import { uploadToCloudinary } from "./gallery.service";
 
 export const getAllImages = async (c: Context) => {
   const items: GalleryItem[] = await getGalleryItems();
@@ -41,6 +43,57 @@ export const uploadImage = async (c: Context): Promise<Response> => {
   } catch (err) {
     console.error('Upload error:', err);
     return c.json({ message: 'Upload failed' }, 500);
+  }
+};
+
+// Add this function for bulk uploads
+export const uploadMultipleImages = async (c: Context): Promise<Response> => {
+  const formData = await c.req.formData();
+  const imageFiles = formData.getAll('images') as File[];
+
+  if (!imageFiles || imageFiles.length === 0) {
+    return c.json({ message: 'At least one image is required' }, 400);
+  }
+
+  try {
+    // Process all files
+    const uploadPromises = imageFiles.map(async (file, index) => {
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      
+      // Use original filename or generate one
+      const originalName = file.name.replace(/\.[^/.]+$/, ""); // Remove extension
+      const filename = originalName || `image_${Date.now()}_${index}`;
+      
+      return {
+        buffer,
+        filename,
+        options: {
+          folder: 'gallery',
+          public_id: filename.toLowerCase().replace(/\s+/g, '-')
+        }
+      };
+    });
+
+    const filesToUpload = await Promise.all(uploadPromises);
+    
+    // Upload all images to Cloudinary
+    const uploadResults = await uploadMultipleToCloudinary(filesToUpload);
+
+    // Prepare database entries
+    const galleryItems = uploadResults.map((result, index) => ({
+      title: filesToUpload[index].filename,
+      imageUrl: result.secure_url,
+      publicId: result.public_id
+    }));
+
+    // Insert all into database
+    const newItems = await createMultipleGalleryItems(galleryItems);
+
+    return c.json(newItems, 201);
+  } catch (err) {
+    console.error('Bulk upload error:', err);
+    return c.json({ message: 'Bulk upload failed' }, 500);
   }
 };
 
