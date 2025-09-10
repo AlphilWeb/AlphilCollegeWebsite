@@ -52,6 +52,34 @@ export const uploadToCloudinary = async (
   });
 };
 
+// Add this function for mass uploads
+export const uploadMultipleToCloudinary = async (
+  files: Array<{
+    buffer: Buffer;
+    filename?: string;
+    options?: Record<string, unknown>;
+  }>,
+  commonOptions: Record<string, unknown> = {}
+): Promise<CloudinaryUploadResult[]> => {
+  try {
+    const uploadPromises = files.map((file, index) => {
+      const individualOptions = {
+        ...commonOptions,
+        ...file.options,
+        public_id: file.filename ? undefined : `gallery_${Date.now()}_${index}`,
+      };
+
+      return uploadToCloudinary(file.buffer, individualOptions);
+    });
+
+    const results = await Promise.all(uploadPromises);
+    return results;
+  } catch (error) {
+    console.error('Mass upload error:', error);
+    throw new Error('Failed to upload multiple images to Cloudinary');
+  }
+};
+
 export const createGalleryItem = async (
   item: InsertGallery
 ): Promise<SelectGallery> => {
@@ -69,6 +97,27 @@ export const createGalleryItem = async (
   } catch (error) {
     console.error('Error creating gallery item:', error);
     throw new Error('Failed to create gallery item in database');
+  }
+};
+
+// Add this function for bulk database insertion
+export const createMultipleGalleryItems = async (
+  items: InsertGallery[]
+): Promise<SelectGallery[]> => {
+  try {
+    const newItems = await db
+      .insert(GalleryTable)
+      .values(items)
+      .returning();
+    
+    if (!newItems || newItems.length === 0) {
+      throw new Error('Failed to create gallery items');
+    }
+
+    return newItems;
+  } catch (error) {
+    console.error('Error creating multiple gallery items:', error);
+    throw new Error('Failed to create gallery items in database');
   }
 };
 
