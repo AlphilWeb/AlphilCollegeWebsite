@@ -16,6 +16,7 @@ export interface CloudinaryUploadResult {
   format?: string;
 }
 
+// Single upload function (original functionality)
 export const uploadToCloudinary = async (
   buffer: Buffer,
   options: Record<string, unknown> = {}
@@ -46,4 +47,64 @@ export const uploadToCloudinary = async (
     );
     uploadStream.end(buffer);
   });
+};
+
+// Mass upload function for multiple photos
+export const uploadMultipleToCloudinary = async (
+  files: Array<{
+    buffer: Buffer;
+    filename?: string;
+    options?: Record<string, unknown>;
+  }>,
+  commonOptions: Record<string, unknown> = {}
+): Promise<CloudinaryUploadResult[]> => {
+  try {
+    const uploadPromises = files.map((file, index) => {
+      const individualOptions = {
+        ...commonOptions,
+        ...file.options,
+        // Use filename if provided, otherwise generate a unique name
+        public_id: file.filename ? undefined : `hero_${Date.now()}_${index}`,
+      };
+
+      return uploadToCloudinary(file.buffer, individualOptions);
+    });
+
+    // Use Promise.all to upload all files concurrently
+    const results = await Promise.all(uploadPromises);
+    return results;
+  } catch (error) {
+    console.error('Mass upload error:', error);
+    throw new Error('Failed to upload multiple images to Cloudinary');
+  }
+};
+
+// Alternative: Sequential upload with error handling for each file
+export const uploadMultipleSequential = async (
+  files: Array<{
+    buffer: Buffer;
+    filename?: string;
+    options?: Record<string, unknown>;
+  }>,
+  commonOptions: Record<string, unknown> = {}
+): Promise<Array<CloudinaryUploadResult | { error: string }>> => {
+  const results: Array<CloudinaryUploadResult | { error: string }> = [];
+
+  for (const [index, file] of files.entries()) {
+    try {
+      const individualOptions = {
+        ...commonOptions,
+        ...file.options,
+        public_id: file.filename ? undefined : `hero_${Date.now()}_${index}`,
+      };
+
+      const result = await uploadToCloudinary(file.buffer, individualOptions);
+      results.push(result);
+    } catch (error) {
+      console.error(`Failed to upload file ${index}:`, error);
+      results.push({ error: `Failed to upload file ${index}` });
+    }
+  }
+
+  return results;
 };
