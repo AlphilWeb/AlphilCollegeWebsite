@@ -4,7 +4,7 @@ import { logger } from "hono/logger";
 import { cors } from "hono/cors";
 import { serve } from "@hono/node-server";
 import authRouter from './middleware/auth.router';
-import { authMiddleware, adminMiddleware } from './middleware/auth.middleware';
+// import { authMiddleware, adminMiddleware } from './middleware/auth.middleware';
 
 
 // Route imports
