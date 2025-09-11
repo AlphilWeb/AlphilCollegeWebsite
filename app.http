@@ -1,12 +1,16 @@
 # ### 1. Login to get auth token
 # # @name login
-# POST http://localhost:3000/auth/login
-# Content-Type: application/json
+### Create Seed Admin User
+POST http://localhost:3000/admin/users
+Content-Type: application/json
 
-# {
-#   "email": "admin@test.com",
-#   "password": "securepassword123"
-# }
+{
+  "name": "Philip Koech",
+  "email": "alphildirector@gmail.com",
+  "password": "Kipngetich2025",
+  "role": "admin"
+}
+
 
 # ### Store the token from login response
 # @authToken = {{login.response.body.token}}
@@ -69,44 +73,3 @@
 # ### 10. Attempt admin route with user role (should fail if not admin)
 # GET http://localhost:3000/admin/users
 # Authorization: Bearer {{authToken}}
-
-# Base URL
-@baseUrl = http://localhost:3000
-
-### Health Check
-GET {{baseUrl}}/health
-
-### Get All Documents (Public)
-GET {{baseUrl}}/documents
-
-### Upload Document (Admin - Requires Auth)
-POST {{baseUrl}}/documents
-Content-Type: multipart/form-data; boundary=boundary
-Authorization: Bearer {{admin_token}}
-
---boundary
-Content-Disposition: form-data; name="file"; filename="fee-structure.pdf"
-Content-Type: application/pdf
-
-< ./path/to/your/fee-structure.pdf
---boundary--
-
-### Delete Document (Admin - Requires Auth)
-DELETE {{baseUrl}}/documents/1
-Authorization: Bearer {{admin_token}}
-
-### Access Uploaded File (Public)
-GET {{baseUrl}}/documents/uploads/12345-fee-structure.pdf
-
-### Example: Get Auth Token
-# @name login
-POST {{baseUrl}}/auth/login
-Content-Type: application/json
-
-{
-  "email": "admin@test.com",
-  "password": "securepassword123"
-}
-
-### Set token from login response
-@admin_token = {{login.response.body.token}}
