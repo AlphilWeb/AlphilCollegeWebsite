@@ -80,6 +80,8 @@ export const uploadMultipleToCloudinary = async (
   }
 };
 
+
+
 export const createGalleryItem = async (
   item: InsertGallery
 ): Promise<SelectGallery> => {
