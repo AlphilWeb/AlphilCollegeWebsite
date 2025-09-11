@@ -13,11 +13,13 @@ interface GalleryItem {
 export default function AdminGalleryPage() {
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [title, setTitle] = useState('');
+  const [bulkTitle, setBulkTitle] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [bulkFiles, setBulkFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const [bulkLoading, setBulkLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'single' | 'bulk'>('single');
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bulkFileInputRef = useRef<HTMLInputElement>(null);
 
@@ -73,12 +75,13 @@ export default function AdminGalleryPage() {
 
   const handleBulkUpload = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (bulkFiles.length === 0) {
-      alert('Please select at least one image.');
+    if (bulkFiles.length === 0 || !bulkTitle) {
+      alert('Please provide a title and select at least one image.');
       return;
     }
 
     const formData = new FormData();
+    formData.append('title', bulkTitle);
     bulkFiles.forEach(file => {
       formData.append('images', file);
     });
@@ -98,6 +101,7 @@ export default function AdminGalleryPage() {
       if (!res.ok) throw new Error(await res.text());
       await loadGallery();
 
+      setBulkTitle('');
       setBulkFiles([]);
       if (bulkFileInputRef.current) bulkFileInputRef.current.value = '';
       alert(`Successfully uploaded ${bulkFiles.length} images!`);
@@ -127,6 +131,42 @@ export default function AdminGalleryPage() {
 
   const removeBulkFile = (index: number) => {
     setBulkFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // Drag and drop handlers
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent, isBulk: boolean) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    const files = Array.from(e.dataTransfer.files).filter(file => 
+      file.type.startsWith('image/')
+    );
+    
+    if (files.length > 0) {
+      if (isBulk) {
+        setBulkFiles(prev => [...prev, ...files]);
+      } else {
+        setImageFile(files[0]);
+      }
+    }
+  };
+
+  const triggerFileInput = (isBulk: boolean) => {
+    if (isBulk) {
+      bulkFileInputRef.current?.click();
+    } else {
+      fileInputRef.current?.click();
+    }
   };
 
   return (
@@ -184,19 +224,63 @@ export default function AdminGalleryPage() {
 
             <div>
               <label className="block text-sm font-medium text-[#013220] mb-2">Image</label>
-              <input
-                type="file"
-                accept="image/*"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#FF338B] focus:border-transparent file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#013220] file:text-white hover:file:bg-[#013220]/90"
-                ref={fileInputRef}
-                onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-                required
-              />
+              
+              <div 
+                className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
+                  isDragging ? 'border-[#FF338B] bg-[#FF338B]/10' : 'border-gray-300 hover:border-gray-400'
+                }`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDrop(e, false)}
+                onClick={() => triggerFileInput(false)}
+              >
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  ref={fileInputRef}
+                  onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                  required
+                />
+                
+                <div className="flex flex-col items-center justify-center space-y-3">
+                  <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                  </svg>
+                  
+                  <div>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-semibold text-[#FF338B]">Click to upload</span> or drag and drop
+                    </p>
+                    <p className="text-xs text-gray-500">SVG, PNG, JPG or GIF (max. 10MB)</p>
+                  </div>
+                </div>
+              </div>
+              
+              {imageFile && (
+                <div className="mt-4 flex items-center justify-between bg-gray-50 rounded-md p-3">
+                  <div className="flex items-center space-x-3">
+                    <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span className="text-sm font-medium text-gray-700 truncate">{imageFile.name}</span>
+                  </div>
+                  <button 
+                    type="button" 
+                    onClick={() => setImageFile(null)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                  </button>
+                </div>
+              )}
             </div>
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !imageFile || !title}
               className="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-[#FF338B] to-[#FF6B9C] text-white rounded-lg hover:from-[#FF338B]/90 hover:to-[#FF6B9C]/90 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed font-medium shadow-md hover:shadow-lg"
             >
               {loading ? (
@@ -222,17 +306,52 @@ export default function AdminGalleryPage() {
           
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-[#013220] mb-2">Select Images</label>
+              <label className="block text-sm font-medium text-[#013220] mb-2">Title for All Images</label>
               <input
-                type="file"
-                accept="image/*"
-                multiple
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#FF338B] focus:border-transparent file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#013220] file:text-white hover:file:bg-[#013220]/90"
-                ref={bulkFileInputRef}
-                onChange={handleBulkFileSelect}
+                type="text"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#FF338B] focus:border-transparent text-[#013220]"
+                value={bulkTitle}
+                onChange={(e) => setBulkTitle(e.target.value)}
                 required
+                placeholder="Enter title for all images"
               />
-              <p className="text-sm text-gray-500 mt-2">Select multiple images to upload at once</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-[#013220] mb-2">Select Images</label>
+              
+              <div 
+                className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
+                  isDragging ? 'border-[#013220] bg-[#013220]/10' : 'border-gray-300 hover:border-gray-400'
+                }`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDrop(e, true)}
+                onClick={() => triggerFileInput(true)}
+              >
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  ref={bulkFileInputRef}
+                  onChange={handleBulkFileSelect}
+                  required
+                />
+                
+                <div className="flex flex-col items-center justify-center space-y-3">
+                  <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                  </svg>
+                  
+                  <div>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-semibold text-[#013220]">Click to upload</span> or drag and drop
+                    </p>
+                    <p className="text-xs text-gray-500">SVG, PNG, JPG or GIF (max. 10MB each)</p>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Selected Files Preview */}
@@ -242,7 +361,12 @@ export default function AdminGalleryPage() {
                 <div className="space-y-2 max-h-40 overflow-y-auto">
                   {bulkFiles.map((file, index) => (
                     <div key={index} className="flex items-center justify-between bg-white rounded-md px-3 py-2 border">
-                      <span className="text-sm text-gray-700 truncate">{file.name}</span>
+                      <div className="flex items-center space-x-2">
+                        <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        <span className="text-sm text-gray-700 truncate">{file.name}</span>
+                      </div>
                       <button
                         type="button"
                         onClick={() => removeBulkFile(index)}
@@ -260,7 +384,7 @@ export default function AdminGalleryPage() {
 
             <button
               type="submit"
-              disabled={bulkLoading || bulkFiles.length === 0}
+              disabled={bulkLoading || bulkFiles.length === 0 || !bulkTitle}
               className="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-[#013220] to-[#015235] text-white rounded-lg hover:from-[#013220]/90 hover:to-[#015235]/90 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed font-medium shadow-md hover:shadow-lg"
             >
               {bulkLoading ? (
