@@ -41,6 +41,7 @@ exports.ApplicationsTable = (0, pg_core_1.pgTable)("applications", {
     course_name: (0, pg_core_1.text)("course_name").notNull(),
     mode_of_study: (0, pg_core_1.text)("mode_of_study").notNull(),
     intake: (0, pg_core_1.text)("intake").notNull(),
+    level_of_study: (0, pg_core_1.text)("level_of_study"),
     // Other Details
     financier: (0, pg_core_1.text)("financier").notNull(),
     religion: (0, pg_core_1.text)("religion").notNull(),
