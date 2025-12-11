@@ -46,6 +46,7 @@ export const ApplicationsTable = pgTable("applications", {
   course_name: text("course_name").notNull(),
   mode_of_study: text("mode_of_study").notNull(),
   intake: text("intake").notNull(),
+  level_of_study: text("level_of_study"),
 
   // Other Details
   financier: text("financier").notNull(),
