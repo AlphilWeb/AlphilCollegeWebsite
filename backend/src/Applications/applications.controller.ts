@@ -89,6 +89,7 @@ export class ApplicationController {
               next_of_kin_phone: string;
               course_name: string;
               mode_of_study: string;
+              level_of_study: string;
               intake: string;
               financier: string;
               religion: string;
@@ -103,15 +104,16 @@ export class ApplicationController {
           };
 
           const templateData: TemplateData = {
-              ...application,
-              date_of_birth: formatDate(application.date_of_birth),
-              signature_date: formatDate(application.signature_date),
-              parent_signature_date: formatDate(application.parent_signature_date),
-              created_at: formatDate(application.created_at),
-              updated_at: formatDate(application.updated_at),
-              marital_status: 'N/A',
-              code: application.id_number || 'N/A',
-              gender: application.title === 'Mr' ? 'Male' : 'Female',
+            ...application,
+            date_of_birth: formatDate(application.date_of_birth),
+            signature_date: formatDate(application.signature_date),
+            parent_signature_date: formatDate(application.parent_signature_date),
+            created_at: formatDate(application.created_at),
+            updated_at: formatDate(application.updated_at),
+            marital_status: 'N/A',
+            code: application.id_number || 'N/A',
+            gender: application.title === 'Mr' ? 'Male' : 'Female',
+            level_of_study: ""
           };
 
           // Validate template data
@@ -120,7 +122,7 @@ export class ApplicationController {
               'id_number', 'county', 'sub_county', 'phone_number',
               'po_box', 'postal_code', 'town', 'email',
               'next_of_kin', 'next_of_kin_phone', 'course_name',
-              'mode_of_study', 'intake', 'financier', 'religion'
+              'mode_of_study','level_of_study', 'intake', 'financier', 'religion'
           ] as (keyof TemplateData)[];
 
           const missingFields = requiredFields.filter(field => !templateData[field]);
