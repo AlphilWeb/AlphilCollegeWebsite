@@ -24,6 +24,7 @@ type Application = {
   next_next_of_kin_phone: string;
   course_name: string;
   mode_of_study: string;
+  level_of_study: string; // <--- ADDED FIELD
   intake: string;
   financier: string;
   religion: string;
@@ -186,6 +187,7 @@ export default function ApplicationsPage() {
                 <p><strong className="text-[#013220]">Email:</strong> {app.email}</p>
                 <p><strong className="text-[#013220]">Phone:</strong> {app.phone_number}</p>
                 <p><strong className="text-[#013220]">Course:</strong> {app.course_name}</p>
+                <p><strong className="text-[#013220]">Level:</strong> {app.level_of_study}</p>
                 <p><strong className="text-[#013220]">ID Number:</strong> {app.id_number}</p>
                 <p><strong className="text-[#013220]">County:</strong> {app.county}</p>
                 <p><strong className="text-[#013220]">Date:</strong> {new Date(app.created_at).toLocaleDateString()}</p>
