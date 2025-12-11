@@ -74,6 +74,7 @@ class ApplicationController {
                 marital_status: 'N/A',
                 code: application.id_number || 'N/A',
                 gender: application.title === 'Mr' ? 'Male' : 'Female',
+                level_of_study: ""
             };
             // Validate template data
             const requiredFields = [
@@ -81,7 +82,7 @@ class ApplicationController {
                 'id_number', 'county', 'sub_county', 'phone_number',
                 'po_box', 'postal_code', 'town', 'email',
                 'next_of_kin', 'next_of_kin_phone', 'course_name',
-                'mode_of_study', 'intake', 'financier', 'religion'
+                'mode_of_study', 'level_of_study', 'intake', 'financier', 'religion'
             ];
             const missingFields = requiredFields.filter(field => !templateData[field]);
             if (missingFields.length > 0) {
