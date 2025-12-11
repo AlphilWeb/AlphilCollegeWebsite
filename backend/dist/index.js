@@ -9,6 +9,7 @@ const logger_1 = require("hono/logger");
 const cors_1 = require("hono/cors");
 const node_server_1 = require("@hono/node-server");
 const auth_router_1 = __importDefault(require("./middleware/auth.router"));
+// import { authMiddleware, adminMiddleware } from './middleware/auth.middleware';
 // Route imports
 const applications_route_1 = __importDefault(require("./Applications/applications.route"));
 const blog_router_1 = __importDefault(require("./Blog/blog.router"));
