@@ -38,7 +38,11 @@ exports.uploadImage = uploadImage;
 // Add this function for bulk uploads
 const uploadMultipleImages = async (c) => {
     const formData = await c.req.formData();
+    const title = formData.get('title')?.toString() || '';
     const imageFiles = formData.getAll('images');
+    if (!title) {
+        return c.json({ message: 'Title is required' }, 400);
+    }
     if (!imageFiles || imageFiles.length === 0) {
         return c.json({ message: 'At least one image is required' }, 400);
     }
@@ -47,24 +51,23 @@ const uploadMultipleImages = async (c) => {
         const uploadPromises = imageFiles.map(async (file, index) => {
             const arrayBuffer = await file.arrayBuffer();
             const buffer = Buffer.from(arrayBuffer);
-            // Use original filename or generate one
-            const originalName = file.name.replace(/\.[^/.]+$/, ""); // Remove extension
-            const filename = originalName || `image_${Date.now()}_${index}`;
+            // Generate unique public_id for each image with the same title
+            const uniqueId = `${Date.now()}_${index}`;
+            const publicId = `${title.toLowerCase().replace(/\s+/g, '-')}_${uniqueId}`;
             return {
                 buffer,
-                filename,
                 options: {
                     folder: 'gallery',
-                    public_id: filename.toLowerCase().replace(/\s+/g, '-')
+                    public_id: publicId
                 }
             };
         });
         const filesToUpload = await Promise.all(uploadPromises);
         // Upload all images to Cloudinary
         const uploadResults = await (0, gallery_service_1.uploadMultipleToCloudinary)(filesToUpload);
-        // Prepare database entries
-        const galleryItems = uploadResults.map((result, index) => ({
-            title: filesToUpload[index].filename,
+        // Prepare database entries - all with the same title
+        const galleryItems = uploadResults.map((result) => ({
+            title: title,
             imageUrl: result.secure_url,
             publicId: result.public_id
         }));
