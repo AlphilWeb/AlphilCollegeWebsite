@@ -22,6 +22,7 @@ type ApplicationForm = {
   next_next_of_kin_phone: string;
   course_name: string;
   mode_of_study: string;
+  level_of_study: string; // <--- ADDED FIELD
   intake: string;
   financier: string;
   religion: string;
@@ -47,6 +48,7 @@ const AdmissionsPage = () => {
     next_next_of_kin_phone: '',
     course_name: '',
     mode_of_study: '',
+    level_of_study: '', // <--- ADDED FIELD
     intake: '',
     financier: '',
     religion: '',
@@ -71,6 +73,7 @@ const AdmissionsPage = () => {
     next_next_of_kin_phone: '+254700000002',
     course_name: 'Computer Science',
     mode_of_study: 'Full-time',
+    level_of_study: 'Diploma', // <--- ADDED PLACEHOLDER
     intake: 'September 2024',
     financier: 'Self',
     religion: 'Christian',
