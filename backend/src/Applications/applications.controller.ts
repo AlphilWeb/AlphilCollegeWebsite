@@ -82,7 +82,6 @@ export class ApplicationController {
               sub_county: string;
               phone_number: string;
               po_box: string;
-              postal_code: string;
               town: string;
               email: string;
               next_of_kin: string;
@@ -90,43 +89,49 @@ export class ApplicationController {
               course_name: string;
               mode_of_study: string;
               level_of_study: string;
-              intake: string;
               financier: string;
               religion: string;
-              signature_date: string;
-              parent_signature_date: string;
-              created_at: string;
-              updated_at: string;
               marital_status: string;
-              code: string;
               gender: string;
-              // add any other fields as needed
           };
 
+          // Build a sanitized template data object explicitly to avoid
+          // spreading the entire application (which may include Date fields
+          // like created_at/updated_at that are incompatible with TemplateData).
           const templateData: TemplateData = {
-            ...application,
+            full_name: application.full_name,
+            title: application.title,
             date_of_birth: formatDate(application.date_of_birth),
-            signature_date: formatDate(application.signature_date),
-            parent_signature_date: formatDate(application.parent_signature_date),
-            created_at: formatDate(application.created_at),
-            updated_at: formatDate(application.updated_at),
-            marital_status: 'N/A',
-            code: application.id_number || 'N/A',
+            nationality: application.nationality,
+            id_number: application.id_number,
+            county: application.county,
+            sub_county: application.sub_county,
+            phone_number: application.phone_number,
+            po_box: application.po_box,
+            town: application.town,
+            email: application.email,
+            next_of_kin: application.next_of_kin,
+            next_of_kin_phone: application.next_of_kin_phone,
+            course_name: application.course_name,
+            mode_of_study: application.mode_of_study || 'N/A',
+            level_of_study: application.level_of_study || 'N/A',
+            financier: application.financier || 'N/A',
+            religion: application.religion || 'N/A',
+            marital_status: (application as any).marital_status ?? 'N/A',
             gender: application.title === 'Mr' ? 'Male' : 'Female',
-            level_of_study: ""
           };
 
-          // Validate template data
           const requiredFields = [
               'full_name', 'title', 'date_of_birth', 'nationality',
               'id_number', 'county', 'sub_county', 'phone_number',
-              'po_box', 'postal_code', 'town', 'email',
+              'po_box', 'town', 'email',
               'next_of_kin', 'next_of_kin_phone', 'course_name',
-              'mode_of_study','level_of_study', 'intake', 'financier', 'religion'
+              'mode_of_study', 'level_of_study', 'financier', 'religion'
           ] as (keyof TemplateData)[];
 
           const missingFields = requiredFields.filter(field => !templateData[field]);
           if (missingFields.length > 0) {
+              console.log("Missing fields detected:", missingFields); // Check your server logs!
               return c.json({
                   error: "Incomplete application data",
                   missingFields,
