@@ -20,8 +20,6 @@ type Application = {
   email: string;
   next_of_kin: string;
   next_of_kin_phone: string;
-  next_next_of_kin: string;
-  next_next_of_kin_phone: string;
   course_name: string;
   mode_of_study: string;
   level_of_study: string; // <--- ADDED FIELD
