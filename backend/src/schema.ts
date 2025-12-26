@@ -21,8 +21,6 @@ export type SelectUser = typeof UsersTable.$inferSelect;
 // Applications
 export const ApplicationsTable = pgTable("applications", {
   id: serial("id").primaryKey(),
-  
-  // Applicant's Details
   full_name: text("full_name").notNull(),
   title: text("title").notNull(),
   date_of_birth: text("date_of_birth").notNull(),
@@ -32,27 +30,15 @@ export const ApplicationsTable = pgTable("applications", {
   sub_county: text("sub_county").notNull(),
   phone_number: text("phone_number").notNull(),
   po_box: text("po_box").notNull(),
-  postal_code: text("postal_code").notNull(),
   town: text("town").notNull(),
   email: text("email").notNull(),
-
-  // Next of Kin Details
   next_of_kin: text("next_of_kin").notNull(),
   next_of_kin_phone: text("next_of_kin_phone").notNull(),
-  next_next_of_kin: text("next_next_of_kin"),
-  next_next_of_kin_phone: text("next_next_of_kin_phone"),
-
-  // Education Plan
   course_name: text("course_name").notNull(),
-  mode_of_study: text("mode_of_study").notNull(),
-  intake: text("intake").notNull(),
+  mode_of_study: text("mode_of_study"),
   level_of_study: text("level_of_study"),
-
-  // Other Details
-  financier: text("financier").notNull(),
-  religion: text("religion").notNull(),
-
-  // System Fields
+  financier: text("financier"),
+  religion: text("religion"),
   status: text("status").default("Pending"),
   student_signature: text("student_signature"),
   signature_date: text("signature_date"),
