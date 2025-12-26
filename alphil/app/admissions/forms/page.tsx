@@ -1,251 +1,205 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { fetchAPI } from '@/lib/api';
-import { FiCheckCircle, FiXCircle } from 'react-icons/fi';
+import { FiCheckCircle, FiXCircle, FiDownload, FiSend, FiUser, FiHome, FiBookOpen, FiCreditCard } from 'react-icons/fi';
 
 type ApplicationForm = {
-  full_name: string;
-  title: string;
-  date_of_birth: string;
-  nationality: string;
-  id_number: string;
-  county: string;
-  sub_county: string;
-  phone_number: string;
-  po_box: string;
-  postal_code: string;
-  town: string;
-  email: string;
-  next_of_kin: string;
-  next_of_kin_phone: string;
-  next_next_of_kin: string;
-  next_next_of_kin_phone: string;
-  course_name: string;
-  mode_of_study: string;
-  level_of_study: string; // <--- ADDED FIELD
-  intake: string;
-  financier: string;
-  religion: string;
+  full_name: string; title: string; date_of_birth: string; nationality: string;
+  id_number: string; county: string; sub_county: string; phone_number: string;
+  po_box: string; town: string; email: string; next_of_kin: string;
+  next_of_kin_phone: string; course_name: string; mode_of_study: string;
+  level_of_study: string; financier: string; religion: string;
 };
 
 const AdmissionsPage = () => {
   const [formData, setFormData] = useState<ApplicationForm>({
-    full_name: '',
-    title: '',
-    date_of_birth: '',
-    nationality: '',
-    id_number: '',
-    county: '',
-    sub_county: '',
-    phone_number: '',
-    po_box: '',
-    postal_code: '',
-    town: '',
-    email: '',
-    next_of_kin: '',
-    next_of_kin_phone: '',
-    next_next_of_kin: '',
-    next_next_of_kin_phone: '',
-    course_name: '',
-    mode_of_study: '',
-    level_of_study: '', // <--- ADDED FIELD
-    intake: '',
-    financier: '',
-    religion: '',
+    full_name: '', title: '', date_of_birth: '', nationality: '',
+    id_number: '', county: '', sub_county: '', phone_number: '',
+    po_box: '', town: '', email: '', next_of_kin: '',
+    next_of_kin_phone: '', course_name: '', mode_of_study: '',
+    level_of_study: '', financier: '', religion: '',
   });
 
-  const placeholders: Record<string, string> = {
-    full_name: 'Jane Doe',
-    title: 'Ms',
-    date_of_birth: '1990-01-01',
-    nationality: 'Kenyan',
-    id_number: '12345678',
-    county: 'Nairobi',
-    sub_county: 'Westlands',
-    phone_number: '+254700000000',
-    po_box: '12345',
-    postal_code: '00100',
-    town: 'Nairobi',
-    email: 'jane.doe@example.com',
-    next_of_kin: 'John Doe',
-    next_of_kin_phone: '+254700000001',
-    next_next_of_kin: 'Mary Doe',
-    next_next_of_kin_phone: '+254700000002',
-    course_name: 'Computer Science',
-    mode_of_study: 'Full-time',
-    level_of_study: 'Diploma', // <--- ADDED PLACEHOLDER
-    intake: 'September 2024',
-    financier: 'Self',
-    religion: 'Christian',
-  };
-
   const [loading, setLoading] = useState(false);
-  const [submissionStatus, setSubmissionStatus] = useState<'success' | 'error' | null>(null);
-  const [statusMessage, setStatusMessage] = useState('');
   const [showToast, setShowToast] = useState(false);
+  const [submissionStatus, setSubmissionStatus] = useState<'success' | 'error' | null>(null);
   const [applicationId, setApplicationId] = useState<number | null>(null);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => setShowToast(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showToast]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setSubmissionStatus(null);
-    setStatusMessage('');
-    setShowToast(false);
-
     try {
       const response = await fetchAPI('/applications', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-
-      if (response.success && response.data?.id) {
+      if (response.success) {
         setSubmissionStatus('success');
-        setStatusMessage('Your application has been submitted successfully!');
         setApplicationId(response.data.id);
-      } else {
-        throw new Error('Unexpected response format');
+        setShowToast(true);
       }
     } catch (err) {
-      console.error(err);
       setSubmissionStatus('error');
-      setStatusMessage('Failed to submit your application. Please try again later.');
+      setShowToast(true);
     } finally {
       setLoading(false);
-      setShowToast(true);
     }
   };
 
-  useEffect(() => {
-    if (showToast) {
-      const timer = setTimeout(() => {
-        setShowToast(false);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [showToast]);
-
   const handleDownload = async () => {
-    if (!applicationId) {
-      setSubmissionStatus('error');
-      setStatusMessage('Please submit the form first before downloading');
-      setShowToast(true);
-      return;
-    }
-
+    if (!applicationId) return;
     try {
       setLoading(true);
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://alphilcollegewebsite.onrender.com'}/applications/${applicationId}/download-docx`
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+      const response = await fetch(`${baseUrl}/applications/${applicationId}/download-docx`);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `Alphil_College_Application_${applicationId}.docx`;
-      document.body.appendChild(a);
+      a.download = `Application_${applicationId}.docx`;
       a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Download failed:', error);
       setSubmissionStatus('error');
-      setStatusMessage('Failed to download document. Please try again.');
       setShowToast(true);
     } finally {
       setLoading(false);
     }
   };
 
-  const inputClass =
-    'w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-green-400 text-gray-900';
+  const SectionTitle = ({ icon: Icon, title }: { icon: any, title: string }) => (
+    <div className="flex items-center space-x-2 border-b border-gray-100 pb-2 mb-4 mt-6">
+      <Icon className="text-pink-800 text-xl" />
+      <h2 className="text-lg font-semibold text-gray-800 uppercase tracking-wider">{title}</h2>
+    </div>
+  );
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-10 relative">
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 text-black">
       {showToast && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
-          <div
-            className={`relative z-50 max-w-sm w-full mx-auto rounded-2xl p-6 shadow-2xl border-2 flex items-center space-x-4 animate-fade-in ${
-              submissionStatus === 'success' ? 'border-green-600 bg-white' : 'border-red-600 bg-white'
-            }`}
-          >
-            {submissionStatus === 'success' ? (
-              <FiCheckCircle className="text-3xl text-green-600" />
-            ) : (
-              <FiXCircle className="text-3xl text-red-600" />
-            )}
-            <div
-              className={`font-semibold ${
-                submissionStatus === 'success' ? 'text-green-600' : 'text-red-600'
-              }`}
-            >
-              {statusMessage}
-            </div>
+        <div className="fixed top-5 right-5 z-50 animate-bounce-in">
+          <div className={`flex items-center p-4 rounded-lg shadow-xl border-l-4 bg-white ${submissionStatus === 'success' ? 'border-green-500' : 'border-red-500'}`}>
+            {submissionStatus === 'success' ? <FiCheckCircle className="text-green-500 mr-3 text-xl" /> : <FiXCircle className="text-red-500 mr-3 text-xl" />}
+            <p className="text-gray-700 font-medium">
+              {submissionStatus === 'success' ? 'Application Submitted!' : 'Submission Failed'}
+            </p>
           </div>
         </div>
       )}
 
-      <style jsx global>{`
-        @keyframes fade-in {
-          from { opacity: 0; transform: translateY(20px) scale(0.95); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .animate-fade-in { animation: fade-in 0.3s ease-out; }
-      `}</style>
-
-      <h1 className="text-4xl font-bold mb-8 text-pink-800">Admissions Application</h1>
-
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl p-8 shadow-lg grid grid-cols-1 md:grid-cols-2 gap-6">
-        {Object.entries(formData).map(([key, value]) => (
-          <div key={key} className={key.includes('next_next') ? 'md:col-span-2' : ''}>
-            <label htmlFor={key} className="block text-sm font-medium text-gray-700 mb-1">
-              {key.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
-            </label>
-            <input
-              type={key.includes('date') ? 'date' : 'text'}
-              name={key}
-              id={key}
-              value={value}
-              placeholder={placeholders[key]}
-              onChange={handleChange}
-              required={!key.includes('next_next')}
-              className={inputClass}
-            />
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-white shadow-2xl rounded-2xl overflow-hidden">
+          <div className="bg-pink-800 p-8 text-white text-center">
+            <h1 className="text-3xl font-bold uppercase tracking-tight">Admission Application Form</h1>
+            <p className="mt-2 opacity-90 text-sm italic">Join our community. Complete all fields below.</p>
           </div>
-        ))}
 
-        <div className="md:col-span-2 flex justify-end gap-x-4 mt-4">
-          <button
-            type="button"
-            onClick={handleDownload}
-            className="px-6 py-2 border border-green-600 text-green-600 rounded-md hover:bg-green-100 transition"
-          >
-            Download Filled Form
-          </button>
+          <form onSubmit={handleSubmit} className="p-8 space-y-4">
+            {/* PERSONAL DETAILS */}
+            <SectionTitle icon={FiUser} title="Personal Details" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+               <div>
+                <label className="text-xs font-bold text-gray-500 uppercase">Title</label>
+                <select name="title" value={formData.title} onChange={handleChange} required className="w-full border-gray-200 border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-800/20">
+                  <option value="">Select...</option>
+                  <option value="Mr">Mr.</option>
+                  <option value="Ms">Ms.</option>
+                  <option value="Mrs">Mrs.</option>
+                </select>
+              </div>
+              <div className="md:col-span-2">
+                <label className="text-xs font-bold text-gray-500 uppercase">Full Name</label>
+                <input name="full_name" type="text" onChange={handleChange} required placeholder="Full Legal Name" className="w-full border-gray-200 border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-800/20" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:col-span-3">
+                <div>
+                    <label className="text-xs font-bold text-gray-500 uppercase">Religion</label>
+                    <input name="religion" type="text" placeholder="e.g. Christian, Muslim" onChange={handleChange} required className="w-full border-gray-200 border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-800/20" />
+                </div>
+                <div>
+                    <label className="text-xs font-bold text-gray-500 uppercase">Date of Birth</label>
+                    <input name="date_of_birth" type="date" onChange={handleChange} required className="w-full border-gray-200 border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-800/20" />
+                </div>
+              </div>
+            </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-6 py-2 bg-pink-800 text-white rounded-md hover:bg-pink-900 transition disabled:opacity-50"
-          >
-            {loading ? 'Submitting...' : 'Submit Application'}
-          </button>
+            {/* CONTACT DETAILS */}
+            <SectionTitle icon={FiHome} title="Contact & Location" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input name="email" type="email" placeholder="Email Address" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none" />
+              <input name="phone_number" type="tel" placeholder="Phone Number" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none" />
+              <div className="grid grid-cols-2 gap-2">
+                <input name="county" type="text" placeholder="County" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none" />
+                <input name="sub_county" type="text" placeholder="Sub-County" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none" />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <input name="po_box" type="text" placeholder="P.O. Box" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none" />
+                <input name="town" type="text" placeholder="Town" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none" />
+              </div>
+            </div>
+
+            {/* ACADEMICS */}
+            <SectionTitle icon={FiBookOpen} title="Academics & Kin" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input name="course_name" type="text" placeholder="Course Name" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none" />
+              <div className="grid grid-cols-2 gap-2">
+                <select name="level_of_study" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none">
+                    <option value="">Level...</option>
+                    <option value="Certificate">Certificate</option>
+                    <option value="Diploma">Diploma</option>
+                </select>
+                <select name="mode_of_study" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none">
+                    <option value="">Mode...</option>
+                    <option value="Full-time">Full-time</option>
+                    <option value="Part-time">Part-time</option>
+                    <option value="Distance">Distance</option>
+                </select>
+              </div>
+              <input name="next_of_kin" type="text" placeholder="Next of Kin Name" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none" />
+              <input name="next_of_kin_phone" type="tel" placeholder="Next of Kin Phone" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none" />
+            </div>
+
+            {/* FINANCING */}
+            <SectionTitle icon={FiCreditCard} title="Financing" />
+            <div className="grid grid-cols-1">
+              <input name="financier" type="text" placeholder="Who will fund your studies? (e.g. Self, Parent, Sponsor)" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none" />
+            </div>
+
+            {/* BUTTONS */}
+            <div className="pt-8 flex flex-col md:flex-row gap-4">
+              <button type="submit" disabled={loading} className="flex-[2] bg-pink-800 text-white py-3.5 rounded-xl font-bold hover:bg-pink-900 transition flex items-center justify-center space-x-2 shadow-lg shadow-pink-800/30">
+                <FiSend /> <span>{loading ? 'Submitting...' : 'Submit Application'}</span>
+              </button>
+              
+              {applicationId && (
+                <button type="button" onClick={handleDownload} className="flex-1 border-2 border-pink-800 text-pink-800 py-3.5 rounded-xl font-bold hover:bg-pink-50 transition flex items-center justify-center space-x-2">
+                  <FiDownload /> <span>Download DOCX</span>
+                </button>
+              )}
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
+      
+      <style jsx>{`
+        @keyframes bounce-in {
+          0% { transform: scale(0.9); opacity: 0; }
+          70% { transform: scale(1.05); }
+          100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-bounce-in { animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+      `}</style>
     </div>
   );
 };
