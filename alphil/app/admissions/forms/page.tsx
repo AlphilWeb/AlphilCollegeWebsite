@@ -1,23 +1,62 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { fetchAPI } from '@/lib/api';
-import { FiCheckCircle, FiXCircle, FiDownload, FiSend, FiUser, FiHome, FiBookOpen, FiCreditCard } from 'react-icons/fi';
+import { 
+  FiCheckCircle, 
+  FiXCircle, 
+  FiDownload, 
+  FiSend, 
+  FiUser, 
+  FiHome, 
+  FiBookOpen, 
+  FiCreditCard,
+  FiCalendar,
+  FiFlag,
+  FiFileText,
+  FiShield
+} from 'react-icons/fi';
 
 type ApplicationForm = {
-  full_name: string; title: string; date_of_birth: string; nationality: string;
-  id_number: string; county: string; sub_county: string; phone_number: string;
-  po_box: string; town: string; email: string; next_of_kin: string;
-  next_of_kin_phone: string; course_name: string; mode_of_study: string;
-  level_of_study: string; financier: string; religion: string;
+  full_name: string;
+  title: string;
+  date_of_birth: string;
+  nationality: string;
+  id_number: string;
+  county: string;
+  sub_county: string;
+  phone_number: string;
+  po_box: string;
+  town: string;
+  email: string;
+  next_of_kin: string;
+  next_of_kin_phone: string;
+  course_name: string;
+  mode_of_study: string;
+  level_of_study: string;
+  financier: string;
+  religion: string;
 };
 
 const AdmissionsPage = () => {
   const [formData, setFormData] = useState<ApplicationForm>({
-    full_name: '', title: '', date_of_birth: '', nationality: '',
-    id_number: '', county: '', sub_county: '', phone_number: '',
-    po_box: '', town: '', email: '', next_of_kin: '',
-    next_of_kin_phone: '', course_name: '', mode_of_study: '',
-    level_of_study: '', financier: '', religion: '',
+    full_name: '',
+    title: '',
+    date_of_birth: '',
+    nationality: '',
+    id_number: '',
+    county: '',
+    sub_county: '',
+    phone_number: '',
+    po_box: '',
+    town: '',
+    email: '',
+    next_of_kin: '',
+    next_of_kin_phone: '',
+    course_name: '',
+    mode_of_study: '',
+    level_of_study: '',
+    financier: '',
+    religion: '',
   });
 
   const [loading, setLoading] = useState(false);
@@ -49,8 +88,30 @@ const AdmissionsPage = () => {
         setSubmissionStatus('success');
         setApplicationId(response.data.id);
         setShowToast(true);
+        // Reset form after successful submission
+        setFormData({
+          full_name: '',
+          title: '',
+          date_of_birth: '',
+          nationality: '',
+          id_number: '',
+          county: '',
+          sub_county: '',
+          phone_number: '',
+          po_box: '',
+          town: '',
+          email: '',
+          next_of_kin: '',
+          next_of_kin_phone: '',
+          course_name: '',
+          mode_of_study: '',
+          level_of_study: '',
+          financier: '',
+          religion: '',
+        });
       }
     } catch (err) {
+      console.error('Submission error:', err);
       setSubmissionStatus('error');
       setShowToast(true);
     } finally {
@@ -64,13 +125,23 @@ const AdmissionsPage = () => {
       setLoading(true);
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
       const response = await fetch(`${baseUrl}/applications/${applicationId}/download-docx`);
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Download failed');
+      }
+      
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `Application_${applicationId}.docx`;
+      a.download = `Alphil_College_Application_${applicationId}.pdf`;
+      document.body.appendChild(a);
       a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
     } catch (error) {
+      console.error('Download error:', error);
       setSubmissionStatus('error');
       setShowToast(true);
     } finally {
@@ -86,112 +157,366 @@ const AdmissionsPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 text-black">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8 text-black">
       {showToast && (
         <div className="fixed top-5 right-5 z-50 animate-bounce-in">
           <div className={`flex items-center p-4 rounded-lg shadow-xl border-l-4 bg-white ${submissionStatus === 'success' ? 'border-green-500' : 'border-red-500'}`}>
-            {submissionStatus === 'success' ? <FiCheckCircle className="text-green-500 mr-3 text-xl" /> : <FiXCircle className="text-red-500 mr-3 text-xl" />}
-            <p className="text-gray-700 font-medium">
-              {submissionStatus === 'success' ? 'Application Submitted!' : 'Submission Failed'}
-            </p>
+            {submissionStatus === 'success' ? (
+              <FiCheckCircle className="text-green-500 mr-3 text-xl" />
+            ) : (
+              <FiXCircle className="text-red-500 mr-3 text-xl" />
+            )}
+            <div>
+              <p className="text-gray-700 font-medium">
+                {submissionStatus === 'success' ? 'Application Submitted Successfully!' : 'Submission Failed'}
+              </p>
+              {submissionStatus === 'success' && applicationId && (
+                <p className="text-sm text-gray-500 mt-1">Your Application ID: {applicationId}</p>
+              )}
+            </div>
           </div>
         </div>
       )}
 
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white shadow-2xl rounded-2xl overflow-hidden">
-          <div className="bg-pink-800 p-8 text-white text-center">
-            <h1 className="text-3xl font-bold uppercase tracking-tight">Admission Application Form</h1>
-            <p className="mt-2 opacity-90 text-sm italic">Join our community. Complete all fields below.</p>
+      <div className="max-w-6xl mx-auto">
+        <div className="bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-200">
+          <div className="bg-gradient-to-r from-pink-800 to-pink-700 p-8 text-white text-center">
+            <h1 className="text-3xl font-bold uppercase tracking-tight">Alphil College Admission Application</h1>
+            <p className="mt-2 opacity-90 text-sm">Complete all fields below to submit your application</p>
+            <div className="mt-4 flex justify-center items-center space-x-4 text-xs opacity-80">
+              <div className="flex items-center">
+                <FiCalendar className="mr-1" />
+                <span>Academic Year 2024</span>
+              </div>
+              <div className="flex items-center">
+                <FiShield className="mr-1" />
+                <span>Secure & Confidential</span>
+              </div>
+            </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-8 space-y-4">
-            {/* PERSONAL DETAILS */}
-            <SectionTitle icon={FiUser} title="Personal Details" />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-               <div>
-                <label className="text-xs font-bold text-gray-500 uppercase">Title</label>
-                <select name="title" value={formData.title} onChange={handleChange} required className="w-full border-gray-200 border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-800/20">
-                  <option value="">Select...</option>
+          <form onSubmit={handleSubmit} className="p-8 space-y-6">
+            {/* SECTION 1: PERSONAL DETAILS */}
+            <SectionTitle icon={FiUser} title="Personal Information" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Title*</label>
+                <select
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  required
+                  className="w-full border-gray-300 border p-3 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                >
+                  <option value="">Select Title</option>
                   <option value="Mr">Mr.</option>
                   <option value="Ms">Ms.</option>
                   <option value="Mrs">Mrs.</option>
                 </select>
               </div>
-              <div className="md:col-span-2">
-                <label className="text-xs font-bold text-gray-500 uppercase">Full Name</label>
-                <input name="full_name" type="text" onChange={handleChange} required placeholder="Full Legal Name" className="w-full border-gray-200 border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-800/20" />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:col-span-3">
-                <div>
-                    <label className="text-xs font-bold text-gray-500 uppercase">Religion</label>
-                    <input name="religion" type="text" placeholder="e.g. Christian, Muslim" onChange={handleChange} required className="w-full border-gray-200 border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-800/20" />
-                </div>
-                <div>
-                    <label className="text-xs font-bold text-gray-500 uppercase">Date of Birth</label>
-                    <input name="date_of_birth" type="date" onChange={handleChange} required className="w-full border-gray-200 border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-800/20" />
-                </div>
-              </div>
-            </div>
-
-            {/* CONTACT DETAILS */}
-            <SectionTitle icon={FiHome} title="Contact & Location" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input name="email" type="email" placeholder="Email Address" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none" />
-              <input name="phone_number" type="tel" placeholder="Phone Number" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none" />
-              <div className="grid grid-cols-2 gap-2">
-                <input name="county" type="text" placeholder="County" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none" />
-                <input name="sub_county" type="text" placeholder="Sub-County" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none" />
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <input name="po_box" type="text" placeholder="P.O. Box" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none" />
-                <input name="town" type="text" placeholder="Town" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none" />
-              </div>
-            </div>
-
-            {/* ACADEMICS */}
-            <SectionTitle icon={FiBookOpen} title="Academics & Kin" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input name="course_name" type="text" placeholder="Course Name" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none" />
-              <div className="grid grid-cols-2 gap-2">
-                <select name="level_of_study" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none">
-                    <option value="">Level...</option>
-                    <option value="Certificate">Certificate</option>
-                    <option value="Diploma">Diploma</option>
-                </select>
-                <select name="mode_of_study" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none">
-                    <option value="">Mode...</option>
-                    <option value="Full-time">Full-time</option>
-                    <option value="Part-time">Part-time</option>
-                    <option value="Distance">Distance</option>
-                </select>
-              </div>
-              <input name="next_of_kin" type="text" placeholder="Next of Kin Name" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none" />
-              <input name="next_of_kin_phone" type="tel" placeholder="Next of Kin Phone" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none" />
-            </div>
-
-            {/* FINANCING */}
-            <SectionTitle icon={FiCreditCard} title="Financing" />
-            <div className="grid grid-cols-1">
-              <input name="financier" type="text" placeholder="Who will fund your studies? (e.g. Self, Parent, Sponsor)" onChange={handleChange} required className="border p-2.5 rounded-lg bg-gray-50 focus:bg-white outline-none" />
-            </div>
-
-            {/* BUTTONS */}
-            <div className="pt-8 flex flex-col md:flex-row gap-4">
-              <button type="submit" disabled={loading} className="flex-[2] bg-pink-800 text-white py-3.5 rounded-xl font-bold hover:bg-pink-900 transition flex items-center justify-center space-x-2 shadow-lg shadow-pink-800/30">
-                <FiSend /> <span>{loading ? 'Submitting...' : 'Submit Application'}</span>
-              </button>
               
-              {applicationId && (
-                <button type="button" onClick={handleDownload} className="flex-1 border-2 border-pink-800 text-pink-800 py-3.5 rounded-xl font-bold hover:bg-pink-50 transition flex items-center justify-center space-x-2">
-                  <FiDownload /> <span>Download DOCX</span>
+              <div className="lg:col-span-3">
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Full Name*</label>
+                <input
+                  name="full_name"
+                  type="text"
+                  value={formData.full_name}
+                  onChange={handleChange}
+                  required
+                  placeholder="Enter your full legal name"
+                  className="w-full border-gray-300 border p-3 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Date of Birth*</label>
+                <input
+                  name="date_of_birth"
+                  type="date"
+                  value={formData.date_of_birth}
+                  onChange={handleChange}
+                  required
+                  className="w-full border-gray-300 border p-3 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Nationality*</label>
+                <input
+                  name="nationality"
+                  type="text"
+                  value={formData.nationality}
+                  onChange={handleChange}
+                  required
+                  placeholder="e.g., Kenyan"
+                  className="w-full border-gray-300 border p-3 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">ID/Passport Number*</label>
+                <input
+                  name="id_number"
+                  type="text"
+                  value={formData.id_number}
+                  onChange={handleChange}
+                  required
+                  placeholder="National ID or Passport"
+                  className="w-full border-gray-300 border p-3 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Religion</label>
+                <input
+                  name="religion"
+                  type="text"
+                  value={formData.religion}
+                  onChange={handleChange}
+                  placeholder="e.g., Christian, Muslim"
+                  className="w-full border-gray-300 border p-3 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                />
+              </div>
+            </div>
+
+            {/* SECTION 2: CONTACT & LOCATION */}
+            <SectionTitle icon={FiHome} title="Contact & Location Details" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Email Address*</label>
+                <input
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  placeholder="your.email@example.com"
+                  className="w-full border-gray-300 border p-3 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Phone Number*</label>
+                <input
+                  name="phone_number"
+                  type="tel"
+                  value={formData.phone_number}
+                  onChange={handleChange}
+                  required
+                  placeholder="07XX XXX XXX"
+                  className="w-full border-gray-300 border p-3 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">County*</label>
+                <input
+                  name="county"
+                  type="text"
+                  value={formData.county}
+                  onChange={handleChange}
+                  required
+                  placeholder="County of Residence"
+                  className="w-full border-gray-300 border p-3 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Sub-County*</label>
+                <input
+                  name="sub_county"
+                  type="text"
+                  value={formData.sub_county}
+                  onChange={handleChange}
+                  required
+                  placeholder="Sub-County"
+                  className="w-full border-gray-300 border p-3 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">P.O. Box*</label>
+                <input
+                  name="po_box"
+                  type="text"
+                  value={formData.po_box}
+                  onChange={handleChange}
+                  required
+                  placeholder="P.O. Box Number"
+                  className="w-full border-gray-300 border p-3 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Town*</label>
+                <input
+                  name="town"
+                  type="text"
+                  value={formData.town}
+                  onChange={handleChange}
+                  required
+                  placeholder="Town/City"
+                  className="w-full border-gray-300 border p-3 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                />
+              </div>
+            </div>
+
+            {/* SECTION 3: ACADEMICS & NEXT OF KIN */}
+            <SectionTitle icon={FiBookOpen} title="Academic & Next of Kin Information" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="lg:col-span-2">
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Course Name*</label>
+                <input
+                  name="course_name"
+                  type="text"
+                  value={formData.course_name}
+                  onChange={handleChange}
+                  required
+                  placeholder="e.g., Diploma in Computer Science"
+                  className="w-full border-gray-300 border p-3 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Level of Study*</label>
+                <select
+                  name="level_of_study"
+                  value={formData.level_of_study}
+                  onChange={handleChange}
+                  required
+                  className="w-full border-gray-300 border p-3 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                >
+                  <option value="">Select Level</option>
+                  <option value="Certificate">Certificate</option>
+                  <option value="Diploma">Diploma</option>
+                  <option value="Degree">Degree</option>
+                  <option value="Postgraduate">Postgraduate</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Mode of Study*</label>
+                <select
+                  name="mode_of_study"
+                  value={formData.mode_of_study}
+                  onChange={handleChange}
+                  required
+                  className="w-full border-gray-300 border p-3 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                >
+                  <option value="">Select Mode</option>
+                  <option value="Full-time">Full-time</option>
+                  <option value="Part-time">Part-time</option>
+                  <option value="Distance">Distance Learning</option>
+                  <option value="Evening">Evening</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Next of Kin Name*</label>
+                <input
+                  name="next_of_kin"
+                  type="text"
+                  value={formData.next_of_kin}
+                  onChange={handleChange}
+                  required
+                  placeholder="Full name of next of kin"
+                  className="w-full border-gray-300 border p-3 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Next of Kin Phone*</label>
+                <input
+                  name="next_of_kin_phone"
+                  type="tel"
+                  value={formData.next_of_kin_phone}
+                  onChange={handleChange}
+                  required
+                  placeholder="07XX XXX XXX"
+                  className="w-full border-gray-300 border p-3 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                />
+              </div>
+            </div>
+
+            {/* SECTION 4: FINANCING */}
+            <SectionTitle icon={FiCreditCard} title="Financing Information" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="md:col-span-2">
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Financier/Sponsor*</label>
+                <input
+                  name="financier"
+                  type="text"
+                  value={formData.financier}
+                  onChange={handleChange}
+                  required
+                  placeholder="Who will fund your studies? (e.g., Self, Parents, Scholarship, HELB)"
+                  className="w-full border-gray-300 border p-3 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                />
+              </div>
+            </div>
+
+            {/* FORM SUBMISSION & ACTIONS */}
+            <div className="pt-8 border-t border-gray-200">
+              <div className="bg-gray-50 p-6 rounded-xl mb-6">
+                <div className="flex items-start">
+                  <FiFileText className="text-pink-700 mt-1 mr-3 text-xl" />
+                  <div>
+                    <h3 className="font-semibold text-gray-800">Important Notes</h3>
+                    <ul className="mt-2 text-sm text-gray-600 space-y-1">
+                      <li>• All fields marked with * are required</li>
+                      <li>• Ensure all information is accurate before submission</li>
+                      <li>• You can download your completed application after submission</li>
+                      <li>• You will receive a confirmation email once processed</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col md:flex-row gap-4">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex-[2] bg-gradient-to-r from-pink-800 to-pink-700 text-white py-4 rounded-xl font-bold hover:from-pink-900 hover:to-pink-800 transition duration-300 flex items-center justify-center space-x-3 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      <span>Submitting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <FiSend />
+                      <span>Submit Application</span>
+                    </>
+                  )}
                 </button>
-              )}
+
+                {applicationId && (
+                  <button
+                    type="button"
+                    onClick={handleDownload}
+                    disabled={loading}
+                    className="flex-1 border-2 border-pink-800 text-pink-800 py-4 rounded-xl font-bold hover:bg-pink-50 transition duration-300 flex items-center justify-center space-x-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <FiDownload />
+                    <span>Download DOCX</span>
+                  </button>
+                )}
+              </div>
+
+              <p className="text-center text-sm text-gray-500 mt-6">
+                By submitting this form, you agree to our Terms and Conditions
+              </p>
             </div>
           </form>
         </div>
+
+        <div className="mt-8 text-center text-sm text-gray-500">
+          <p>© {new Date().getFullYear()} Alphil College. All rights reserved.</p>
+          <p className="mt-1">Need help? Contact admissions@alphilcollege.ac.ke or call +254 700 000 000</p>
+        </div>
       </div>
-      
+
       <style jsx>{`
         @keyframes bounce-in {
           0% { transform: scale(0.9); opacity: 0; }
