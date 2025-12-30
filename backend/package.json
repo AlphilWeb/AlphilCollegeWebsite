@@ -22,6 +22,7 @@
 	"dependencies": {
 		"@hono/node-server": "^1.14.4",
 		"@neondatabase/serverless": "^1.0.1",
+		"@types/pdfmake": "^0.2.12",
 		"bcryptjs": "^3.0.2",
 		"busboy": "^1.6.0",
 		"cloudinary": "^2.7.0",
@@ -31,9 +32,12 @@
 		"drizzle-orm": "^0.44.3",
 		"express": "^5.1.0",
 		"formidable": "^3.5.4",
+		"fs": "0.0.1-security",
 		"hono": "^4.8.0",
 		"jsonwebtoken": "^9.0.2",
 		"pdf-lib": "^1.17.1",
+		"pdfkit": "^0.17.2",
+		"pdfmake": "^0.2.21",
 		"pg": "^8.16.0"
 	}
 }
