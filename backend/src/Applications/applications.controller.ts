@@ -1,10 +1,8 @@
 // src/Applications/applications.controller.ts
 import { Context } from "hono";
 import { ApplicationsService } from "./applications.services";
-import fs from "fs/promises";
-import { existsSync } from "fs";
-import path from "path";
-import { createReport } from "docx-templates";
+import PdfPrinter from 'pdfmake';
+import { TDocumentDefinitions } from 'pdfmake/interfaces';
 
 const applicationService = new ApplicationsService();
 
@@ -52,118 +50,333 @@ export class ApplicationController {
   }
 
   static async generateApplicationDocx(c: Context) {
-      try {
-          const id = Number(c.req.param("id"));
-          if (isNaN(id)) return c.json({ error: "Invalid ID" }, 400);
+    try {
+      const id = Number(c.req.param("id"));
+      if (isNaN(id)) return c.json({ error: "Invalid ID" }, 400);
 
-          const application = await applicationService.getApplicationById(id);
-          if (!application) return c.json({ error: "Application not found" }, 404);
+      const application = await applicationService.getApplicationById(id);
+      if (!application) return c.json({ error: "Application not found" }, 404);
 
-          // Use absolute path based on process.cwd()
-          const templatePath = path.join(process.cwd(), 'templates', 'application_template.docx');
+      // PDF document definition
+      const docDefinition: TDocumentDefinitions = {
+        pageSize: 'A4',
+        pageMargins: [40, 60, 40, 60],
+        header: {
+          text: 'ALPHIL COLLEGE - ADMISSION APPLICATION',
+          alignment: 'center',
+          bold: true,
+          fontSize: 16,
+          margin: [0, 20, 0, 20],
+          color: '#2c5282'
+        },
+        footer: function(currentPage: number, pageCount: number) {
+          return {
+            text: `Application ID: ${id} | Page ${currentPage} of ${pageCount}`,
+            alignment: 'center',
+            fontSize: 8,
+            margin: [0, 10, 0, 0],
+            color: '#718096'
+          };
+        },
+        content: [
+          // Title
+          {
+            text: 'APPLICATION FORM',
+            style: 'header',
+            alignment: 'center',
+            margin: [0, 0, 0, 30]
+          },
           
-          // Check if template exists synchronously
-          if (!existsSync(templatePath)) {
-              return c.json({
-                  error: "Template file missing",
-                  details: `Template not found at: ${templatePath}`,
-                  suggestion: "Verify template file location in production environment"
-              }, 404);
+          // Personal Information Section
+          {
+            text: '1. PERSONAL INFORMATION',
+            style: 'sectionHeader',
+            margin: [0, 0, 0, 10]
+          },
+          {
+            table: {
+              widths: ['*', '*', '*', '*'],
+              body: [
+                [
+                  { text: 'Full Name:', bold: true },
+                  application.full_name,
+                  { text: 'Title:', bold: true },
+                  application.title
+                ],
+                [
+                  { text: 'Date of Birth:', bold: true },
+                  formatDate(application.date_of_birth),
+                  { text: 'Nationality:', bold: true },
+                  application.nationality
+                ],
+                [
+                  { text: 'ID/Passport No:', bold: true },
+                  application.id_number,
+                  { text: 'Religion:', bold: true },
+                  application.religion || 'N/A'
+                ],
+                [
+                  { text: 'Gender:', bold: true },
+                  application.title === 'Mr' ? 'Male' : 'Female',
+                  { text: 'Email:', bold: true },
+                  application.email
+                ]
+              ]
+            },
+            layout: {
+              hLineWidth: function(i: number, node: any) { return 0.5; },
+              vLineWidth: function(i: number, node: any) { return 0.5; },
+              hLineColor: function(i: number, node: any) { return '#e2e8f0'; },
+              vLineColor: function(i: number, node: any) { return '#e2e8f0'; },
+              paddingLeft: function(i: number, node: any) { return 5; },
+              paddingRight: function(i: number, node: any) { return 5; },
+              paddingTop: function(i: number, node: any) { return 3; },
+              paddingBottom: function(i: number, node: any) { return 3; }
+            },
+            margin: [0, 0, 0, 20]
+          },
+
+          // Contact Information Section
+          {
+            text: '2. CONTACT & LOCATION',
+            style: 'sectionHeader',
+            margin: [0, 0, 0, 10]
+          },
+          {
+            table: {
+              widths: ['*', '*'],
+              body: [
+                [
+                  { text: 'Phone Number:', bold: true },
+                  application.phone_number
+                ],
+                [
+                  { text: 'County:', bold: true },
+                  application.county
+                ],
+                [
+                  { text: 'Sub-County:', bold: true },
+                  application.sub_county
+                ],
+                [
+                  { text: 'P.O. Box:', bold: true },
+                  application.po_box
+                ],
+                [
+                  { text: 'Town/City:', bold: true },
+                  application.town
+                ]
+              ]
+            },
+            layout: {
+              hLineWidth: function(i: number, node: any) { return 0.5; },
+              vLineWidth: function(i: number, node: any) { return 0.5; },
+              hLineColor: function(i: number, node: any) { return '#e2e8f0'; },
+              vLineColor: function(i: number, node: any) { return '#e2e8f0'; },
+              paddingLeft: function(i: number, node: any) { return 5; },
+              paddingRight: function(i: number, node: any) { return 5; },
+              paddingTop: function(i: number, node: any) { return 3; },
+              paddingBottom: function(i: number, node: any) { return 3; }
+            },
+            margin: [0, 0, 0, 20]
+          },
+
+          // Academic Information Section
+          {
+            text: '3. ACADEMIC INFORMATION',
+            style: 'sectionHeader',
+            margin: [0, 0, 0, 10]
+          },
+          {
+            table: {
+              widths: ['*', '*'],
+              body: [
+                [
+                  { text: 'Course Name:', bold: true },
+                  application.course_name
+                ],
+                [
+                  { text: 'Level of Study:', bold: true },
+                  application.level_of_study || 'N/A'
+                ],
+                [
+                  { text: 'Mode of Study:', bold: true },
+                  application.mode_of_study || 'N/A'
+                ]
+              ]
+            },
+            layout: {
+              hLineWidth: function(i: number, node: any) { return 0.5; },
+              vLineWidth: function(i: number, node: any) { return 0.5; },
+              hLineColor: function(i: number, node: any) { return '#e2e8f0'; },
+              vLineColor: function(i: number, node: any) { return '#e2e8f0'; },
+              paddingLeft: function(i: number, node: any) { return 5; },
+              paddingRight: function(i: number, node: any) { return 5; },
+              paddingTop: function(i: number, node: any) { return 3; },
+              paddingBottom: function(i: number, node: any) { return 3; }
+            },
+            margin: [0, 0, 0, 20]
+          },
+
+          // Next of Kin Section
+          {
+            text: '4. NEXT OF KIN INFORMATION',
+            style: 'sectionHeader',
+            margin: [0, 0, 0, 10]
+          },
+          {
+            table: {
+              widths: ['*', '*'],
+              body: [
+                [
+                  { text: 'Next of Kin Name:', bold: true },
+                  application.next_of_kin
+                ],
+                [
+                  { text: 'Next of Kin Phone:', bold: true },
+                  application.next_of_kin_phone
+                ]
+              ]
+            },
+            layout: {
+              hLineWidth: function(i: number, node: any) { return 0.5; },
+              vLineWidth: function(i: number, node: any) { return 0.5; },
+              hLineColor: function(i: number, node: any) { return '#e2e8f0'; },
+              vLineColor: function(i: number, node: any) { return '#e2e8f0'; },
+              paddingLeft: function(i: number, node: any) { return 5; },
+              paddingRight: function(i: number, node: any) { return 5; },
+              paddingTop: function(i: number, node: any) { return 3; },
+              paddingBottom: function(i: number, node: any) { return 3; }
+            },
+            margin: [0, 0, 0, 20]
+          },
+
+          // Financing Section
+          {
+            text: '5. FINANCING INFORMATION',
+            style: 'sectionHeader',
+            margin: [0, 0, 0, 10]
+          },
+          {
+            table: {
+              widths: ['*'],
+              body: [
+                [
+                  { text: 'Financier/Sponsor:', bold: true },
+                ],
+                [
+                  application.financier || 'N/A'
+                ]
+              ]
+            },
+            layout: {
+              hLineWidth: function(i: number, node: any) { return 0.5; },
+              vLineWidth: function(i: number, node: any) { return 0.5; },
+              hLineColor: function(i: number, node: any) { return '#e2e8f0'; },
+              vLineColor: function(i: number, node: any) { return '#e2e8f0'; },
+              paddingLeft: function(i: number, node: any) { return 5; },
+              paddingRight: function(i: number, node: any) { return 5; },
+              paddingTop: function(i: number, node: any) { return 3; },
+              paddingBottom: function(i: number, node: any) { return 3; }
+            },
+            margin: [0, 0, 0, 30]
+          },
+
+          // Declaration Section
+          {
+            text: 'DECLARATION',
+            style: 'sectionHeader',
+            margin: [0, 0, 0, 10]
+          },
+          {
+            text: [
+              'I hereby declare that the information provided in this application is true and complete to the best of my knowledge. ',
+              'I understand that any false information may lead to the cancellation of my admission.\n\n',
+              'Date: ____________________________\n\n',
+              'Signature: ________________________\n\n',
+              'Parent/Guardian Signature: ________________________'
+            ],
+            margin: [0, 0, 0, 30]
+          },
+
+          // Generated timestamp
+          {
+            text: `Generated on: ${new Date().toLocaleDateString('en-US', { 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })}`,
+            alignment: 'center',
+            fontSize: 9,
+            color: '#718096',
+            margin: [0, 20, 0, 0]
           }
-
-          type TemplateData = {
-              [key: string]: string | number | null | undefined;
-              full_name: string;
-              title: string;
-              date_of_birth: string;
-              nationality: string;
-              id_number: string;
-              county: string;
-              sub_county: string;
-              phone_number: string;
-              po_box: string;
-              town: string;
-              email: string;
-              next_of_kin: string;
-              next_of_kin_phone: string;
-              course_name: string;
-              mode_of_study: string;
-              level_of_study: string;
-              financier: string;
-              religion: string;
-              marital_status: string;
-              gender: string;
-          };
-
-          // Build a sanitized template data object explicitly to avoid
-          // spreading the entire application (which may include Date fields
-          // like created_at/updated_at that are incompatible with TemplateData).
-          const templateData: TemplateData = {
-            full_name: application.full_name,
-            title: application.title,
-            date_of_birth: formatDate(application.date_of_birth),
-            nationality: application.nationality,
-            id_number: application.id_number,
-            county: application.county,
-            sub_county: application.sub_county,
-            phone_number: application.phone_number,
-            po_box: application.po_box,
-            town: application.town,
-            email: application.email,
-            next_of_kin: application.next_of_kin,
-            next_of_kin_phone: application.next_of_kin_phone,
-            course_name: application.course_name,
-            mode_of_study: application.mode_of_study || 'N/A',
-            level_of_study: application.level_of_study || 'N/A',
-            financier: application.financier || 'N/A',
-            religion: application.religion || 'N/A',
-            marital_status: (application as any).marital_status ?? 'N/A',
-            gender: application.title === 'Mr' ? 'Male' : 'Female',
-          };
-
-          const requiredFields = [
-              'full_name', 'title', 'date_of_birth', 'nationality',
-              'id_number', 'county', 'sub_county', 'phone_number',
-              'po_box', 'town', 'email',
-              'next_of_kin', 'next_of_kin_phone', 'course_name',
-              'mode_of_study', 'level_of_study', 'financier', 'religion'
-          ] as (keyof TemplateData)[];
-
-          const missingFields = requiredFields.filter(field => !templateData[field]);
-          if (missingFields.length > 0) {
-              console.log("Missing fields detected:", missingFields); // Check your server logs!
-              return c.json({
-                  error: "Incomplete application data",
-                  missingFields,
-                  suggestion: "Ensure all required fields are populated"
-              }, 400);
+        ],
+        styles: {
+          header: {
+            fontSize: 18,
+            bold: true,
+            color: '#2d3748'
+          },
+          sectionHeader: {
+            fontSize: 14,
+            bold: true,
+            color: '#4a5568',
+            decoration: 'underline',
+            decorationColor: '#cbd5e0',
+            decorationStyle: 'solid'
           }
+        },
+        defaultStyle: {
+          font: 'Helvetica',
+          fontSize: 11,
+          lineHeight: 1.3
+        }
+      };
 
-          const templateBuffer = await fs.readFile(templatePath);
-          const docxBuffer = await createReport({
-              template: templateBuffer,
-              data: templateData,
-              cmdDelimiter: ['{{', '}}'],
-              rejectNullish: false,
-              failFast: false,
-              additionalJsContext: {
-                  formatDate: (date: string | Date) => formatDate(date),
-              },
-          });
+      // Create PDF
+      const fonts = {
+        Helvetica: {
+          normal: 'Helvetica',
+          bold: 'Helvetica-Bold',
+          italics: 'Helvetica-Oblique',
+          bolditalics: 'Helvetica-BoldOblique'
+        }
+      };
 
-          c.header('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-          c.header('Content-Disposition', `attachment; filename="Alphil_College_Application_${id}.docx"`);
-          return c.body(docxBuffer);
-      } catch (error: any) {
-          console.error("Error generating DOCX:", error);
-          return c.json({
-              error: "Failed to generate document",
-              message: error.message,
-              stack: error.stack,
-              suggestion: "Check server logs for detailed error information"
-          }, 500);
-      }
-  }  static async getAllApplications(c: Context) {
+      const printer = new PdfPrinter(fonts);
+      const pdfDoc = printer.createPdfKitDocument(docDefinition);
+      
+      // Convert to buffer
+      const chunks: Buffer[] = [];
+      pdfDoc.on('data', (chunk: Buffer) => chunks.push(chunk));
+      
+      const pdfBuffer = await new Promise<Buffer>((resolve, reject) => {
+        pdfDoc.on('end', () => {
+          resolve(Buffer.concat(chunks));
+        });
+        pdfDoc.on('error', reject);
+        pdfDoc.end();
+      });
+
+      // Set headers for PDF download
+      c.header('Content-Type', 'application/pdf');
+      c.header('Content-Disposition', `attachment; filename="Alphil_College_Application_${id}.pdf"`);
+      return c.body(pdfBuffer);
+
+    } catch (error: any) {
+      console.error("Error generating PDF:", error);
+      return c.json({
+        error: "Failed to generate document",
+        message: error.message,
+        suggestion: "Check server logs for detailed error information"
+      }, 500);
+    }
+  }
+
+  static async getAllApplications(c: Context) {
     try {
       const applications = await applicationService.getAllApplications();
       return c.json({ success: true, data: applications });
