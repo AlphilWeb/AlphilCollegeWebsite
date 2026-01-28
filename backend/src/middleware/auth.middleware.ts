@@ -1,17 +1,16 @@
-import { jwt } from 'hono/jwt';
 import type { Context, Next } from 'hono';
+import { jwt } from 'hono/jwt';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-32-chars-long-123456';
 
 export const jwtAuth = jwt({
   secret: JWT_SECRET,
-  cookie: 'token', // Optional: if using cookies
+  cookie: 'token', 
 });
 
 export const authMiddleware = async (c: Context, next: Next) => {
   try {
     await jwtAuth(c, async () => {
-      // Store payload in context for downstream middleware
       c.set('jwtPayload', c.get('jwtPayload'));
     });
     await next();
@@ -27,7 +26,6 @@ export const adminMiddleware = async (c: Context, next: Next) => {
     return c.json({ error: 'Unauthorized' }, 401);
   }
 
-  // Debug log to verify payload
   console.log('Admin Middleware Payload:', payload);
 
   if (payload.role !== 'admin') {
