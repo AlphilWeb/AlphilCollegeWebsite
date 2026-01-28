@@ -5,7 +5,6 @@ export interface CloudinaryUploadResult {
   width?: number;
   height?: number;
   format?: string;
-  // Add other Cloudinary response properties as needed
 }
 
 export interface GalleryItem {
@@ -20,7 +19,7 @@ export interface GalleryItem {
 export interface HeroImage {
   id: number;
   title: string;
-  subtitle: string | null; // 👈 Fixes the error
+  subtitle: string | null; 
   imageUrl: string;
   publicId: string;
   createdAt?: Date | null;
