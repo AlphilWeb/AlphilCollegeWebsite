@@ -1,10 +1,10 @@
-import db from '../db';
-import { UsersTable, SelectUser } from '../schema';
-import { eq } from 'drizzle-orm';
 import { compare, hash } from 'bcryptjs';
-import { sign, verify } from 'jsonwebtoken';
 import { config } from 'dotenv';
+import { eq } from 'drizzle-orm';
 import type { JwtPayload, SignOptions } from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
+import db from '../db';
+import { SelectUser, UsersTable } from '../schema';
 
 config();
 
@@ -60,7 +60,6 @@ export class AuthService {
       throw new Error('User already exists');
     }
 
-    // Prevent accidentally passing hashed passwords
     if (this.isBcryptHash(password)) {
       throw new Error('Raw password required - already hashed');
     }
@@ -109,7 +108,6 @@ export class AuthService {
       throw new Error('Invalid credentials');
     }
 
-    // Verify stored password is properly hashed
     if (!this.isBcryptHash(user.password)) {
       throw new Error('Stored password is not hashed');
     }
