@@ -1,5 +1,5 @@
-import { pgEnum, pgTable, serial, text, integer, timestamp } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
+import { integer, pgEnum, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
 
 // Enums
 export const userRoleEnum = pgEnum("role", ["user", "admin"]);
@@ -12,7 +12,7 @@ export const UsersTable = pgTable("users", {
   password: text("password").notNull(),
   role: userRoleEnum("role").default("user").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
-}, (table) => ({
+}, () => ({
   passwordCheck: sql`CHECK (password ~ '^\\$2[aby]\\$\\d{2}\\$.*')`
 }));
 export type InsertUser = typeof UsersTable.$inferInsert;
@@ -51,7 +51,6 @@ export const ApplicationsTable = pgTable("applications", {
 export type InsertApplication = typeof ApplicationsTable.$inferInsert;
 export type SelectApplication = typeof ApplicationsTable.$inferSelect;
 
-// Courses (Modified)
 export const CoursesTable = pgTable("courses", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
