@@ -72,7 +72,6 @@ export class AuthController {
   }
 
   static async logout(c: Context) {
-    // no server-side logout with stateless JWT
     return c.json({ message: 'Logged out (client should discard token)' });
   }
 }
