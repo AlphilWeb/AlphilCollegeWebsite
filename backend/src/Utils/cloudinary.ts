@@ -16,7 +16,6 @@ export interface CloudinaryUploadResult {
   format?: string;
 }
 
-// Single upload function (original functionality)
 export const uploadToCloudinary = async (
   buffer: Buffer,
   options: Record<string, unknown> = {}
@@ -49,7 +48,6 @@ export const uploadToCloudinary = async (
   });
 };
 
-// Mass upload function for multiple photos
 export const uploadMultipleToCloudinary = async (
   files: Array<{
     buffer: Buffer;
