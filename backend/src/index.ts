@@ -4,7 +4,6 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import authRouter from './middleware/auth.router';
-// import { authMiddleware, adminMiddleware } from './middleware/auth.middleware';
 
 
 // Route imports
@@ -45,20 +44,17 @@ app.post('/applications', ApplicationController.createApplication);
 // ======================
 // Protected Routes
 // ======================
-// Messages (authenticated only)
-// app.use('/messages/*', authMiddleware);
+
 app.route('/messages', messagesRouter);
 
-// Gallery (public GET, protected POST/DELETE handled in its router)
 app.route('/gallery', galleryRouter);
 
 // ======================
 // Admin Routes
 // ======================
-app.route('/applications', applicationsRouter); // Already protected in router
-app.route('/admin/applications', applicationsRouter); // Admin access for management
-app.route('/admin/users', usersRouter); // Already protected in router
-// Hero Images and Pillars admin routes are protected in their own routers
+app.route('/applications', applicationsRouter); 
+app.route('/admin/applications', applicationsRouter); 
+app.route('/admin/users', usersRouter); 
 
 // ======================
 // Server Setup
