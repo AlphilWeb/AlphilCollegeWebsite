@@ -1,8 +1,8 @@
 // src/Users/users.service.ts
+import bcrypt from 'bcryptjs';
+import { eq } from 'drizzle-orm';
 import db from '../db';
 import { UsersTable, userRoleEnum } from '../schema';
-import { eq } from 'drizzle-orm';
-import bcrypt from 'bcryptjs';
 
 interface SafeUser {
   id: number;
@@ -26,7 +26,6 @@ export const getAllUsers = async (): Promise<SafeUser[]> => {
       name: UsersTable.name,
       email: UsersTable.email,
       role: UsersTable.role,
-      // createdAt: UsersTable.createdAt
     })
     .from(UsersTable)
     .orderBy(UsersTable.createdAt);
@@ -46,14 +45,12 @@ export const createUser = async (userData: CreateUserParams): Promise<SafeUser> 
         email: userData.email,
         password: hashedPassword,
         role: userData.role || 'user'
-        // createdAt is omitted as it has a default value
       })
       .returning({
         id: UsersTable.id,
         name: UsersTable.name,
         email: UsersTable.email,
         role: UsersTable.role,
-        // createdAt: UsersTable.createdAt
       });
     
     if (!newUser) {
@@ -77,8 +74,6 @@ export const deleteUser = async (userId: number): Promise<void> => {
   }
 };
 
-// Add this to the top if not already imported
-import { and } from 'drizzle-orm';
 
 interface UpdateUserParams {
   id: number;
