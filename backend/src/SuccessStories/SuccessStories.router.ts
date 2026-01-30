@@ -1,10 +1,10 @@
 import { Hono } from "hono";
+import { adminMiddleware, authMiddleware } from "../middleware/auth.middleware";
 import { SuccessStoriesController } from "./SuccessStories.controller";
-import { authMiddleware, adminMiddleware } from "../middleware/auth.middleware";
 
 const successStoriesRouter = new Hono();
 
-// Public routes (no auth required)
+// Public routes 
 successStoriesRouter.get("/", SuccessStoriesController.getAllSuccessStories);
 successStoriesRouter.get("/:id", SuccessStoriesController.getSuccessStoryById);
 
