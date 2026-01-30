@@ -1,21 +1,18 @@
 import { Hono } from 'hono';
 import {
   getAllPillars,
-  uploadPillar,
+  removePillar,
   updatePillarEntry,
-  removePillar
+  uploadPillar
 } from '../Pillars/pillars.controller';
-import { authMiddleware, adminMiddleware } from '../middleware/auth.middleware';
+import { adminMiddleware, authMiddleware } from '../middleware/auth.middleware';
 
 const pillarsRouter = new Hono();
 
-// ✅ Public GET route (no auth required)
 pillarsRouter.get('/', getAllPillars);
 
-// 🔒 Protect the remaining routes
 pillarsRouter.use('*', authMiddleware, adminMiddleware);
 
-// ✅ Admin-only routes
 pillarsRouter.post('/upload', uploadPillar);
 pillarsRouter.put('/:id', updatePillarEntry);
 pillarsRouter.delete('/:id', removePillar);
