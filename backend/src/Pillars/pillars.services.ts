@@ -1,7 +1,7 @@
 import { v2 as cloudinary } from 'cloudinary';
-import db from '../db';
-import { PillarsTable, InsertPillar, SelectPillar } from '../schema';
 import { eq } from 'drizzle-orm';
+import db from '../db';
+import { InsertPillar, PillarsTable, SelectPillar } from '../schema';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -74,3 +74,4 @@ export const deletePillar = async (id: number): Promise<void> => {
   if (item.publicId) await cloudinary.uploader.destroy(item.publicId);
   await db.delete(PillarsTable).where(eq(PillarsTable.id, id));
 };
+
