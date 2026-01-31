@@ -1,19 +1,19 @@
 // src/controllers/heroImages.controller.ts
 import { Context } from 'hono';
 import {
-  getAllHeroImages,
   createHeroImage,
   deleteHeroImage as deleteHeroImageService,
+  getAllHeroImages,
 } from '../HeroImages/heroImages.services';
 import { uploadToCloudinary } from '../Utils/cloudinary';
-import { HeroImage, CloudinaryUploadResult } from '../types';
+import { CloudinaryUploadResult, HeroImage } from '../types';
 
 export const getHeroImages = async (c: Context) => {
   const items = await getAllHeroImages();
   const normalized: HeroImage[] = items.map((item) => ({
     id: item.id,
     title: item.title,
-    subtitle: item.subtitle ?? null, // ← this line fixed
+    subtitle: item.subtitle ?? null,
     imageUrl: item.imageUrl,
     publicId: item.publicId,
     createdAt: item.createdAt ?? null,
