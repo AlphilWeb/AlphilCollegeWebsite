@@ -1,14 +1,12 @@
 // src/routes/heroImages.router.ts
 import { Hono } from 'hono';
-import { getHeroImages, uploadHeroImage, deleteHeroImage } from '../HeroImages/heroImages.controller';
-import { authMiddleware, adminMiddleware } from '../middleware/auth.middleware';
+import { deleteHeroImage, getHeroImages, uploadHeroImage } from '../HeroImages/heroImages.controller';
+import { adminMiddleware, authMiddleware } from '../middleware/auth.middleware';
 
 const heroImagesRouter = new Hono();
 
-// ✅ Public GET route
 heroImagesRouter.get('/', getHeroImages);
 
-// 🔒 Protected admin-only routes
 heroImagesRouter.use('*', authMiddleware, adminMiddleware);
 
 heroImagesRouter.post('/upload', uploadHeroImage);
