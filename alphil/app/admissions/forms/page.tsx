@@ -1,19 +1,16 @@
 'use client';
-import React, { useState, useEffect } from 'react';
 import { fetchAPI } from '@/lib/api';
-import { 
-  FiCheckCircle, 
-  FiXCircle, 
-  FiDownload, 
-  FiSend, 
-  FiUser, 
-  FiHome, 
-  FiBookOpen, 
+import React, { useEffect, useState } from 'react';
+import {
+  FiBookOpen,
+  FiCheckCircle,
   FiCreditCard,
-  FiCalendar,
-  FiFlag,
+  FiDownload,
   FiFileText,
-  FiShield
+  FiHome,
+  FiSend,
+  FiUser,
+  FiXCircle
 } from 'react-icons/fi';
 
 type ApplicationForm = {
@@ -183,16 +180,7 @@ const AdmissionsPage = () => {
           <div className="bg-gradient-to-r from-pink-800 to-pink-700 p-8 text-white text-center">
             <h1 className="text-3xl font-bold uppercase tracking-tight">Alphil College Admission Application</h1>
             <p className="mt-2 opacity-90 text-sm">Complete all fields below to submit your application</p>
-            <div className="mt-4 flex justify-center items-center space-x-4 text-xs opacity-80">
-              <div className="flex items-center">
-                <FiCalendar className="mr-1" />
-                <span>Academic Year 2024</span>
-              </div>
-              <div className="flex items-center">
-                <FiShield className="mr-1" />
-                <span>Secure & Confidential</span>
-              </div>
-            </div>
+
           </div>
 
           <form onSubmit={handleSubmit} className="p-8 space-y-6">
@@ -372,7 +360,7 @@ const AdmissionsPage = () => {
                   value={formData.course_name}
                   onChange={handleChange}
                   required
-                  placeholder="e.g., Diploma in Computer Science"
+                  placeholder="e.g., Caregiving"
                   className="w-full border-gray-300 border p-3 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
                 />
               </div>
@@ -387,10 +375,10 @@ const AdmissionsPage = () => {
                   className="w-full border-gray-300 border p-3 rounded-lg bg-gray-50 focus:bg-white outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
                 >
                   <option value="">Select Level</option>
-                  <option value="Certificate">Certificate</option>
-                  <option value="Diploma">Diploma</option>
-                  <option value="Degree">Degree</option>
-                  <option value="Postgraduate">Postgraduate</option>
+                  <option value="Certificate">Level 1</option>
+                  <option value="Diploma">Level 2</option>
+                  <option value="Degree">Level 3</option>
+                  <option value="Postgraduate">Level 4</option>
                 </select>
               </div>
 
