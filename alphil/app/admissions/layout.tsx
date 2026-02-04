@@ -3,7 +3,7 @@
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FiFileText, FiDollarSign, FiCheckCircle, FiHome } from 'react-icons/fi';
+import { FiCheckCircle, FiDollarSign, FiFileText, FiHome } from 'react-icons/fi';
 
 const AdmissionsLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
@@ -39,9 +39,9 @@ const AdmissionsLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Top Navigation for mobile, Sidebar for desktop */}
-      <div className="md:flex">
+      <div className="md:flex h-screen">
         {/* Mobile Top Nav */}
-        <nav className="md:hidden w-full bg-white shadow-sm">
+        <nav className="md:hidden w-full bg-white shadow-sm sticky top-0 z-50">
           <div className="container mx-auto px-4">
             <ul className="flex overflow-x-auto py-3 space-x-4">
               {navItems.map((item) => (
@@ -65,8 +65,8 @@ const AdmissionsLayout = ({ children }: { children: React.ReactNode }) => {
           </div>
         </nav>
 
-        {/* Desktop Sidebar */}
-        <aside className="hidden md:block w-64 p-6 border-r bg-white h-full shadow-md">
+        {/* Desktop Sidebar - Fixed position */}
+        <aside className="hidden md:block w-64 p-6 border-r bg-white shadow-md fixed left-0 top-0 bottom-0 overflow-y-auto">
           <div className="flex items-center mb-8">
             <h2 className="text-2xl font-bold text-[#013220] font-['Playfair_Display']">
               Admissions
@@ -94,9 +94,9 @@ const AdmissionsLayout = ({ children }: { children: React.ReactNode }) => {
           </ul>
         </aside>
 
-        {/* Main content */}
-        <main className="flex-1 p-6 bg-white md:rounded-tl-lg shadow-inner bg-gradient-to-r from-[#013220] to-[#013220]/90 text-white">
-          <div className="max-w-4xl mx-auto">
+        {/* Main content - Offset for fixed sidebar */}
+        <main className="flex-1 md:ml-64 w-[calc(100%-16rem)] text-gray-800">
+          <div className="max-w-7xl mx-auto ">
             {children}
           </div>
           <Footer />
