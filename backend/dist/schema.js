@@ -19,7 +19,6 @@ exports.UsersTable = (0, pg_core_1.pgTable)("users", {
 // Applications
 exports.ApplicationsTable = (0, pg_core_1.pgTable)("applications", {
     id: (0, pg_core_1.serial)("id").primaryKey(),
-    // Applicant's Details
     full_name: (0, pg_core_1.text)("full_name").notNull(),
     title: (0, pg_core_1.text)("title").notNull(),
     date_of_birth: (0, pg_core_1.text)("date_of_birth").notNull(),
@@ -29,23 +28,15 @@ exports.ApplicationsTable = (0, pg_core_1.pgTable)("applications", {
     sub_county: (0, pg_core_1.text)("sub_county").notNull(),
     phone_number: (0, pg_core_1.text)("phone_number").notNull(),
     po_box: (0, pg_core_1.text)("po_box").notNull(),
-    postal_code: (0, pg_core_1.text)("postal_code").notNull(),
     town: (0, pg_core_1.text)("town").notNull(),
     email: (0, pg_core_1.text)("email").notNull(),
-    // Next of Kin Details
     next_of_kin: (0, pg_core_1.text)("next_of_kin").notNull(),
     next_of_kin_phone: (0, pg_core_1.text)("next_of_kin_phone").notNull(),
-    next_next_of_kin: (0, pg_core_1.text)("next_next_of_kin"),
-    next_next_of_kin_phone: (0, pg_core_1.text)("next_next_of_kin_phone"),
-    // Education Plan
     course_name: (0, pg_core_1.text)("course_name").notNull(),
-    mode_of_study: (0, pg_core_1.text)("mode_of_study").notNull(),
-    intake: (0, pg_core_1.text)("intake").notNull(),
+    mode_of_study: (0, pg_core_1.text)("mode_of_study"),
     level_of_study: (0, pg_core_1.text)("level_of_study"),
-    // Other Details
-    financier: (0, pg_core_1.text)("financier").notNull(),
-    religion: (0, pg_core_1.text)("religion").notNull(),
-    // System Fields
+    financier: (0, pg_core_1.text)("financier"),
+    religion: (0, pg_core_1.text)("religion"),
     status: (0, pg_core_1.text)("status").default("Pending"),
     student_signature: (0, pg_core_1.text)("student_signature"),
     signature_date: (0, pg_core_1.text)("signature_date"),

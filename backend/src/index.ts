@@ -1,30 +1,33 @@
 // src/index.ts
-import { Hono } from "hono";
-import { logger } from "hono/logger";
-import { cors } from "hono/cors";
 import { serve } from "@hono/node-server";
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { logger } from "hono/logger";
 import authRouter from './middleware/auth.router';
 // import { authMiddleware, adminMiddleware } from './middleware/auth.middleware';
 
 
 // Route imports
+import analyticsRouter from "./Analytics/analutics.router";
 import applicationsRouter from "./Applications/applications.route";
 import blogpostsRouter from "./Blog/blog.router";
-import messagesRouter from "./Messages/messages.router";
-import successStoriesRouter from "./SuccessStories/SuccessStories.router";
-import usersRouter from "./Users/users.router";
 import coursesRouter from "./Courses/courses.router";
 import galleryRouter from "./Gallery/gallery.router";
 import heroImagesRouter from "./HeroImages/heroImages.router";
+import messagesRouter from "./Messages/messages.router";
 import pillarsRouter from "./Pillars/pillars.router";
-import analyticsRouter from "./Analytics/analutics.router"
+import successStoriesRouter from "./SuccessStories/SuccessStories.router";
+import usersRouter from "./Users/users.router";
 
 const app = new Hono();
 
 // Basic middleware
 app.use("*", logger());
-app.use("*", cors());
-
+app.use('*', cors({
+  origin: ['https://alphil-college-website.vercel.app/', 'https://alphilcollege.co.ke'], // Add your actual frontend URLs
+  allowHeaders: ['Content-Type', 'Authorization'],
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+}))
 // ======================
 // Public Routes
 // ======================
