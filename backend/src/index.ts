@@ -23,11 +23,8 @@ const app = new Hono();
 
 // Basic middleware
 app.use("*", logger());
-app.use('*', cors({
-  origin: ['https://alphil-college-website.vercel.app/', 'https://alphilcollege.co.ke'], // Add your actual frontend URLs
-  allowHeaders: ['Content-Type', 'Authorization'],
-  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-}))
+app.use("*", cors());
+
 // ======================
 // Public Routes
 // ======================
