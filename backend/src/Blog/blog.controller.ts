@@ -1,6 +1,6 @@
 import { Context } from "hono";
-import { BlogPostsService, uploadToCloudinary } from "./blog.services";
 import { InsertBlogPost } from "../schema";
+import { BlogPostsService, uploadToCloudinary } from "./blog.services";
 
 const blogPostsService = new BlogPostsService();
 
@@ -21,7 +21,7 @@ export class BlogPostsController {
     const imageFile = formData.get("image") as File | null;
     const title = formData.get("title")?.toString() || "";
     const content = formData.get("content")?.toString() || "";
-    const author = formData.get("author")?.toString() || "Unknown"; // No user relation, just a text field
+    const author = formData.get("author")?.toString() || "Unknown"; 
 
     if (!title || !content) {
       return c.json({ error: "Title and content are required" }, 400);
