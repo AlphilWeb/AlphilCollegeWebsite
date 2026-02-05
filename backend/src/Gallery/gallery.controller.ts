@@ -1,14 +1,14 @@
 // src/controllers/gallery.controller.ts
 import { Context } from "hono";
-import { 
-  createGalleryItem, 
-  getGalleryItems, 
-  deleteGalleryItem, 
+import { CloudinaryUploadResult, GalleryItem } from "../types";
+import {
+  createGalleryItem,
+  createMultipleGalleryItems,
+  deleteGalleryItem,
+  getGalleryItems,
   uploadMultipleToCloudinary,
-  createMultipleGalleryItems
+  uploadToCloudinary
 } from "./gallery.service";
-import { GalleryItem, CloudinaryUploadResult } from "../types";
-import { uploadToCloudinary } from "./gallery.service";
 
 export const getAllImages = async (c: Context) => {
   const items: GalleryItem[] = await getGalleryItems();
@@ -46,7 +46,6 @@ export const uploadImage = async (c: Context): Promise<Response> => {
   }
 };
 
-// Add this function for bulk uploads
 export const uploadMultipleImages = async (c: Context): Promise<Response> => {
   const formData = await c.req.formData();
   const title = formData.get('title')?.toString() || '';
@@ -61,12 +60,10 @@ export const uploadMultipleImages = async (c: Context): Promise<Response> => {
   }
 
   try {
-    // Process all files
     const uploadPromises = imageFiles.map(async (file, index) => {
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
       
-      // Generate unique public_id for each image with the same title
       const uniqueId = `${Date.now()}_${index}`;
       const publicId = `${title.toLowerCase().replace(/\s+/g, '-')}_${uniqueId}`;
       
@@ -81,17 +78,14 @@ export const uploadMultipleImages = async (c: Context): Promise<Response> => {
 
     const filesToUpload = await Promise.all(uploadPromises);
     
-    // Upload all images to Cloudinary
     const uploadResults = await uploadMultipleToCloudinary(filesToUpload);
 
-    // Prepare database entries - all with the same title
     const galleryItems = uploadResults.map((result) => ({
       title: title,
       imageUrl: result.secure_url,
       publicId: result.public_id
     }));
 
-    // Insert all into database
     const newItems = await createMultipleGalleryItems(galleryItems);
 
     return c.json(newItems, 201);
