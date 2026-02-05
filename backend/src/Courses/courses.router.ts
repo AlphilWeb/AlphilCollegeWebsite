@@ -1,14 +1,13 @@
 // src/Courses/courses.router.ts
 import { Hono } from "hono";
+import { adminMiddleware, authMiddleware } from "../middleware/auth.middleware";
 import { CoursesController } from "./courses.controller";
-import { authMiddleware, adminMiddleware } from "../middleware/auth.middleware";
 
 const coursesRouter = new Hono();
 
 coursesRouter.get("/", CoursesController.getAllCourses);
 coursesRouter.get("/:id", CoursesController.getCourseById);
 
-// Admin-protected write routes
 coursesRouter.use("*", authMiddleware);
 coursesRouter.use("*", adminMiddleware);
 
