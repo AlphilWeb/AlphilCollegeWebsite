@@ -1,8 +1,8 @@
 // src/services/gallery.service.ts
 import { v2 as cloudinary } from 'cloudinary';
+import { eq } from 'drizzle-orm';
 import db from '../db';
 import { GalleryTable, InsertGallery, SelectGallery } from '../schema';
-import { eq } from 'drizzle-orm';
 
 // Cloudinary configuration
 cloudinary.config({
@@ -52,7 +52,6 @@ export const uploadToCloudinary = async (
   });
 };
 
-// Add this function for mass uploads
 export const uploadMultipleToCloudinary = async (
   files: Array<{
     buffer: Buffer;
@@ -102,7 +101,6 @@ export const createGalleryItem = async (
   }
 };
 
-// Add this function for bulk database insertion
 export const createMultipleGalleryItems = async (
   items: InsertGallery[]
 ): Promise<SelectGallery[]> => {
@@ -137,7 +135,6 @@ export const getGalleryItems = async (): Promise<SelectGallery[]> => {
 
 export const deleteGalleryItem = async (id: number): Promise<void> => {
   try {
-    // First get the item to get the Cloudinary public_id
     const [item] = await db
       .select()
       .from(GalleryTable)
@@ -148,12 +145,10 @@ export const deleteGalleryItem = async (id: number): Promise<void> => {
       throw new Error('Gallery item not found');
     }
 
-    // Delete from Cloudinary first
     if (item.publicId) {
       await cloudinary.uploader.destroy(item.publicId);
     }
 
-    // Then delete from database
     await db
       .delete(GalleryTable)
       .where(eq(GalleryTable.id, id));
