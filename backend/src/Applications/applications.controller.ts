@@ -1,8 +1,8 @@
 // src/Applications/applications.controller.ts
 import { Context } from "hono";
-import { ApplicationsService } from "./applications.services";
 import PdfPrinter from 'pdfmake';
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
+import { ApplicationsService } from "./applications.services";
 
 const applicationService = new ApplicationsService();
 
@@ -62,7 +62,7 @@ export class ApplicationController {
         pageSize: 'A4',
         pageMargins: [40, 60, 40, 60],
         header: {
-          text: 'ALPHIL COLLEGE - ADMISSION APPLICATION',
+          text: 'ALPHIL TRAINING COLLEGE ',
           alignment: 'center',
           bold: true,
           fontSize: 16,
@@ -124,14 +124,14 @@ export class ApplicationController {
               ]
             },
             layout: {
-              hLineWidth: function(i: number, node: any) { return 0.5; },
-              vLineWidth: function(i: number, node: any) { return 0.5; },
-              hLineColor: function(i: number, node: any) { return '#e2e8f0'; },
-              vLineColor: function(i: number, node: any) { return '#e2e8f0'; },
-              paddingLeft: function(i: number, node: any) { return 5; },
-              paddingRight: function(i: number, node: any) { return 5; },
-              paddingTop: function(i: number, node: any) { return 3; },
-              paddingBottom: function(i: number, node: any) { return 3; }
+              hLineWidth: function(_i: number, _node: any) { return 0.5; },
+              vLineWidth: function(_i: number, _node: any) { return 0.5; },
+              hLineColor: function(_i: number, _node: any) { return '#e2e8f0'; },
+              vLineColor: function(_i: number, _node: any) { return '#e2e8f0'; },
+              paddingLeft: function(_i: number, _node: any) { return 5; },
+              paddingRight: function(_i: number, _node: any) { return 5; },
+              paddingTop: function(_i: number, _node: any) { return 3; },
+              paddingBottom: function(_i: number, _node: any) { return 3; }
             },
             margin: [0, 0, 0, 20]
           },
@@ -169,14 +169,14 @@ export class ApplicationController {
               ]
             },
             layout: {
-              hLineWidth: function(i: number, node: any) { return 0.5; },
-              vLineWidth: function(i: number, node: any) { return 0.5; },
-              hLineColor: function(i: number, node: any) { return '#e2e8f0'; },
-              vLineColor: function(i: number, node: any) { return '#e2e8f0'; },
-              paddingLeft: function(i: number, node: any) { return 5; },
-              paddingRight: function(i: number, node: any) { return 5; },
-              paddingTop: function(i: number, node: any) { return 3; },
-              paddingBottom: function(i: number, node: any) { return 3; }
+              hLineWidth: function(_i: number, _node: any) { return 0.5; },
+              vLineWidth: function(_i: number, _node: any) { return 0.5; },
+              hLineColor: function(_i: number, _node: any) { return '#e2e8f0'; },
+              vLineColor: function(_i: number, _node: any) { return '#e2e8f0'; },
+              paddingLeft: function(_i: number, _node: any) { return 5; },
+              paddingRight: function(_i: number, _node: any) { return 5; },
+              paddingTop: function(_i: number, _node: any) { return 3; },
+              paddingBottom: function(_i: number, _node: any) { return 3; }
             },
             margin: [0, 0, 0, 20]
           },
@@ -206,14 +206,14 @@ export class ApplicationController {
               ]
             },
             layout: {
-              hLineWidth: function(i: number, node: any) { return 0.5; },
-              vLineWidth: function(i: number, node: any) { return 0.5; },
-              hLineColor: function(i: number, node: any) { return '#e2e8f0'; },
-              vLineColor: function(i: number, node: any) { return '#e2e8f0'; },
-              paddingLeft: function(i: number, node: any) { return 5; },
-              paddingRight: function(i: number, node: any) { return 5; },
-              paddingTop: function(i: number, node: any) { return 3; },
-              paddingBottom: function(i: number, node: any) { return 3; }
+              hLineWidth: function(_i: number, _node: any) { return 0.5; },
+              vLineWidth: function(_i: number, _node: any) { return 0.5; },
+              hLineColor: function(_i: number, _node: any) { return '#e2e8f0'; },
+              vLineColor: function(_i: number, _node: any) { return '#e2e8f0'; },
+              paddingLeft: function(_i: number, _node: any) { return 5; },
+              paddingRight: function(_i: number, _node: any) { return 5; },
+              paddingTop: function(_i: number, _node: any) { return 3; },
+              paddingBottom: function(_i: number, _node: any) { return 3; }
             },
             margin: [0, 0, 0, 20]
           },
@@ -239,14 +239,14 @@ export class ApplicationController {
               ]
             },
             layout: {
-              hLineWidth: function(i: number, node: any) { return 0.5; },
-              vLineWidth: function(i: number, node: any) { return 0.5; },
-              hLineColor: function(i: number, node: any) { return '#e2e8f0'; },
-              vLineColor: function(i: number, node: any) { return '#e2e8f0'; },
-              paddingLeft: function(i: number, node: any) { return 5; },
-              paddingRight: function(i: number, node: any) { return 5; },
-              paddingTop: function(i: number, node: any) { return 3; },
-              paddingBottom: function(i: number, node: any) { return 3; }
+              hLineWidth: function(_i: number, _node: any) { return 0.5; },
+              vLineWidth: function(_i: number, _node: any) { return 0.5; },
+              hLineColor: function(_i: number, _node: any) { return '#e2e8f0'; },
+              vLineColor: function(_i: number, _node: any) { return '#e2e8f0'; },
+              paddingLeft: function(_i: number, _node: any) { return 5; },
+              paddingRight: function(_i: number, _node: any) { return 5; },
+              paddingTop: function(_i: number, _node: any) { return 3; },
+              paddingBottom: function(_i: number, _node: any) { return 3; }
             },
             margin: [0, 0, 0, 20]
           },
@@ -270,14 +270,14 @@ export class ApplicationController {
               ]
             },
             layout: {
-              hLineWidth: function(i: number, node: any) { return 0.5; },
-              vLineWidth: function(i: number, node: any) { return 0.5; },
-              hLineColor: function(i: number, node: any) { return '#e2e8f0'; },
-              vLineColor: function(i: number, node: any) { return '#e2e8f0'; },
-              paddingLeft: function(i: number, node: any) { return 5; },
-              paddingRight: function(i: number, node: any) { return 5; },
-              paddingTop: function(i: number, node: any) { return 3; },
-              paddingBottom: function(i: number, node: any) { return 3; }
+              hLineWidth: function(_i: number, _node: any) { return 0.5; },
+              vLineWidth: function(_i: number, _node: any) { return 0.5; },
+              hLineColor: function(_i: number, _node: any) { return '#e2e8f0'; },
+              vLineColor: function(_i: number, _node: any) { return '#e2e8f0'; },
+              paddingLeft: function(_i: number, _node: any) { return 5; },
+              paddingRight: function(_i: number, _node: any) { return 5; },
+              paddingTop: function(_i: number, _node: any) { return 3; },
+              paddingBottom: function(_i: number, _node: any) { return 3; }
             },
             margin: [0, 0, 0, 30]
           },
@@ -293,8 +293,8 @@ export class ApplicationController {
               'I hereby declare that the information provided in this application is true and complete to the best of my knowledge. ',
               'I understand that any false information may lead to the cancellation of my admission.\n\n',
               'Date: ____________________________\n\n',
-              'Signature: ________________________\n\n',
-              'Parent/Guardian Signature: ________________________'
+              'Applicant\'s Signature: ________________________\n\n',
+              'Principal\'s Signature: ________________________'
             ],
             margin: [0, 0, 0, 30]
           },
